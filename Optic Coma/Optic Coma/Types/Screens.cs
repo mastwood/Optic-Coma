@@ -119,20 +119,22 @@ namespace Optic_Coma
 
         SoundEffect music;
         SoundEffectInstance musicInstance;
+        public float musicVolume = 0.2f;
 
         public override void LoadContent()
         {
             left = new Vector2(screenWidth - 200, 0);
             middle = new Vector2(screenWidth / 2 - 16, 0);
             right = new Vector2(200 - 32, 0);
+            
+            enemies.Capacity = 0;
+            base.LoadContent();
 
             music = content.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
             musicInstance.IsLooped = true;
-            music.Play();
-            
-            enemies.Capacity = 0;
-            base.LoadContent();
+            musicInstance.Play();
+            musicInstance.Volume = musicVolume;
 
             buttonSheet = content.Load<Texture2D>("buttonSheet");
             pauseButton = new Button();
