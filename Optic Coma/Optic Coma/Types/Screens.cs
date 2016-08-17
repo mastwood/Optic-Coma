@@ -4,7 +4,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 using System.Xml.Serialization;
+using System.Media;
 
 namespace Optic_Coma
 {
@@ -115,12 +117,20 @@ namespace Optic_Coma
         Vector2 pauseButtonPos;
         SpriteFont buttonFont;
 
+        SoundEffect music;
+        SoundEffectInstance musicInstance;
+
         public override void LoadContent()
         {
             left = new Vector2(screenWidth - 200, 0);
             middle = new Vector2(screenWidth / 2 - 16, 0);
             right = new Vector2(200 - 32, 0);
 
+            music = content.Load<SoundEffect>("samplemusic");
+            musicInstance = music.CreateInstance();
+            musicInstance.IsLooped = true;
+            music.Play();
+            
             enemies.Capacity = 0;
             base.LoadContent();
 
