@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using System.Xml.Serialization;
-using System.Media;
+using Krypton;
 
 namespace Optic_Coma
 {
@@ -84,6 +84,7 @@ namespace Optic_Coma
     }
     class InGameScreen : BaseScreen
     {
+
         int enemySpawnIncrement = 750;
         int timeSinceLastEnemy = 0;
 
@@ -121,8 +122,11 @@ namespace Optic_Coma
         SoundEffectInstance musicInstance;
         public float musicVolume = 0.2f;
 
+
+
         public override void LoadContent()
         {
+
             left = new Vector2(screenWidth - 200, 0);
             middle = new Vector2(screenWidth / 2 - 16, 0);
             right = new Vector2(200 - 32, 0);
@@ -133,7 +137,6 @@ namespace Optic_Coma
             music = content.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
             musicInstance.IsLooped = true;
-            musicInstance.Play();
             musicInstance.Volume = musicVolume;
 
             buttonSheet = content.Load<Texture2D>("buttonSheet");
