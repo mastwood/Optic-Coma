@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using System.Xml.Serialization;
-using Krypton;
 
 namespace Optic_Coma
 {
@@ -84,9 +83,8 @@ namespace Optic_Coma
     }
     class InGameScreen : BaseScreen
     {
-
-        int enemySpawnIncrement = 750;
-        int timeSinceLastEnemy = 0;
+        //int enemySpawnIncrement = 750;
+       // int timeSinceLastEnemy = 0;
 
         int screenWidth = (int)ScreenManager.Instance.Dimensions.X;
         int screenHeight = (int)ScreenManager.Instance.Dimensions.Y;
@@ -96,22 +94,16 @@ namespace Optic_Coma
         uint playerScore = 0;
         SpriteFont scoreDisplay;
 
-        Vector2 enemyInitPosition;
-
         Vector2 left;
         Vector2 middle;
         Vector2 right;
 
         Player player;
 
-        List<Enemy> enemies = new List<Enemy>();
-
-        Texture2D enemyTexture;
-        string EnemyPath = "enemy";
-
-        Texture2D pointerTriangle; //read: playerBox, i just havent changed the names yet
-        Vector2 pointerPosition;
-        string PointerPath = "player";
+        Texture2D flashLightTexture;
+        Texture2D playerTexture;
+        Vector2 playerPos;
+        string playerPath = "player";
 
         Texture2D buttonSheet;
         private Button pauseButton;
@@ -120,9 +112,7 @@ namespace Optic_Coma
 
         SoundEffect music;
         SoundEffectInstance musicInstance;
-        public float musicVolume = 0.2f;
-
-
+        public float musicVolume = 0.02f;
 
         public override void LoadContent()
         {
@@ -131,13 +121,14 @@ namespace Optic_Coma
             middle = new Vector2(screenWidth / 2 - 16, 0);
             right = new Vector2(200 - 32, 0);
             
-            enemies.Capacity = 0;
+            //enemies.Capacity = 0;
             base.LoadContent();
 
             music = content.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
             musicInstance.IsLooped = true;
             musicInstance.Volume = musicVolume;
+            musicInstance.Play();
 
             buttonSheet = content.Load<Texture2D>("buttonSheet");
             pauseButton = new Button();
@@ -146,14 +137,12 @@ namespace Optic_Coma
 
             scoreDisplay = content.Load<SpriteFont>("ingamescreen_title");
 
-            enemyTexture = content.Load<Texture2D>(EnemyPath);
+            flashLightTexture = content.Load<Texture2D>("flashlight");
+            playerTexture = content.Load<Texture2D>(playerPath);
+            playerPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - playerTexture.Width / 2,
+                                     ScreenManager.Instance.Dimensions.Y / 2 - playerTexture.Height / 8);
 
-
-            pointerTriangle = content.Load<Texture2D>(PointerPath);
-            pointerPosition = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - pointerTriangle.Width / 2,
-                                     ScreenManager.Instance.Dimensions.Y / 2 - pointerTriangle.Height / 8);
-
-            player = new Player(pointerTriangle);
+            player = new Player(playerTexture, playerPos, flashLightTexture);
         }
         public override void UnloadContent()
         {
@@ -162,63 +151,45 @@ namespace Optic_Coma
         public override void Update(GameTime gameTime) //gametime is a tick
         {
             Color[] playerColor = new Color[64 * 64];
-            pointerTriangle.GetData(playerColor);
-            Color[] enemyColor = new Color[32 * 32];
-            enemyTexture.GetData(enemyColor);
-            Rectangle playerArea = new Rectangle((int)pointerPosition.X, (int)pointerPosition.Y, 48, 48);
-            Rectangle enemyArea = new Rectangle();
+            //playerTexture.GetData(playerColor);
+            //enemyTexture.GetData(enemyColor);
+            Rectangle playerArea = new Rectangle((int)playerPos.X, (int)playerPos.Y, 48, 48);
 
             int spawnLocationIndicator = random.Next(0, 3);
 
+            #region commented
+            /*
             timeSinceLastEnemy += gameTime.ElapsedGameTime.Milliseconds;
             if (timeSinceLastEnemy > enemySpawnIncrement)
             {
-                try
+                
+                if (spawnLocationIndicator == 0)
                 {
-                    if (spawnLocationIndicator == 0)
-                    {
-                        enemies.Capacity += 1;
-                        enemyInitPosition = left;
-                        Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
-                        enemies.Add(enemy);
-                    }
-                    else if (spawnLocationIndicator == 1)
-                    {
-                        enemies.Capacity += 1;
-                        enemyInitPosition = middle;
-                        Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
-                        enemies.Add(enemy);
-                    }
-                    else if (spawnLocationIndicator == 2)
-                    {
-                        enemies.Capacity += 1;
-                        enemyInitPosition = right;
-                        Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
-                        enemies.Add(enemy);
-                    }
-                    foreach (Enemy enemy in enemies)
-                    {
-                        if (timeSinceLastEnemy > enemySpawnIncrement * 10)
-                            enemy.acceleration += 1;
-                    }
-                    timeSinceLastEnemy -= enemySpawnIncrement;
+                    enemies.Capacity += 1;
+                    enemyInitPosition = left;
+                    Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
+                    enemies.Add(enemy);
                 }
-                catch (Exception e)
+                else if (spawnLocationIndicator == 1)
                 {
-                    /*LogWriter.Write
-                        (
-                        e.Message, 
-                        e.StackTrace, 
-                        "ERROR 001: See InGameScreen.cs Update()...\r"
-                  + " \t Possible errors are: \r" 
-                  + " \t Too many enemies,\r"
-                  + " \t acceleration too high,\r"
-                  + " \t stupid mistake by Michael\r"        
-                        );
-                    //stupid format for readability
-                    */
-                    throw;
+                    enemies.Capacity += 1;
+                    enemyInitPosition = middle;
+                    Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
+                    enemies.Add(enemy);
                 }
+                else if (spawnLocationIndicator == 2)
+                {
+                    enemies.Capacity += 1;
+                    enemyInitPosition = right;
+                    Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
+                    enemies.Add(enemy);
+                }
+                foreach (Enemy enemy in enemies)
+                {
+                    if (timeSinceLastEnemy > enemySpawnIncrement * 10)
+                        enemy.acceleration += 1;
+                }
+                timeSinceLastEnemy -= enemySpawnIncrement;  
             }
 
             for (int i = 0; i < enemies.Count; i++)
@@ -243,28 +214,23 @@ namespace Optic_Coma
                     enemies.Capacity--;
                 }
             }
-            KeyboardState keyState = Keyboard.GetState();
-            if (keyState.IsKeyDown(Keys.A))
-                pointerPosition.X -= 4;
-            if (keyState.IsKeyDown(Keys.D))
-                pointerPosition.X += 4;
-            if (keyState.IsKeyDown(Keys.W))
-                pointerPosition.Y -= 4;
-            if (keyState.IsKeyDown(Keys.S))
-                pointerPosition.Y += 4;
+            
+            
+            */
+            #endregion
 
-            player.Update(pointerPosition);
+            player.Update();
             base.Update(gameTime);
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawString(scoreDisplay, "" + playerScore, new Vector2(10, 650), Color.Black);
 
-            foreach (Enemy enemy in enemies)
+            //foreach (Enemy enemy in enemies)
             {
-                enemy.Draw(spriteBatch);
+                //enemy.Draw(spriteBatch);
             }
-            player.Draw(spriteBatch, pointerPosition, pointerPosition);
+            player.Draw(spriteBatch);
             pauseButton.Draw
             (
                 buttonSheet,

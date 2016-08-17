@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Krypton;
+
 
 namespace Optic_Coma
 {
@@ -96,7 +96,7 @@ namespace Optic_Coma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.BlanchedAlmond);
+            GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin();
             ScreenManager.Instance.Draw(spriteBatch);

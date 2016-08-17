@@ -60,6 +60,7 @@ namespace Optic_Coma
             else { currentFrame = 0; }
 
             spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White);
+
             spriteBatch.DrawString(font, text, textLocation, color);
             preMouse = curMouse;
         }

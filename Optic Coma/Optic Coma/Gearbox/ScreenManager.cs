@@ -2,11 +2,13 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Xml.Serialization;
+
 namespace Optic_Coma
 {
     public class ScreenManager
     {
+        public float ButtonLayer = 1f, BGLayer = 0.1f, MGLayer = 0.3f, EntityLayer = 0.2f, FlashlightLayer = 0.19f, FGLayer = 0.4f; 
+
         private KeyboardState oldState;
         ///Create a new instance of screen manager and called it, incidentally, "instance".
         ///This instance can not be changed or redefined by other classes, but may be used
