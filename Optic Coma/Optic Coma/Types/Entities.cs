@@ -26,6 +26,7 @@ namespace Optic_Coma
         Vector2 currentPosition;
         Vector2 mouseLoc;
         Texture2D flashLightTexture;
+        float flashRadians = 0f;
 
         public Player(Texture2D texture, Vector2 initPos, Texture2D flashlightTexture)
         {
@@ -46,48 +47,28 @@ namespace Optic_Coma
             direction = mouseLoc - currentPosition;
 
             //using radians
+            //Clockwise from left
             flashAngle = (float)(Math.Atan2(direction.Y, direction.X));
-
-            if ((flashAngle < 2 * Math.PI && flashAngle > 7 * Math.PI / 4) 
-                ||(flashAngle >= 0 && flashAngle <= Math.PI / 4))
+            flashRadians = flashAngle + (float)Math.PI;
+            if ((flashRadians > 0 && flashRadians <= Math.PI / 4) || (flashRadians > Math.PI * 7 / 4 && flashRadians <= 2 * Math.PI))
             {
-                playerAngle = 0;
-            }
-            else if (flashAngle > Math.PI / 4 && flashAngle <= 3 * Math.PI  / 4)
+                playerAngle = (float)Math.PI;
+            } else if (flashRadians > Math.PI / 4 && flashRadians <= Math.PI * 3 / 4)
+            {
+                playerAngle = -(float)Math.PI / 2;
+            } else if (flashRadians > Math.PI * 3 / 4 && flashRadians <= Math.PI * 5 / 4)
+            {
+                playerAngle = 0f;
+            } else if (flashRadians > Math.PI * 5 / 4 && flashRadians <= Math.PI * 7 / 4)
             {
                 playerAngle = (float)Math.PI / 2;
             }
-            else if (flashAngle > 3 * Math.PI / 4 && flashAngle <= 5 * Math.PI / 4)
-            {
-                playerAngle = (float)Math.PI;
-            }
-            else if (flashAngle >  5 * Math.PI / 4 && flashAngle <= 7 * Math.PI / 4)
-            {
-                playerAngle = (float)Math.PI * 2;
-            }
 
         }
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, SpriteFont font)
         {
             KeyboardState keyState = Keyboard.GetState();
-            /*
-            if (keyState.IsKeyDown(Keys.Space) &&
-                (currentPosition.X < mouseLoc.X - 3f || currentPosition.X > mouseLoc.X + 3f) &&
-                (currentPosition.Y < mouseLoc.Y - 3f || currentPosition.Y > mouseLoc.Y + 3f) &&
-                flashAngle != 0 && flashAngle != Math.PI / 2 && flashAngle != -1 * (Math.PI / 2) && flashAngle != Math.PI)
-            {
-                currentPosition.X += (float)Math.Cos(flashAngle - Math.PI / 2) * 3;
-                currentPosition.Y += (float)Math.Sin(flashAngle - Math.PI / 2) * 3;
-            }
-            else if(keyState.IsKeyDown(Keys.Space) &&
-                (currentPosition.X < mouseLoc.X - 3f || currentPosition.X > mouseLoc.X + 3f) &&
-                (currentPosition.Y < mouseLoc.Y - 3f || currentPosition.Y > mouseLoc.Y + 3f) && (
-                flashAngle != 0 || flashAngle != Math.PI / 2 || flashAngle != (3 * Math.PI / 2) || flashAngle != Math.PI))
-            {
-                currentPosition.X += (Math.Sign(direction.X)) * 3;
-                currentPosition.Y += (Math.Sign(direction.Y)) * 3;
-            }
-            */
+            
             if (keyState.IsKeyDown(Keys.A))
                 currentPosition.X -= 4;
             if (keyState.IsKeyDown(Keys.D))
@@ -96,7 +77,8 @@ namespace Optic_Coma
                 currentPosition.Y -= 4;
             if (keyState.IsKeyDown(Keys.S))
                 currentPosition.Y += 4;
-
+            spriteBatch.DrawString(font, "baseAngle: " + (flashAngle * (180 / Math.PI)), new Vector2(700, 100), Color.White);
+            spriteBatch.DrawString(font, "flashAngle: " + (flashRadians * (180 / Math.PI)), new Vector2(700, 120), Color.White);
             spriteBatch.Draw
             (
                 Texture,

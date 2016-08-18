@@ -97,16 +97,13 @@ namespace Optic_Coma
         {
             if (currentScreen is InGameScreen)
             {
-                currentScreen.UnloadContent();
-                currentScreen = new PauseScreen();
-                currentScreen.LoadContent();
+                InGameScreen inGameScreen = (InGameScreen)currentScreen;
+                if (!inGameScreen.IsPaused)
+                    inGameScreen.IsPaused = true;
+                else
+                    inGameScreen.IsPaused = false;
             }
-            else if (currentScreen is PauseScreen)
-            {
-                currentScreen.UnloadContent();
-                currentScreen = new InGameScreen();
-                currentScreen.LoadContent();
-            }
+
         }
         public void ChangeScreenMode()
         {
