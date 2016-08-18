@@ -76,7 +76,6 @@ namespace Optic_Coma
         }
 
         string[] contents;
-        int[] values;
         MouseState mouseState;
         MouseState prevState;
         bool opened = false;
@@ -90,6 +89,7 @@ namespace Optic_Coma
         DropDownOptions ddO;
         public DropDown(string[] Contents, Texture2D Texture)
         {
+            contentsList = new List<string>();
             texture = Texture;
             contents = Contents;
             opened = false;
