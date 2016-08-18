@@ -152,7 +152,7 @@ namespace Optic_Coma
                 {
                     destRectangle = new Rectangle((int)location.X, (int)location.Y * i * texture.Height,texture.Width,texture.Height/2);
                     spriteBatch.Draw(texture, destRectangle, sourceRectangleB, Color.White);
-                    spriteBatch.DrawString(font, contents[i], new Vector2(destRectangle.Left, destRectangle.Top), color);
+                    spriteBatch.DrawString(font, contents[i], new Vector2(destRectangle.Left - (font.MeasureString(contents[i]).X / 2), destRectangle.Top - (font.MeasureString(contents[i]).Y / 2)), color);
                     ddO.optionLocation[i] = destRectangle;
                 }
             }

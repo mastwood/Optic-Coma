@@ -92,6 +92,7 @@ namespace Optic_Coma
     {
         //int enemySpawnIncrement = 750;
         // int timeSinceLastEnemy = 0;
+        #region fields
         public bool IsPaused = false;
 
         int screenWidth = (int)ScreenManager.Instance.Dimensions.X;
@@ -107,6 +108,7 @@ namespace Optic_Coma
         Vector2 right;
 
         Player player;
+        Vector2 playerPositionToSave;
 
         Texture2D flashLightTexture;
         Texture2D playerTexture;
@@ -130,6 +132,7 @@ namespace Optic_Coma
         SoundEffect music;
         SoundEffectInstance musicInstance;
         public float musicVolume = 0.02f;
+        #endregion
 
         public override void LoadContent()
         {
@@ -169,6 +172,9 @@ namespace Optic_Coma
 
             flashLightTexture = content.Load<Texture2D>("flashlight");
             playerTexture = content.Load<Texture2D>(playerPath);
+
+
+
             playerPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - playerTexture.Width / 2,
                                      ScreenManager.Instance.Dimensions.Y / 2 - playerTexture.Height / 8);
 
@@ -261,6 +267,7 @@ namespace Optic_Coma
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
+            #region when not paused
             if (!IsPaused)
             {
                 spriteBatch.DrawString(scoreDisplay, "" + playerScore, new Vector2(10, 650), Color.Black);
@@ -281,6 +288,8 @@ namespace Optic_Coma
                     Color.Black
                 );
             }
+            #endregion
+            #region when paused (contains options menu)
             else
             {
                 btnExit.Draw
@@ -314,6 +323,7 @@ namespace Optic_Coma
                     Color.Black
                 );
             }
+            #endregion
         }
         static bool IntersectPixels(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB)
         {

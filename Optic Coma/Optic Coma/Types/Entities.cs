@@ -7,23 +7,14 @@ namespace Optic_Coma
 {
     public class Player
     {
-        enum Direction
-        {
-            E = 0,
-            NE = 45,
-            N = 90,
-            NW = 135,
-            W = 180,
-            SW = 225,
-            S = 270,
-            SE = 315,
-        }
         float flashAngle = 0f;
         float playerAngle = 0f;
         Vector2 direction;
         public Texture2D Texture { get; set; }
         Vector2 initPosition;
-        Vector2 currentPosition;
+
+        public Vector2 currentPosition;
+
         Vector2 mouseLoc;
         Texture2D flashLightTexture;
         float flashRadians = 0f;
