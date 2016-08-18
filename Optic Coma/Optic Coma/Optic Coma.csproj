@@ -42,7 +42,7 @@
     <Compile Include="Types\Sprite.cs" />
     <Compile Include="Types\Entities.cs" />
     <Compile Include="Types\Screens.cs" />
-    <Compile Include="Types\Button.cs" />
+    <Compile Include="Types\Controls.cs" />
     <Compile Include="Gearbox\Foundation.cs" />
     <Compile Include="Gearbox\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
