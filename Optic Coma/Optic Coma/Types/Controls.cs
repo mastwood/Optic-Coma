@@ -8,24 +8,29 @@ using System.Collections.Generic;
 namespace Optic_Coma
 {
     class Button
-    {
+    {        
         int rows = 4;
         int columns = 1;
         private int currentFrame;
         private int totalFrames;
         MouseState preMouse;
 
+        //This method is called when you make a new button - ala Button button = new Button();
         public Button()
         {
             currentFrame = 0;
             totalFrames = rows * columns;
         }
+
+        //This isn't a method - it's a simplified class - a data structure.
         public struct textSize
         {
             public float X;
             public float Y;
         }
-        public void Draw(Texture2D texture, SpriteBatch spriteBatch, Action changeScreen, Vector2 location, SpriteFont font, string text, Color color)
+
+        //The Template
+        public void Draw(Texture2D texture, SpriteBatch spriteBatch, Action action, Vector2 location, SpriteFont font, string text, Color color)
         {
             textSize size;
             size.X = font.MeasureString(text).X;
@@ -33,9 +38,12 @@ namespace Optic_Coma
 
             int width = texture.Width / columns;
             int height = texture.Height / rows;
+
+            //Magic code
             int row = (currentFrame / columns);
             int column = currentFrame % columns;
 
+            
             Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
             Rectangle destinationRectangle = new Rectangle((int)location.X, (int)location.Y, width, height);
             Rectangle area = new Rectangle((int)location.X, (int)location.Y, width, height);
@@ -47,7 +55,7 @@ namespace Optic_Coma
             if (area.Contains(curMouse.Position) &&
                 curMouse != preMouse && curMouse.LeftButton == ButtonState.Pressed)
             {
-                changeScreen();
+                action();
                 currentFrame = 2;
             }
             else if (area.Contains(curMouse.Position) &&
@@ -59,7 +67,10 @@ namespace Optic_Coma
             {
                 currentFrame = 1;
             }
-            else { currentFrame = 0; }
+            else
+            {
+                currentFrame = 0;
+            }
 
             spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White);
 

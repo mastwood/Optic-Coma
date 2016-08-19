@@ -76,14 +76,23 @@ namespace Optic_Coma
         public override void Draw(SpriteBatch spriteBatch)
         {
             titleFlicker.Draw(spriteBatch, new Vector2((ScreenManager.Instance.Dimensions.X - 822) / 2, 20));
+            //We're making our button! Woo!
             btnEnterGame.Draw
             (
+                //We already defined this thing.
                 enterButtonTexture,
+                //Spritebatch is love, spritebatch is life.
                 spriteBatch,
+                //Our event! It passes a method located in ScreenManager.cs. Note the instance - it's a singleton, and remember
+                //don't be a simpleton, use instance for singletons!
                 ScreenManager.Instance.MenuKey_OnPress,
+                //Here's where we want to put our button.
                 enterButtonPos,
+                //Golly gee, I hope it's Rock Salt.
                 buttonFont,
+                //What do we want it to say?
                 "Enter Game",
+                //What color is the text?
                 Color.Black
             );
         }
