@@ -71,16 +71,15 @@ namespace Optic_Coma
         public void Draw(SpriteBatch spriteBatch, SpriteFont font)
         {
             KeyboardState keyState = Keyboard.GetState();
-            
-            if (keyState.IsKeyDown(Keys.A))
-                currentPosition.X -= (4 * walkMult(0));
-            if (keyState.IsKeyDown(Keys.D))
-                currentPosition.X += (4 * walkMult((float)Math.PI));
+
             if (keyState.IsKeyDown(Keys.W))
                 currentPosition.Y -= (4 * walkMult((float)Math.PI / 2));
+            if (keyState.IsKeyDown(Keys.A))
+                currentPosition.X -= (4 * walkMult(0));
             if (keyState.IsKeyDown(Keys.S))
                 currentPosition.Y += (4 * walkMult(3 * (float)Math.PI / 2));
-            #region meme
+            if (keyState.IsKeyDown(Keys.D))
+                currentPosition.X += (4 * walkMult((float)Math.PI));      
             spriteBatch.DrawString(font, "baseAngle: " + playerAngle, new Vector2(700, 100), Color.White);
             spriteBatch.DrawString(font, "flashAngle: " + flashAngle, new Vector2(700, 120), Color.White);
             spriteBatch.Draw
@@ -125,7 +124,6 @@ namespace Optic_Coma
                 SpriteEffects.None,
                 ScreenManager.Instance.FlashlightLayer
             );
-            #endregion
         }
         public float walkMult(float dir)
         {
