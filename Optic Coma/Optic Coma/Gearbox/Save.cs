@@ -48,8 +48,6 @@ namespace Optic_Coma
                     sw.Write(stackTrace);
                 }
             }
-
         }
-
     }
 }
