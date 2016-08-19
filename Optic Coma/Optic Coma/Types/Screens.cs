@@ -281,7 +281,7 @@ namespace Optic_Coma
             #region when not paused
             if (!IsPaused)
             {
-                spriteBatch.DrawString(scoreDisplay, "" + playerScore, new Vector2(10, 650), Color.Black);
+                //spriteBatch.DrawString(scoreDisplay, "Meme" + playerScore, new Vector2(10, 650), Color.White);
 
                 //foreach (Enemy enemy in enemies)
                 {
