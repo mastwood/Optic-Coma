@@ -99,6 +99,13 @@ namespace Optic_Coma
     }
     class InGameScreen : BaseScreen
     {
+        [XmlIgnore]
+        Type type;
+        public InGameScreen()
+        {
+            type = GetType();
+        }
+
         //int enemySpawnIncrement = 750;
         // int timeSinceLastEnemy = 0;
         #region fields

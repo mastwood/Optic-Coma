@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Serializer;
 
 namespace Optic_Coma
 {
@@ -19,7 +20,7 @@ namespace Optic_Coma
 
         public ContentManager Content { private set; get; }
 
-        XmlManager<BaseScreen> xmlBaseScreenManager;
+        XMLManager<BaseScreen> xmlBaseScreenManager;
 
         public BaseScreen currentScreen { set; get; }
 
@@ -43,10 +44,10 @@ namespace Optic_Coma
             //Changes the screen to the splash screen upon start up
             currentScreen = new MenuScreen();
 
-            xmlBaseScreenManager = new XmlManager<BaseScreen>();
-            xmlBaseScreenManager.Type = currentScreen.Type;
+            xmlBaseScreenManager = new XMLManager<BaseScreen>();
+            xmlBaseScreenManager.type = currentScreen.Type;
             if (currentScreen is InGameScreen)
-                currentScreen = xmlBaseScreenManager.Load("Load/InGameScreen.xml");
+                currentScreen = xmlBaseScreenManager.Load("Serializer\\PlayerData.xml");
 
         }
         public void LoadContent(ContentManager Content)
@@ -89,6 +90,7 @@ namespace Optic_Coma
             }
             else if (currentScreen is InGameScreen)
             {
+                
                 currentScreen.UnloadContent();
                 currentScreen = new MenuScreen();
                 currentScreen.LoadContent();
