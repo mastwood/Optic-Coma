@@ -7,12 +7,6 @@ namespace Optic_Coma
 {
     public class ScreenManager
     {
-        /// <summary> meme
-        /// MEME
-        ///  MEME
-        ///    MEME
-        ///       MEMEMEMEMEMEME
-        /// </summary>
         public float ButtonLayer = 1f, BGLayer = 0.1f, MGLayer = 0.3f, EntityLayer = 0.2f, FlashlightLayer = 0.19f, FGLayer = 0.4f; 
 
         private KeyboardState oldState;
