@@ -56,22 +56,33 @@ namespace Optic_Coma
             {
                 playerAngle = (float)Math.PI / 2; //Up
             }
+
+            //Alright, now we calculate walkMult.
+            //First up - Are the player and flashlights facing the same direction?
+            if(
+                (playerAngle == 0 * (Math.PI / 2)) && (flashAngle >= 7 * (Math.PI / 4) || flashAngle < 1 * (Math.PI / 4))
+              )
+            {
+
+            }
         }
+        
+
         public void Draw(SpriteBatch spriteBatch, SpriteFont font)
         {
             KeyboardState keyState = Keyboard.GetState();
             
             if (keyState.IsKeyDown(Keys.A))
-                currentPosition.X -= 4;
+                currentPosition.X -= (4 * walkMult(0));
             if (keyState.IsKeyDown(Keys.D))
-                currentPosition.X += 4;
+                currentPosition.X += (4 * walkMult((float)Math.PI));
             if (keyState.IsKeyDown(Keys.W))
-                currentPosition.Y -= 4;
+                currentPosition.Y -= (4 * walkMult((float)Math.PI / 2));
             if (keyState.IsKeyDown(Keys.S))
-                currentPosition.Y += 4;
-
-            spriteBatch.DrawString(font, "baseAngle: " + (flashAngle * (180 / Math.PI)), new Vector2(700, 100), Color.White);
-            spriteBatch.DrawString(font, "flashAngle: " + (flashAngle * (180 / Math.PI)), new Vector2(700, 120), Color.White);
+                currentPosition.Y += (4 * walkMult(3 * (float)Math.PI / 2));
+            #region meme
+            spriteBatch.DrawString(font, "baseAngle: " + playerAngle, new Vector2(700, 100), Color.White);
+            spriteBatch.DrawString(font, "flashAngle: " + flashAngle, new Vector2(700, 120), Color.White);
             spriteBatch.Draw
             (
                 Texture,
@@ -114,6 +125,34 @@ namespace Optic_Coma
                 SpriteEffects.None,
                 ScreenManager.Instance.FlashlightLayer
             );
+            #endregion
+        }
+        public float walkMult(float dir)
+        {
+            //First we check if the flash is roughly pointing the same way we are going.
+            if (
+                ((7 * Math.PI / 4 < dir || dir <= 1 * Math.PI / 4) && (7 * Math.PI / 4 < flashAngle || flashAngle <= 1 * Math.PI / 4)) ||//Both westward?
+                ((1 * Math.PI / 4 < dir && dir <= 3 * Math.PI / 4) && (1 * Math.PI / 4 < flashAngle && flashAngle <= 3 * Math.PI / 4)) ||//Both northward?
+                ((3 * Math.PI / 4 < dir && dir <= 5 * Math.PI / 4) && (3 * Math.PI / 4 < flashAngle && flashAngle <= 5 * Math.PI / 4)) ||//Both eastward?
+                ((5 * Math.PI / 4 < dir && dir <= 7 * Math.PI / 4) && (5 * Math.PI / 4 < flashAngle && flashAngle <= 7 * Math.PI / 4))   //Both southward?
+              )
+            {
+                return 1;
+            }
+            else if //Then we check if the person is directly backpedalling.
+              (
+                ((7 * Math.PI / 4 < dir || dir <= 1 * Math.PI / 4) && (3 * Math.PI / 4 < flashAngle && flashAngle <= 5 * Math.PI / 4)) ||//Backpedaling west?
+                ((1 * Math.PI / 4 < dir && dir <= 3 * Math.PI / 4) && (5 * Math.PI / 4 < flashAngle && flashAngle <= 7 * Math.PI / 4)) ||//Backpedaling north?
+                ((3 * Math.PI / 4 < dir && dir <= 5 * Math.PI / 4) && (7 * Math.PI / 4 < flashAngle || flashAngle <= 1 * Math.PI / 4)) ||//Backpedaling east?
+                ((5 * Math.PI / 4 < dir && dir <= 7 * Math.PI / 4) && (1 * Math.PI / 4 < flashAngle && flashAngle <= 3 * Math.PI / 4))   //Backpedaling south?
+              )
+            {
+                return (0.5F);
+            }
+            else //Must be sidestepping, then.
+            {
+                return (0.75F);
+            }
         }
     }
     class Enemy
