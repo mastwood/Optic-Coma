@@ -157,23 +157,18 @@ namespace Optic_Coma
 
             scoreDisplay = content.Load<SpriteFont>("ingamescreen_title");
 
-
             btnUnpause = new Button();
             unpauseButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
-                                     ScreenManager.Instance.Dimensions.Y / 2);
+                                           ScreenManager.Instance.Dimensions.Y / 2);
             btnExit = new Button();
             exitButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
-                                     ScreenManager.Instance.Dimensions.Y / 2 - 128);
+                                        ScreenManager.Instance.Dimensions.Y / 2 - 128);
             btnFullscreen = new Button();
             fullButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
-                                     ScreenManager.Instance.Dimensions.Y / 2 + 64 - 128);
-
-
+                                        ScreenManager.Instance.Dimensions.Y / 2 + 64 - 128);
 
             flashLightTexture = content.Load<Texture2D>("flashlight");
             playerTexture = content.Load<Texture2D>(playerPath);
-
-
 
             playerPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - playerTexture.Width / 2,
                                      ScreenManager.Instance.Dimensions.Y / 2 - playerTexture.Height / 8);

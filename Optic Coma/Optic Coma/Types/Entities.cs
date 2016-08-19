@@ -9,7 +9,7 @@ namespace Optic_Coma
     {
         float flashAngle = 0f;
         float playerAngle = 0f;
-        Vector2 direction;
+        Vector2 facingDirection;
         public Texture2D Texture { get; set; }
         Vector2 initPosition;
 
@@ -17,7 +17,6 @@ namespace Optic_Coma
 
         Vector2 mouseLoc;
         Texture2D flashLightTexture;
-        float flashRadians = 0f;
 
         public Player(Texture2D texture, Vector2 initPos, Texture2D flashlightTexture)
         {
@@ -35,26 +34,28 @@ namespace Optic_Coma
             mouseLoc.X = curMouse.X;
             mouseLoc.Y = curMouse.Y;
 
-            direction = mouseLoc - currentPosition;
+            facingDirection = mouseLoc - currentPosition;
 
-            //using radians
-            //Clockwise from left
-            flashAngle = (float)(Math.Atan2(direction.Y, direction.X));
-            flashRadians = flashAngle + (float)Math.PI;
-            if ((flashRadians > 0 && flashRadians <= Math.PI / 4) || (flashRadians > Math.PI * 7 / 4 && flashRadians <= 2 * Math.PI))
+            // using radians
+            // measure clockwise from left
+            flashAngle = (float)(Math.Atan2(facingDirection.Y, facingDirection.X)) + (float)Math.PI;
+
+            if ((flashAngle > 0 && flashAngle <= Math.PI / 4) || (flashAngle > Math.PI * 7 / 4 && flashAngle <= 2 * Math.PI))
             {
-                playerAngle = (float)Math.PI;
-            } else if (flashRadians > Math.PI / 4 && flashRadians <= Math.PI * 3 / 4)
-            {
-                playerAngle = -(float)Math.PI / 2;
-            } else if (flashRadians > Math.PI * 3 / 4 && flashRadians <= Math.PI * 5 / 4)
-            {
-                playerAngle = 0f;
-            } else if (flashRadians > Math.PI * 5 / 4 && flashRadians <= Math.PI * 7 / 4)
-            {
-                playerAngle = (float)Math.PI / 2;
+                playerAngle = (float)Math.PI; //Right
             }
-
+            else if (flashAngle > Math.PI / 4 && flashAngle <= Math.PI * 3 / 4)
+            {
+                playerAngle = -(float)Math.PI / 2; //Down
+            }
+            else if (flashAngle > Math.PI * 3 / 4 && flashAngle <= Math.PI * 5 / 4)
+            {
+                playerAngle = 0f; //Left
+            }
+            else if (flashAngle > Math.PI * 5 / 4 && flashAngle <= Math.PI * 7 / 4)
+            {
+                playerAngle = (float)Math.PI / 2; //Up
+            }
         }
         public void Draw(SpriteBatch spriteBatch, SpriteFont font)
         {
@@ -69,7 +70,7 @@ namespace Optic_Coma
             if (keyState.IsKeyDown(Keys.S))
                 currentPosition.Y += 4;
             spriteBatch.DrawString(font, "baseAngle: " + (flashAngle * (180 / Math.PI)), new Vector2(700, 100), Color.White);
-            spriteBatch.DrawString(font, "flashAngle: " + (flashRadians * (180 / Math.PI)), new Vector2(700, 120), Color.White);
+            spriteBatch.DrawString(font, "flashAngle: " + (flashAngle * (180 / Math.PI)), new Vector2(700, 120), Color.White);
             spriteBatch.Draw
             (
                 Texture,

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+
 namespace Optic_Coma
 {
     /// <summary>
@@ -32,7 +33,6 @@ namespace Optic_Coma
         /// </summary>
         protected override void Initialize()
         {
-
             ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             ScreenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
@@ -95,6 +95,15 @@ namespace Optic_Coma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+
+            if (ScreenManager.Instance.currentScreen is InGameScreen)
+            {
+                InGameScreen s = (InGameScreen)ScreenManager.Instance.currentScreen;
+                if (!s.IsPaused)
+                {
+                    
+                }
+            }
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin();
