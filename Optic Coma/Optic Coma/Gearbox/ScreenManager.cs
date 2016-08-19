@@ -29,6 +29,7 @@ namespace Optic_Coma
 
         public BaseScreen currentScreen { set; get; }
 
+        //Oh boy it's a singleton
         public static ScreenManager Instance
         {
             get
