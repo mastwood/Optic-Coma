@@ -69,6 +69,7 @@ namespace Optic_Coma
                 currentPosition.Y -= 4;
             if (keyState.IsKeyDown(Keys.S))
                 currentPosition.Y += 4;
+
             spriteBatch.DrawString(font, "baseAngle: " + (flashAngle * (180 / Math.PI)), new Vector2(700, 100), Color.White);
             spriteBatch.DrawString(font, "flashAngle: " + (flashAngle * (180 / Math.PI)), new Vector2(700, 120), Color.White);
             spriteBatch.Draw
