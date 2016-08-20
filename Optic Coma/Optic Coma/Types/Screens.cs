@@ -128,9 +128,12 @@ namespace Optic_Coma
 
         Enemy enemy;
 
+        TileSystem tileSystem;
+
         Texture2D flashLightTexture;
         Texture2D playerTexture;
         Texture2D enemyTexture;
+        Texture2D floorTexture;
         Vector2 playerPos;
         Vector2 enemyPos;
         string playerPath = "player";
@@ -171,7 +174,7 @@ namespace Optic_Coma
             musicInstance.IsLooped = true;
             musicInstance.Volume = musicVolume;
             //musicInstance.Play();
-
+          
             buttonSheet = content.Load<Texture2D>("buttonSheet");
             pauseButton = new Button();
             pauseButtonPos = Vector2.Zero;
@@ -189,6 +192,7 @@ namespace Optic_Coma
             fullButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
                                         ScreenManager.Instance.Dimensions.Y / 2 + 64 - 128);
 
+            floorTexture = content.Load<Texture2D>("floor");
             flashLightTexture = content.Load<Texture2D>(flashPath);
             playerTexture = content.Load<Texture2D>(playerPath);
             enemyTexture = content.Load<Texture2D>(enemyPath);
@@ -202,6 +206,8 @@ namespace Optic_Coma
             player = new Player(playerTexture, playerPos, flashLightTexture);
 
             enemy = new Enemy(enemyTexture, enemyPos);
+
+            tileSystem = new TileSystem();
             
         }
         public override void UnloadContent()
@@ -297,6 +303,7 @@ namespace Optic_Coma
             {
                 enemy.Draw(spriteBatch);
                 player.Draw(spriteBatch, buttonFont);
+                tileSystem.Draw(floorTexture, spriteBatch);
                 pauseButton.Draw
                 (
                     buttonSheet,

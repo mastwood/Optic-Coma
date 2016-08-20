@@ -105,8 +105,8 @@ namespace Optic_Coma
                 }
             }
             GraphicsDevice.Clear(Color.Black);
-
-            spriteBatch.Begin();
+            
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, null);
             ScreenManager.Instance.Draw(spriteBatch);
 
             spriteBatch.End();
