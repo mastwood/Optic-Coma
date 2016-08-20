@@ -166,12 +166,11 @@ namespace Optic_Coma
 
         public void Update()
         {
-            enemyAngle = (float)(Math.Atan2(Player.currentPosition.Y, Player.currentPosition.X)) + (float)Math.PI;
+            enemyAngle = (float)(Math.Atan2(Player.currentPosition.Y - CurrentPosition.Y, Player.currentPosition.X - CurrentPosition.X)) + (float)Math.PI;
         }
 
         public void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(Texture, CurrentPosition);
+        {            
             spriteBatch.Draw
             (
                 Texture,
