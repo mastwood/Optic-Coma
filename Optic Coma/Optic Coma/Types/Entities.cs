@@ -170,7 +170,7 @@ namespace Optic_Coma
         }
 
         public void Draw(SpriteBatch spriteBatch)
-        {            
+        {
             spriteBatch.Draw
             (
                 Texture,
