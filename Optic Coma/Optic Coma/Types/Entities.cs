@@ -119,7 +119,7 @@ namespace Optic_Coma
         public static float walkMult(float dir, float angle, float amp)
         {
             //dir, in this method, is equal to the angle in radians the character is moving.
-            //angle is the "best" angle - the one that reesults in fastest movement.
+            //angle is the "best" angle - the one that results in fastest movement.
             //amp is in regards to how powerful the slowing effect is.
             //First we check if the flash is roughly pointing the same way we are going.
             if (

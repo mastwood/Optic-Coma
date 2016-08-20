@@ -7,7 +7,7 @@ namespace Optic_Coma
 {
     public class ScreenManager
     {
-        public float ButtonLayer = 1f, BGLayer = 0.1f, MGLayer = 0.3f, EntityLayer = 0.2f, FlashlightLayer = 0.19f, FGLayer = 0.4f; 
+        public float TileLayer = 0.99f, ButtonLayer = 0.1f, BGLayer = 1f, MGLayer = 0.5f, EntityLayer = 0.6f, FlashlightLayer = 0.61f, FGLayer = 0.4f; 
 
         private KeyboardState oldState;
         ///Create a new instance of screen manager and called it, incidentally, "instance".
