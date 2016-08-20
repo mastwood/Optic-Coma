@@ -77,7 +77,66 @@ namespace Optic_Coma
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(bg, new Vector2(0,0), Color.White);
+            #region background image scaling for screen sizes
+            if (Foundation.isFullScreen) {
+                if ((Foundation.ScreenWidth - bg.Width) > (Foundation.ScreenHeight - bg.Height)) {
+                    spriteBatch.Draw
+                    (
+                        bg,
+                        new Rectangle(0,0, Foundation.ScreenWidth, Foundation.ScreenHeight * Foundation.ScreenHeight / bg.Height), //scale horizontally
+                        null,
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        SpriteEffects.None,
+                        ScreenManager.Instance.BGLayer
+                    );
+                }
+                else if ((Foundation.ScreenWidth - bg.Width) < (Foundation.ScreenHeight - bg.Height))
+                {
+                    spriteBatch.Draw
+                    (
+                        bg,
+                        new Rectangle(0,0, Foundation.ScreenWidth * Foundation.ScreenWidth / bg.Width, Foundation.ScreenHeight), //scale vertically
+                        null,
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        SpriteEffects.None,
+                        ScreenManager.Instance.BGLayer
+                    );
+                }
+                else
+                {
+                    spriteBatch.Draw
+                    (
+                        bg,
+                        new Rectangle(0,0, Foundation.ScreenWidth, Foundation.ScreenHeight),
+                        null,
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        SpriteEffects.None,
+                        ScreenManager.Instance.BGLayer
+                    );
+                }
+            }
+            else
+            {
+                spriteBatch.Draw
+                (
+                    bg,
+                    new Rectangle(0, 0, bg.Width, bg.Height),
+                    null,
+                    Color.White,
+                    0f,
+                    Vector2.Zero,
+                    SpriteEffects.None,
+                    ScreenManager.Instance.BGLayer
+                );
+            }
+            #endregion
+
             spriteBatch.Draw
             (
                 bg,

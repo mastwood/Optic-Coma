@@ -30,7 +30,7 @@ namespace Optic_Coma
                         location.X = i;
                         location.Y = j;
                         spriteBatch.Draw
-                            (
+                        (
                             texture,
                             location,
                             null,
@@ -40,7 +40,7 @@ namespace Optic_Coma
                             1f,
                             SpriteEffects.None,
                             ScreenManager.Instance.TileLayer
-                            );
+                        );
                     }
                 }
             }

@@ -72,9 +72,20 @@ namespace Optic_Coma
                 currentFrame = 0;
             }
 
-            spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White);
+            spriteBatch.Draw
+            (
+                texture,
+                location,
+                sourceRectangle,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                1f,
+                SpriteEffects.None,
+                ScreenManager.Instance.ButtonLayer
+            );
 
-            spriteBatch.DrawString(font, text, textLocation, color);
+            spriteBatch.DrawString(font, text, textLocation, color, 0f, Vector2.Zero, 1, SpriteEffects.None, ScreenManager.Instance.ButtonTextLayer);
             preMouse = curMouse;
         }
     }

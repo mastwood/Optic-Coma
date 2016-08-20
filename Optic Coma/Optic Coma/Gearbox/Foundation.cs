@@ -7,12 +7,15 @@ namespace Optic_Coma
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
+
     public class Foundation : Game
     {
         public static GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        public int ScreenWidth;
-        public int ScreenHeight;
+
+        public static int ScreenWidth;
+        public static int ScreenHeight;
+        
         public static bool isFullScreen;
 
         public string InstallDirectory;
@@ -72,7 +75,6 @@ namespace Optic_Coma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            ScreenManager.Instance.Update(gameTime);
             if (isFullScreen)
             {
                 graphics.PreferredBackBufferWidth = ScreenWidth;
@@ -85,7 +87,7 @@ namespace Optic_Coma
                 graphics.PreferredBackBufferHeight = (int)ScreenManager.Instance.Dimensions.Y;
                 graphics.IsFullScreen = false;
             }
-
+            ScreenManager.Instance.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -95,20 +97,10 @@ namespace Optic_Coma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-
-            if (ScreenManager.Instance.currentScreen is InGameScreen)
-            {
-                InGameScreen s = (InGameScreen)ScreenManager.Instance.currentScreen;
-                if (!s.IsPaused)
-                {
-                    
-                }
-            }
             GraphicsDevice.Clear(Color.Black);
             
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, null);
+            spriteBatch.Begin(SpriteSortMode.BackToFront);
             ScreenManager.Instance.Draw(spriteBatch);
-
             spriteBatch.End();
 
             base.Draw(gameTime);

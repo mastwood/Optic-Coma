@@ -54,7 +54,18 @@ namespace Optic_Coma
             Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
             Rectangle destinationRectangle = new Rectangle((int)location.X, (int)location.Y, width, height);
 
-            spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
+            spriteBatch.Draw
+            (
+                Texture,
+                new Vector2(destinationRectangle.Left, destinationRectangle.Top),
+                sourceRectangle,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                1f,
+                SpriteEffects.None,
+                ScreenManager.Instance.BGLayer - 0.01f
+            );
         }
     }
 }
