@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<XnaContent>
+  <!-- TODO: replace this Asset with your own XML asset data. -->
+  <Asset Type="Optic_Coma.InGameScreen">
+    <PlayerPosition.X>
+      400
+    </PlayerPosition.X>
+    <PlayerPosition.Y>
+      400
+    </PlayerPosition.Y>
+  </Asset>
+</XnaContent>
