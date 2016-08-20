@@ -266,7 +266,7 @@ namespace Optic_Coma
             fullButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
                                         ScreenManager.Instance.Dimensions.Y / 2 + 64 - 128);
 
-            floorTexture = content.Load<Texture2D>("floor");
+            floorTexture = content.Load<Texture2D>("floorSheet");
             flashLightTexture = content.Load<Texture2D>(flashPath);
             playerTexture = content.Load<Texture2D>(playerPath);
             enemyTexture = content.Load<Texture2D>(enemyPath);
