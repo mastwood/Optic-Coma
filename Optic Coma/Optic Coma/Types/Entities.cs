@@ -127,6 +127,7 @@ namespace Optic_Coma
         }
         public static float walkMult(float dir)
         {
+            //dir, in this method, is equal to the angle in radians the character is moving.
             //First we check if the flash is roughly pointing the same way we are going.
             if (
                 ((7 * Math.PI / 4 < dir || dir <= 1 * Math.PI / 4) && (7 * Math.PI / 4 < flashAngle || flashAngle <= 1 * Math.PI / 4)) ||//Both westward?

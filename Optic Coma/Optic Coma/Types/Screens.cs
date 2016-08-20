@@ -126,10 +126,16 @@ namespace Optic_Coma
         Player player;
         Vector2 playerPositionToSave;
 
+        Enemy enemy;
+
         Texture2D flashLightTexture;
         Texture2D playerTexture;
+        Texture2D enemyTexture;
         Vector2 playerPos;
+        Vector2 enemyPos;
         string playerPath = "player";
+        string enemyPath = "enemy";
+        string flashPath = "flashlight";
 
         Texture2D buttonSheet;
         private Button pauseButton;
@@ -183,13 +189,20 @@ namespace Optic_Coma
             fullButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
                                         ScreenManager.Instance.Dimensions.Y / 2 + 64 - 128);
 
-            flashLightTexture = content.Load<Texture2D>("flashlight");
+            flashLightTexture = content.Load<Texture2D>(flashPath);
             playerTexture = content.Load<Texture2D>(playerPath);
+            enemyTexture = content.Load<Texture2D>(enemyPath);
 
             playerPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - playerTexture.Width / 2,
                                      ScreenManager.Instance.Dimensions.Y / 2 - playerTexture.Height / 8);
 
+            enemyPos = new Vector2(ScreenManager.Instance.Dimensions.X / 4 - playerTexture.Width / 2,
+                                     ScreenManager.Instance.Dimensions.Y / 4 - playerTexture.Height / 8);
+
             player = new Player(playerTexture, playerPos, flashLightTexture);
+
+            enemy = new Enemy(enemyTexture, enemyPos);
+            
         }
         public override void UnloadContent()
         {
@@ -281,6 +294,7 @@ namespace Optic_Coma
             #region when not paused
             if (!IsPaused)
             {
+                enemy.Draw(spriteBatch);
                 player.Draw(spriteBatch, buttonFont);
                 pauseButton.Draw
                 (
