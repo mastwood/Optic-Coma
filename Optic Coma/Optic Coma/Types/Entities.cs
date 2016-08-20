@@ -64,15 +64,15 @@ namespace Optic_Coma
             KeyboardState keyState = Keyboard.GetState();
 
             if (keyState.IsKeyDown(Keys.W))
-                currentPosition.Y -= (4 * walkMult((float)Math.PI / 2, flashAngle, 1));
+                currentPosition.Y -= (4 * walkMult((float)Math.PI / 2, flashAngle, 1, false));
             if (keyState.IsKeyDown(Keys.A))
-                currentPosition.X -= (4 * walkMult(0, flashAngle, 1));
+                currentPosition.X -= (4 * walkMult(0, flashAngle, 1, false));
             if (keyState.IsKeyDown(Keys.S))
-                currentPosition.Y += (4 * walkMult(3 * (float)Math.PI / 2, flashAngle, 1));
+                currentPosition.Y += (4 * walkMult(3 * (float)Math.PI / 2, flashAngle, 1, false));
             if (keyState.IsKeyDown(Keys.D))
-                currentPosition.X += (4 * walkMult((float)Math.PI, flashAngle, 1));      
+                currentPosition.X += (4 * walkMult((float)Math.PI, flashAngle, 1, false));      
             spriteBatch.DrawString(font, "enemyAngle: " + Enemy.enemyAngle, new Vector2(700, 100), Color.White);
-            spriteBatch.DrawString(font, "flashAngle: " + flashAngle, new Vector2(700, 120), Color.White);
+            spriteBatch.DrawString(font, "moveAmp: " + Enemy.moveAmp, new Vector2(700, 120), Color.White);
             spriteBatch.Draw
             (
                 Texture,
@@ -116,7 +116,7 @@ namespace Optic_Coma
                 ScreenManager.Instance.FlashlightLayer
             );
         }
-        public static float walkMult(float dir, float angle, float amp)
+        public static float walkMult(float dir, float angle, float amp, bool useExp)
         {
             //dir, in this method, is equal to the angle in radians the character is moving.
             //angle is the "best" angle - the one that results in fastest movement.
@@ -129,7 +129,11 @@ namespace Optic_Coma
                 ((5 * Math.PI / 4 < dir && dir <= 7 * Math.PI / 4) && (5 * Math.PI / 4 < angle && angle <= 7 * Math.PI / 4))   //Both southward?
               )
             {
-                return 1 * amp;
+                if (useExp)
+                    return (float)Math.Pow(1, amp);
+                else
+                    return 1 * amp;
+                
             }
             else if //Then we check if the person is directly backpedalling.
               (
@@ -139,11 +143,17 @@ namespace Optic_Coma
                 ((5 * Math.PI / 4 < dir && dir <= 7 * Math.PI / 4) && (1 * Math.PI / 4 < angle && angle <= 3 * Math.PI / 4))   //Backpedaling south?
               )
             {
-                return (0.5F * amp);
+                if (useExp)
+                    return (float)Math.Pow(0.5f, amp);
+                else
+                    return 0.5f * amp;
             }
             else //Must be sidestepping, then.
             {
-                return (0.75F * amp);
+                if (useExp)
+                    return (float)Math.Pow(0.75f, amp);
+                else
+                    return 0.75f * amp;
             }
         }
     }
@@ -156,7 +166,7 @@ namespace Optic_Coma
         Random random = new Random();
         int speed;
         int dir;
-        float moveAmp;
+        public static float moveAmp;
         public int acceleration = 0;
 
         public Enemy(Texture2D texture, Vector2 initPosition)
@@ -165,25 +175,27 @@ namespace Optic_Coma
             InitPosition = initPosition;
             CurrentPosition = InitPosition;
             speed = 2 + acceleration;
+            moveAmp = -1;
         }
 
         public void Update()
         {
             enemyAngle = (float)(Math.Atan2(Player.currentPosition.Y - CurrentPosition.Y, Player.currentPosition.X - CurrentPosition.X)) + (float)Math.PI;
-            moveAmp = 2;
+            //moveAmp += 0.001f;
+            moveAmp = 2; //We can toy around with this later.
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             dir = random.Next(0, 4);
             if (dir == 0)
-                CurrentPosition.Y -= (4 * Player.walkMult((float)Math.PI / 2, enemyAngle, moveAmp));
+                CurrentPosition.Y -= (4 * Player.walkMult((float)Math.PI / 2, enemyAngle, moveAmp, false));
             else if (dir == 1)
-                CurrentPosition.X -= (4 * Player.walkMult(0, enemyAngle, moveAmp));
+                CurrentPosition.X -= (4 * Player.walkMult(0, enemyAngle, moveAmp, false));
             else if (dir == 2)
-                CurrentPosition.Y += (4 * Player.walkMult(3 * (float)Math.PI / 2, enemyAngle, moveAmp));
+                CurrentPosition.Y += (4 * Player.walkMult(3 * (float)Math.PI / 2, enemyAngle, moveAmp, false));
             else
-                CurrentPosition.X += (4 * Player.walkMult((float)Math.PI, enemyAngle, moveAmp));
+                CurrentPosition.X += (4 * Player.walkMult((float)Math.PI, enemyAngle, moveAmp, false));
             spriteBatch.Draw
             (
                 Texture,
