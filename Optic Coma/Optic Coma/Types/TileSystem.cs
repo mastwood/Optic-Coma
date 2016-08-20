@@ -11,7 +11,7 @@ namespace Optic_Coma.Types
     {
         public TileSystem(Texture2D texture)
         {
-
+            //meme
         }
         public void Draw(SpriteBatch spriteBatch)
         {
