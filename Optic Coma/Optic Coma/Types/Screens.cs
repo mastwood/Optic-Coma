@@ -282,6 +282,7 @@ namespace Optic_Coma
                 #endregion
 
                 player.Update();
+                enemy.Update();
                 base.Update(gameTime);
             }
             else
