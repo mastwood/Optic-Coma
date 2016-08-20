@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-namespace Optic_Coma.Types
+namespace Optic_Coma
 {
     public class TileSystem
     {
-        public TileSystem(Texture2D texture)
+        public TileSystem()
         {
-            //meme
+            
         }
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
 
         }

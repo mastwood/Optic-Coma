@@ -46,7 +46,7 @@ namespace Optic_Coma
         Vector2 enterButtonPos;
         Texture2D titleGraphic;
         sTitleFlicker titleFlicker;
-
+        Texture2D bg;
         public override void LoadContent()
         {
             base.LoadContent();
@@ -60,6 +60,8 @@ namespace Optic_Coma
 
             enterButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - enterButtonTexture.Width / 2,
                                          ScreenManager.Instance.Dimensions.Y / 2 - enterButtonTexture.Height / 8);
+
+            bg = content.Load<Texture2D>("starsbg");
         }
 
         public override void UnloadContent()
@@ -75,6 +77,19 @@ namespace Optic_Coma
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            spriteBatch.Draw(bg, new Vector2(0,0), Color.White);
+            spriteBatch.Draw
+            (
+                bg,
+                Vector2.Zero,
+                null,
+                Color.White,
+                0,
+                Vector2.Zero,
+                1,
+                SpriteEffects.None,
+                ScreenManager.Instance.BGLayer
+            );
             titleFlicker.Draw(spriteBatch, new Vector2((ScreenManager.Instance.Dimensions.X - 822) / 2, 20));
             //We're making our button! Woo!
             btnEnterGame.Draw
@@ -284,10 +299,6 @@ namespace Optic_Coma
                 player.Update();
                 enemy.Update();
                 base.Update(gameTime);
-            }
-            else
-            {
-
             }
         }
         public override void Draw(SpriteBatch spriteBatch)

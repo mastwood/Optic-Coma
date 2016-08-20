@@ -18,7 +18,6 @@ namespace Optic_Coma
         float maxTimeX = 2;
         //in the update method
         
-
         public sTitleFlicker(Texture2D texture, int rows, int columns)
         {
             Texture = texture;
