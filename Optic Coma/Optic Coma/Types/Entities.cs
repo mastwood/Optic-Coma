@@ -13,7 +13,7 @@ namespace Optic_Coma
         public Texture2D Texture { get; set; }
         Vector2 initPosition;
 
-        public Vector2 currentPosition;
+        public static Vector2 currentPosition;
 
         Vector2 mouseLoc;
         Texture2D flashLightTexture;
@@ -57,14 +57,6 @@ namespace Optic_Coma
                 playerAngle = (float)Math.PI / 2; //Up
             }
 
-            //Alright, now we calculate walkMult.
-            //First up - Are the player and flashlights facing the same direction?
-            if(
-                (playerAngle == 0 * (Math.PI / 2)) && (flashAngle >= 7 * (Math.PI / 4) || flashAngle < 1 * (Math.PI / 4))
-              )
-            {
-
-            }
         }
         
 
@@ -80,7 +72,7 @@ namespace Optic_Coma
                 currentPosition.Y += (4 * walkMult(3 * (float)Math.PI / 2));
             if (keyState.IsKeyDown(Keys.D))
                 currentPosition.X += (4 * walkMult((float)Math.PI));      
-            spriteBatch.DrawString(font, "baseAngle: " + playerAngle, new Vector2(700, 100), Color.White);
+            spriteBatch.DrawString(font, "enemyAngle: " + Enemy.enemyAngle, new Vector2(700, 100), Color.White);
             spriteBatch.DrawString(font, "flashAngle: " + flashAngle, new Vector2(700, 120), Color.White);
             spriteBatch.Draw
             (
@@ -156,7 +148,7 @@ namespace Optic_Coma
     }
     class Enemy
     {
-        public float angle = 0;
+        public static float enemyAngle = 0f;
         public Texture2D Texture { get; set; }
         public Vector2 CurrentPosition;
         public Vector2 InitPosition;
@@ -174,7 +166,7 @@ namespace Optic_Coma
 
         public void Update()
         {
-            
+            enemyAngle = (float)(Math.Atan2(Player.currentPosition.Y, Player.currentPosition.X)) + (float)Math.PI;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -192,7 +184,7 @@ namespace Optic_Coma
                 ),
                 null,
                 Color.White,
-                angle,
+                enemyAngle,
                 new Vector2
                 (
                     Texture.Width / 2,
