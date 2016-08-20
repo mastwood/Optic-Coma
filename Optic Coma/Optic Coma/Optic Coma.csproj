@@ -48,6 +48,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Gearbox\ScreenManager.cs" />
     <Compile Include="Types\sTitleFlicker.cs" />
+    <Compile Include="Types\TileSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Extended, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
