@@ -173,8 +173,7 @@ namespace Optic_Coma
 
         public void Update()
         {
-
-            CurrentPosition.Y += speed;
+            
         }
 
         public void Draw(SpriteBatch spriteBatch)
