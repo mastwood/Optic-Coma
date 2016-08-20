@@ -10,15 +10,16 @@ namespace Optic_Coma
     public class TileSystem
     {
         int width, height;
-        int rows = 4;
-        int columns = 4;
+        int rows, columns;
         int[,] chosenRow, chosenColumn;
 
         Random random = new Random();
         Vector2 location;
         //This method is called when you make a new TileSystem.
-        public TileSystem()
+        public TileSystem(int numRows, int numColumns)
         {
+            rows = numRows;
+            columns = numColumns;
             chosenRow = new int[(int)ScreenManager.Instance.Dimensions.X, (int)ScreenManager.Instance.Dimensions.Y];
             chosenColumn = new int[(int)ScreenManager.Instance.Dimensions.X, (int)ScreenManager.Instance.Dimensions.Y];
             width = 0;

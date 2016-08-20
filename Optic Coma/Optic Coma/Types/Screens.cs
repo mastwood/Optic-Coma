@@ -281,7 +281,7 @@ namespace Optic_Coma
 
             enemy = new Enemy(enemyTexture, enemyPos);
 
-            tileSystem = new TileSystem();
+            tileSystem = new TileSystem(4,4);
             
         }
         public override void UnloadContent()
