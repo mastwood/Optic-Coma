@@ -7,7 +7,7 @@ namespace Optic_Coma
 {
     public class Player
     {
-        float flashAngle = 0f;
+        static float flashAngle = 0f;
         float playerAngle = 0f;
         Vector2 facingDirection;
         public Texture2D Texture { get; set; }
@@ -125,7 +125,7 @@ namespace Optic_Coma
                 ScreenManager.Instance.FlashlightLayer
             );
         }
-        public float walkMult(float dir)
+        public static float walkMult(float dir)
         {
             //First we check if the flash is roughly pointing the same way we are going.
             if (
