@@ -11,12 +11,15 @@ namespace Optic_Coma
     {
         int width, height;
         Vector2 location;
+        //This method is called when you make a new TileSystem.
         public TileSystem()
         {
             width = 0;
-            height = width;
+            height = 0;
             location = Vector2.Zero;
         }
+
+        //Calling draw to draw our tiles across the entire screen.
         public void Draw(Texture2D texture, SpriteBatch spriteBatch)
         {
             width = texture.Width;
