@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 namespace Optic_Coma
@@ -12,12 +9,14 @@ namespace Optic_Coma
         int width, height;
         int rows, columns;
         int[,] chosenRow, chosenColumn;
+        List<Vector2> badTiles;
 
         Random random = new Random();
         Vector2 location;
         //This method is called when you make a new TileSystem.
-        public TileSystem(int numRows, int numColumns)
+        public TileSystem(int numRows, int numColumns, List<Vector2> BadTiles)
         {
+            badTiles = BadTiles;
             rows = numRows;
             columns = numColumns;
             chosenRow = new int[(int)ScreenManager.Instance.Dimensions.X, (int)ScreenManager.Instance.Dimensions.Y];
@@ -36,15 +35,14 @@ namespace Optic_Coma
         }
 
         //Calling draw to draw our tiles across the entire screen.
-        public void Draw(Texture2D texture, SpriteBatch spriteBatch, List<Vector2> badTiles)
-        {          
+        public void Draw(Texture2D texture, SpriteBatch spriteBatch)
+        {
             width = texture.Width / columns;
             height = texture.Height / rows;           
             for (int i = 0; i < ScreenManager.Instance.Dimensions.X; i++)
             {
                 for (int j = 0; j < ScreenManager.Instance.Dimensions.Y; j++)
                 {
-                    
                     if(i % width == 0 && j % height == 0)
                     {
                         foreach (Vector2 tile in badTiles)
