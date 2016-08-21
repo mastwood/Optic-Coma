@@ -180,8 +180,9 @@ namespace Optic_Coma
             type = GetType();
         }
 
-        //int enemySpawnIncrement = 750;
-        // int timeSinceLastEnemy = 0;
+
+        List<Vector2> badTiles = new List<Vector2>();
+
         #region fields
         public bool IsPaused = false;
 
@@ -236,19 +237,20 @@ namespace Optic_Coma
         public override void LoadContent()
         {
             IsPaused = false;
-            left = new Vector2(screenWidth - 200, 0);
-            middle = new Vector2(screenWidth / 2 - 16, 0);
-            right = new Vector2(200 - 32, 0);
             
-            //enemies.Capacity = 0;
             base.LoadContent();
-            
+
+            badTiles.Add(new Vector2(2, 5));
+
+            tileSystem = new TileSystem(4, 4);
+
             music = content.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
             musicInstance.IsLooped = true;
             musicInstance.Volume = musicVolume;
             //musicInstance.Play();
-          
+
+            #region buttons
             buttonSheet = content.Load<Texture2D>("buttonSheet");
             pauseButton = new Button();
             pauseButtonPos = Vector2.Zero;
@@ -265,7 +267,8 @@ namespace Optic_Coma
             btnFullscreen = new Button();
             fullButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
                                         ScreenManager.Instance.Dimensions.Y / 2 + 64 - 128);
-
+            #endregion
+            #region entities
             floorTexture = content.Load<Texture2D>("floorSheet");
             flashLightTexture = content.Load<Texture2D>(flashPath);
             playerTexture = content.Load<Texture2D>(playerPath);
@@ -280,9 +283,9 @@ namespace Optic_Coma
             player = new Player(playerTexture, playerPos, flashLightTexture);
 
             enemy = new Enemy(enemyTexture, enemyPos);
+            #endregion
 
-            tileSystem = new TileSystem(4,4);
-            
+
         }
         public override void UnloadContent()
         {
@@ -373,7 +376,7 @@ namespace Optic_Coma
             {
                 enemy.Draw(spriteBatch);
                 player.Draw(spriteBatch, buttonFont);
-                tileSystem.Draw(floorTexture, spriteBatch);
+                tileSystem.Draw(floorTexture, spriteBatch, badTiles);
                 pauseButton.Draw
                 (
                     buttonSheet,
