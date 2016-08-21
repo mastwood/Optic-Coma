@@ -239,9 +239,17 @@ namespace Optic_Coma
             IsPaused = false;
             
             base.LoadContent();
-
-            badTiles.Add(new Vector2(2, 5));
-
+            //badTiles.Add(new Vector2(2, 5));
+            
+            for(int i = 5; i<10; i++)
+            {
+                for (int j = 7; j < 13; j++)
+                {
+                    badTiles.Capacity++;
+                    badTiles.Add(new Vector2(i, j));
+                }
+            }
+                      
             tileSystem = new TileSystem(4, 4);
 
             music = content.Load<SoundEffect>("samplemusic");
