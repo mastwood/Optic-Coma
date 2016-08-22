@@ -9,14 +9,12 @@ namespace Optic_Coma
         int width, height;
         int rows, columns;
         int[,] chosenRow, chosenColumn;
-        List<Vector2> badTiles;
 
         Random random = new Random();
         Vector2 location;
         //This method is called when you make a new TileSystem.
-        public TileSystem(int numRows, int numColumns, List<Vector2> BadTiles)
+        public TileSystem(int numRows, int numColumns)
         {
-            badTiles = BadTiles;
             rows = numRows;
             columns = numColumns;
             chosenRow = new int[(int)ScreenManager.Instance.Dimensions.X, (int)ScreenManager.Instance.Dimensions.Y];
@@ -35,7 +33,7 @@ namespace Optic_Coma
         }
 
         //Calling draw to draw our tiles across the entire screen.
-        public void Draw(Texture2D texture, SpriteBatch spriteBatch)
+        public void Draw(Texture2D texture, SpriteBatch spriteBatch, List<Vector2> badTiles)
         {
             width = texture.Width / columns;
             height = texture.Height / rows;           
@@ -44,27 +42,24 @@ namespace Optic_Coma
                 for (int j = 0; j < ScreenManager.Instance.Dimensions.Y; j++)
                 {
                     if(i % width == 0 && j % height == 0)
-                    {
-                        foreach (Vector2 tile in badTiles)
+                    {                        
+                        if (!(badTiles.Contains(new Vector2(i / width, j / height))))
                         {
-                            if (!(tile.X * width == i && tile.Y * height == j))
-                            {
-                                Rectangle sourceRectangle = new Rectangle(width * chosenColumn[i, j], height * chosenRow[i, j], width, height);
-                                location.X = i;
-                                location.Y = j;
-                                spriteBatch.Draw
-                                (
-                                    texture,
-                                    location,
-                                    sourceRectangle,
-                                    Color.White,
-                                    0f,
-                                    Vector2.Zero,
-                                    1f,
-                                    SpriteEffects.None,
-                                    ScreenManager.Instance.TileLayer
-                                );
-                            }
+                            location.X = i;
+                            location.Y = j;
+                            Rectangle sourceRectangle = new Rectangle(width * chosenColumn[i, j], height * chosenRow[i, j], width, height);                            
+                            spriteBatch.Draw
+                            (
+                                texture,
+                                location,
+                                sourceRectangle,
+                                Color.White,
+                                0f,
+                                Vector2.Zero,
+                                1f,
+                                SpriteEffects.None,
+                                ScreenManager.Instance.TileLayer
+                            );
                         }
                     }
                 }
