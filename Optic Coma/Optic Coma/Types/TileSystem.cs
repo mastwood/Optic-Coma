@@ -36,32 +36,30 @@ namespace Optic_Coma
         public void Draw(Texture2D texture, SpriteBatch spriteBatch, List<Vector2> badTiles)
         {
             width = texture.Width / columns;
-            height = texture.Height / rows;           
+            height = texture.Height / rows;
             for (int i = 0; i < ScreenManager.Instance.Dimensions.X; i++)
             {
                 for (int j = 0; j < ScreenManager.Instance.Dimensions.Y; j++)
                 {
-                    if(i % width == 0 && j % height == 0)
-                    {                        
-                        if (!(badTiles.Contains(new Vector2(i / width, j / height))))
-                        {
-                            location.X = i;
-                            location.Y = j;
-                            Rectangle sourceRectangle = new Rectangle(width * chosenColumn[i, j], height * chosenRow[i, j], width, height);                            
-                            spriteBatch.Draw
-                            (
-                                texture,
-                                location,
-                                sourceRectangle,
-                                Color.White,
-                                0f,
-                                Vector2.Zero,
-                                1f,
-                                SpriteEffects.None,
-                                ScreenManager.Instance.TileLayer
-                            );
-                        }
+                    if (i % width == 0 && j % height == 0 && !(badTiles.Contains(new Vector2(i / width, j / height))))
+                    {
+                        location.X = i;
+                        location.Y = j;
+                        Rectangle sourceRectangle = new Rectangle(width * chosenColumn[i, j], height * chosenRow[i, j], width, height);
+                        spriteBatch.Draw
+                        (
+                            texture,
+                            location,
+                            sourceRectangle,
+                            Color.White,
+                            0f,
+                            Vector2.Zero,
+                            1f,
+                            SpriteEffects.None,
+                            ScreenManager.Instance.TileLayer
+                        );
                     }
+
                 }
             }
         }
