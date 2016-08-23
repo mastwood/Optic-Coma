@@ -239,10 +239,23 @@ namespace Optic_Coma
             IsPaused = false;
             
             base.LoadContent();
+            for (int i = 10; i < 20; i++)
+            {
+                for (int j = 3; j < 5; j++)
+                {
+                    badTiles.Add(new Vector2(i, j));
+                }
+            }
 
-            badTiles.Add(new Vector2(1, 15));
+            for (int i = 5; i < 7; i++)
+            {
+                for (int j = 10; j < 25; j++)
+                {
+                    badTiles.Add(new Vector2(i, j));
+                }
+            }
 
-            tileSystem = new TileSystem(4, 4, badTiles);
+            tileSystem = new TileSystem(4, 4);
 
             music = content.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
@@ -376,7 +389,7 @@ namespace Optic_Coma
             {
                 enemy.Draw(spriteBatch);
                 player.Draw(spriteBatch, buttonFont);
-                tileSystem.Draw(floorTexture, spriteBatch);
+                tileSystem.Draw(floorTexture, spriteBatch, badTiles);
                 pauseButton.Draw
                 (
                     buttonSheet,
