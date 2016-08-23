@@ -181,7 +181,7 @@ namespace Optic_Coma
         }
 
 
-        List<Vector2> badTiles = new List<Vector2>();
+        List<Vector2> goodTiles = new List<Vector2>();
 
         #region fields
         public bool IsPaused = false;
@@ -243,7 +243,7 @@ namespace Optic_Coma
             {
                 for (int j = 3; j < 5; j++)
                 {
-                    badTiles.Add(new Vector2(i, j));
+                    goodTiles.Add(new Vector2(i, j));
                 }
             }
 
@@ -251,7 +251,7 @@ namespace Optic_Coma
             {
                 for (int j = 10; j < 25; j++)
                 {
-                    badTiles.Add(new Vector2(i, j));
+                    goodTiles.Add(new Vector2(i, j));
                 }
             }
 
@@ -389,7 +389,7 @@ namespace Optic_Coma
             {
                 enemy.Draw(spriteBatch);
                 player.Draw(spriteBatch, buttonFont);
-                tileSystem.Draw(floorTexture, spriteBatch, badTiles);
+                tileSystem.Draw(floorTexture, spriteBatch, goodTiles);
                 pauseButton.Draw
                 (
                     buttonSheet,

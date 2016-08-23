@@ -22,6 +22,7 @@ namespace Optic_Coma
             width = 0;
             height = 0;
             location = Vector2.Zero;
+
             for (int i = 0; i < ScreenManager.Instance.Dimensions.X; i++)
             {
                 for (int j = 0; j < ScreenManager.Instance.Dimensions.Y; j++)
@@ -33,7 +34,7 @@ namespace Optic_Coma
         }
 
         //Calling draw to draw our tiles across the entire screen.
-        public void Draw(Texture2D texture, SpriteBatch spriteBatch, List<Vector2> badTiles)
+        public void Draw(Texture2D texture, SpriteBatch spriteBatch, List<Vector2> goodTiles)
         {
             width = texture.Width / columns;
             height = texture.Height / rows;
@@ -41,11 +42,13 @@ namespace Optic_Coma
             {
                 for (int j = 0; j < ScreenManager.Instance.Dimensions.Y; j++)
                 {
-                    if (i % width == 0 && j % height == 0 && !(badTiles.Contains(new Vector2(i / width, j / height))))
+                    if (i % width == 0 && j % height == 0 && (goodTiles.Contains(new Vector2(i / width, j / height))))
                     {
                         location.X = i;
                         location.Y = j;
+
                         Rectangle sourceRectangle = new Rectangle(width * chosenColumn[i, j], height * chosenRow[i, j], width, height);
+
                         spriteBatch.Draw
                         (
                             texture,
@@ -59,7 +62,6 @@ namespace Optic_Coma
                             ScreenManager.Instance.TileLayer
                         );
                     }
-
                 }
             }
         }
