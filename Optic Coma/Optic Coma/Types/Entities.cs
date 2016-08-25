@@ -5,7 +5,70 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Optic_Coma
 {
-    public class Player
+    public abstract class Entity
+    {
+        public Entity()
+        {
+
+        }
+        public virtual void Update()
+        {
+
+        }
+        // This is called overloading, it is where you have 2 versions of the same method
+        // spriteBatch.Draw follows this property, where there are multiple versions of draw
+        public virtual void Draw(SpriteBatch spriteBatch, SpriteFont font)
+        {
+
+        }
+        public virtual void Draw(SpriteBatch spriteBatch)
+        {
+
+        }
+        public static float walkMult(float dir, float angle, float amp, bool useExp)
+        {
+            //dir, in this method, is equal to the angle in radians the character is moving.
+            //angle is the "best" angle - the one that results in fastest movement.
+            //amp is in regards to how powerful the slowing effect is.
+            //First we check if the flash is roughly pointing the same way we are going.
+            if (
+                ((7 * Math.PI / 4 < dir || dir <= 1 * Math.PI / 4) && (7 * Math.PI / 4 < angle || angle <= 1 * Math.PI / 4)) ||//Both westward?
+                ((1 * Math.PI / 4 < dir && dir <= 3 * Math.PI / 4) && (1 * Math.PI / 4 < angle && angle <= 3 * Math.PI / 4)) ||//Both northward?
+                ((3 * Math.PI / 4 < dir && dir <= 5 * Math.PI / 4) && (3 * Math.PI / 4 < angle && angle <= 5 * Math.PI / 4)) ||//Both eastward?
+                ((5 * Math.PI / 4 < dir && dir <= 7 * Math.PI / 4) && (5 * Math.PI / 4 < angle && angle <= 7 * Math.PI / 4))   //Both southward?
+              )
+            {
+                if (useExp)
+                    return (float)Math.Pow(1, amp);
+                else
+                    return 1 * amp;
+
+            }
+            else if //Then we check if the person is directly backpedalling.
+              (
+                ((7 * Math.PI / 4 < dir || dir <= 1 * Math.PI / 4) && (3 * Math.PI / 4 < angle && angle <= 5 * Math.PI / 4)) ||//Backpedaling west?
+                ((1 * Math.PI / 4 < dir && dir <= 3 * Math.PI / 4) && (5 * Math.PI / 4 < angle && angle <= 7 * Math.PI / 4)) ||//Backpedaling north?
+                ((3 * Math.PI / 4 < dir && dir <= 5 * Math.PI / 4) && (7 * Math.PI / 4 < angle || angle <= 1 * Math.PI / 4)) ||//Backpedaling east?
+                ((5 * Math.PI / 4 < dir && dir <= 7 * Math.PI / 4) && (1 * Math.PI / 4 < angle && angle <= 3 * Math.PI / 4))   //Backpedaling south?
+              )
+            {
+                if (useExp)
+                    return (float)Math.Pow(0.5f, amp);
+                else
+                    return 0.5f * amp;
+            }
+            else //Must be sidestepping, then.
+            {
+                if (useExp)
+                    return (float)Math.Pow(0.75f, amp);
+                else
+                    return 0.75f * amp;
+            }
+        }
+    }
+
+
+    public class Player : Entity
     {
         static float flashAngle = 0f;
         float playerAngle = 0f;
@@ -26,7 +89,7 @@ namespace Optic_Coma
             flashLightTexture = flashlightTexture;
         }
 
-        public void Update()
+        public override void Update()
         {
             MouseState curMouse = Mouse.GetState();
 
@@ -59,7 +122,7 @@ namespace Optic_Coma
 
         }
 
-        public void Draw(SpriteBatch spriteBatch, SpriteFont font)
+        public override void Draw(SpriteBatch spriteBatch, SpriteFont font)
         {
             KeyboardState keyState = Keyboard.GetState();
 
@@ -116,48 +179,9 @@ namespace Optic_Coma
                 ScreenManager.Instance.FlashlightLayer
             );
         }
-        public static float walkMult(float dir, float angle, float amp, bool useExp)
-        {
-            //dir, in this method, is equal to the angle in radians the character is moving.
-            //angle is the "best" angle - the one that results in fastest movement.
-            //amp is in regards to how powerful the slowing effect is.
-            //First we check if the flash is roughly pointing the same way we are going.
-            if (
-                ((7 * Math.PI / 4 < dir || dir <= 1 * Math.PI / 4) && (7 * Math.PI / 4 < angle || angle <= 1 * Math.PI / 4)) ||//Both westward?
-                ((1 * Math.PI / 4 < dir && dir <= 3 * Math.PI / 4) && (1 * Math.PI / 4 < angle && angle <= 3 * Math.PI / 4)) ||//Both northward?
-                ((3 * Math.PI / 4 < dir && dir <= 5 * Math.PI / 4) && (3 * Math.PI / 4 < angle && angle <= 5 * Math.PI / 4)) ||//Both eastward?
-                ((5 * Math.PI / 4 < dir && dir <= 7 * Math.PI / 4) && (5 * Math.PI / 4 < angle && angle <= 7 * Math.PI / 4))   //Both southward?
-              )
-            {
-                if (useExp)
-                    return (float)Math.Pow(1, amp);
-                else
-                    return 1 * amp;
-                
-            }
-            else if //Then we check if the person is directly backpedalling.
-              (
-                ((7 * Math.PI / 4 < dir || dir <= 1 * Math.PI / 4) && (3 * Math.PI / 4 < angle && angle <= 5 * Math.PI / 4)) ||//Backpedaling west?
-                ((1 * Math.PI / 4 < dir && dir <= 3 * Math.PI / 4) && (5 * Math.PI / 4 < angle && angle <= 7 * Math.PI / 4)) ||//Backpedaling north?
-                ((3 * Math.PI / 4 < dir && dir <= 5 * Math.PI / 4) && (7 * Math.PI / 4 < angle || angle <= 1 * Math.PI / 4)) ||//Backpedaling east?
-                ((5 * Math.PI / 4 < dir && dir <= 7 * Math.PI / 4) && (1 * Math.PI / 4 < angle && angle <= 3 * Math.PI / 4))   //Backpedaling south?
-              )
-            {
-                if (useExp)
-                    return (float)Math.Pow(0.5f, amp);
-                else
-                    return 0.5f * amp;
-            }
-            else //Must be sidestepping, then.
-            {
-                if (useExp)
-                    return (float)Math.Pow(0.75f, amp);
-                else
-                    return 0.75f * amp;
-            }
-        }
+        
     }
-    class Enemy
+    class Enemy : Entity
     {
         public static float enemyAngle = 0f;
         public Texture2D Texture { get; set; }
@@ -178,24 +202,24 @@ namespace Optic_Coma
             moveAmp = -1;
         }
 
-        public void Update()
+        public override void Update()
         {
             enemyAngle = (float)(Math.Atan2(Player.currentPosition.Y - CurrentPosition.Y, Player.currentPosition.X - CurrentPosition.X)) + (float)Math.PI;
             //moveAmp += 0.001f;
             moveAmp = 2; //We can toy around with this later.
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             dir = random.Next(0, 4);
             if (dir == 0)
-                CurrentPosition.Y -= (4 * Player.walkMult((float)Math.PI / 2, enemyAngle, moveAmp, false));
+                CurrentPosition.Y -= (4 * walkMult((float)Math.PI / 2, enemyAngle, moveAmp, false));
             else if (dir == 1)
-                CurrentPosition.X -= (4 * Player.walkMult(0, enemyAngle, moveAmp, false));
+                CurrentPosition.X -= (4 * walkMult(0, enemyAngle, moveAmp, false));
             else if (dir == 2)
-                CurrentPosition.Y += (4 * Player.walkMult(3 * (float)Math.PI / 2, enemyAngle, moveAmp, false));
+                CurrentPosition.Y += (4 * walkMult(3 * (float)Math.PI / 2, enemyAngle, moveAmp, false));
             else
-                CurrentPosition.X += (4 * Player.walkMult((float)Math.PI, enemyAngle, moveAmp, false));
+                CurrentPosition.X += (4 * walkMult((float)Math.PI, enemyAngle, moveAmp, false));
             spriteBatch.Draw
             (
                 Texture,
