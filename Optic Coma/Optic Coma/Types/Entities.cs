@@ -5,15 +5,44 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Optic_Coma
 {
-    public class Player
+    public class Entity
     {
+        public Texture2D Texture { get; set; }
+        public static Vector2 currentPosition;
+        public Rectangle BoundingBox
+        {
+            get
+            {
+                return new Rectangle(
+                    (int)currentPosition.X,
+                    (int)currentPosition.Y,
+                    Texture.Width,
+                    Texture.Height
+                    );
+            }
+        }
+        //Generic function that can be used to check for a collision.
+        public bool checkCollision(Entity Collider)
+        {
+            if (BoundingBox.Intersects(Collider.BoundingBox))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+    public class Player : Entity
+    {
+        public Texture2D Texture { get; set; }
+        public static Vector2 currentPosition;
         static float flashAngle = 0f;
         float playerAngle = 0f;
         Vector2 facingDirection;
-        public Texture2D Texture { get; set; }
+        
         Vector2 initPosition;
-
-        public static Vector2 currentPosition;
 
         Vector2 mouseLoc;
         Texture2D flashLightTexture;
@@ -73,6 +102,7 @@ namespace Optic_Coma
                 currentPosition.X += (4 * walkMult((float)Math.PI, flashAngle, 1, false));      
             spriteBatch.DrawString(font, "enemyAngle: " + Enemy.enemyAngle, new Vector2(700, 100), Color.White);
             spriteBatch.DrawString(font, "moveAmp: " + Enemy.moveAmp, new Vector2(700, 120), Color.White);
+            spriteBatch.DrawString(font, "coolliding: " + Enemy.moveAmp, new Vector2(700, 140), Color.White);
             spriteBatch.Draw
             (
                 Texture,
@@ -157,11 +187,11 @@ namespace Optic_Coma
             }
         }
     }
-    class Enemy
+    class Enemy : Entity
     {
-        public static float enemyAngle = 0f;
         public Texture2D Texture { get; set; }
-        public Vector2 CurrentPosition;
+        public static Vector2 currentPosition;
+        public static float enemyAngle = 0f;
         public Vector2 InitPosition;
         Random random = new Random();
         int speed;
@@ -173,14 +203,14 @@ namespace Optic_Coma
         {
             Texture = texture;
             InitPosition = initPosition;
-            CurrentPosition = InitPosition;
+            currentPosition = InitPosition;
             speed = 2 + acceleration;
             moveAmp = -1;
         }
 
         public void Update()
         {
-            enemyAngle = (float)(Math.Atan2(Player.currentPosition.Y - CurrentPosition.Y, Player.currentPosition.X - CurrentPosition.X)) + (float)Math.PI;
+            enemyAngle = (float)(Math.Atan2(Player.currentPosition.Y - currentPosition.Y, Player.currentPosition.X - currentPosition.X)) + (float)Math.PI;
             //moveAmp += 0.001f;
             moveAmp = 2; //We can toy around with this later.
         }
@@ -189,20 +219,20 @@ namespace Optic_Coma
         {
             dir = random.Next(0, 4);
             if (dir == 0)
-                CurrentPosition.Y -= (4 * Player.walkMult((float)Math.PI / 2, enemyAngle, moveAmp, false));
+                currentPosition.Y -= (4 * Player.walkMult((float)Math.PI / 2, enemyAngle, moveAmp, false));
             else if (dir == 1)
-                CurrentPosition.X -= (4 * Player.walkMult(0, enemyAngle, moveAmp, false));
+                currentPosition.X -= (4 * Player.walkMult(0, enemyAngle, moveAmp, false));
             else if (dir == 2)
-                CurrentPosition.Y += (4 * Player.walkMult(3 * (float)Math.PI / 2, enemyAngle, moveAmp, false));
+                currentPosition.Y += (4 * Player.walkMult(3 * (float)Math.PI / 2, enemyAngle, moveAmp, false));
             else
-                CurrentPosition.X += (4 * Player.walkMult((float)Math.PI, enemyAngle, moveAmp, false));
+                currentPosition.X += (4 * Player.walkMult((float)Math.PI, enemyAngle, moveAmp, false));
             spriteBatch.Draw
             (
                 Texture,
                 new Rectangle
                 (
-                    (int)CurrentPosition.X,
-                    (int)CurrentPosition.Y,
+                    (int)currentPosition.X,
+                    (int)currentPosition.Y,
                     Texture.Width,
                     Texture.Height
                 ),
