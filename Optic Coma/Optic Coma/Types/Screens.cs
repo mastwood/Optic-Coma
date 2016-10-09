@@ -201,7 +201,7 @@ namespace Optic_Coma
         Player player;
         Vector2 playerPositionToSave;
 
-        Enemy enemy;
+        List<Enemy> enemies = new List<Enemy>();
 
         TileSystem tileSystem;
 
@@ -295,7 +295,8 @@ namespace Optic_Coma
 
             player = new Player(playerTexture, playerPos, flashLightTexture);
 
-            enemy = new Enemy(enemyTexture, enemyPos);
+            enemies.Add(new Enemy(enemyTexture, enemyPos));
+            enemies.Add(new Enemy(enemyTexture, new Vector2(enemyPos.X / 2, enemyPos.Y /2)));
             #endregion
 
 
@@ -378,7 +379,10 @@ namespace Optic_Coma
                 #endregion
 
                 player.Update();
-                enemy.Update();
+                foreach (Enemy enemy in enemies)
+                {
+                    enemy.Update();
+                }
                 base.Update(gameTime);
             }
         }
@@ -387,7 +391,10 @@ namespace Optic_Coma
             #region when not paused
             if (!IsPaused)
             {
-                enemy.Draw(spriteBatch);
+                foreach (Enemy enemy in enemies)
+                {
+                    enemy.Draw(spriteBatch);
+                }
                 player.Draw(spriteBatch, buttonFont);
                 tileSystem.Draw(floorTexture, spriteBatch, goodTiles);
                 pauseButton.Draw
