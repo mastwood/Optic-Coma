@@ -186,7 +186,6 @@ namespace Optic_Coma
         public static float enemyAngle = 0f;
         public Texture2D Texture { get; set; }
         public Vector2 CurrentPosition;
-        public Vector2 InitPosition;
         Random random = new Random();
         int speed;
         int dir;
@@ -196,8 +195,7 @@ namespace Optic_Coma
         public Enemy(Texture2D texture, Vector2 initPosition)
         {
             Texture = texture;
-            InitPosition = initPosition;
-            CurrentPosition = InitPosition;
+            CurrentPosition = initPosition;
             speed = 2 + acceleration;
             moveAmp = -1;
         }

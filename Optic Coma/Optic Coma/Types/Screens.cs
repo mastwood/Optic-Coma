@@ -296,7 +296,7 @@ namespace Optic_Coma
             player = new Player(playerTexture, playerPos, flashLightTexture);
 
             enemies.Add(new Enemy(enemyTexture, enemyPos));
-            enemies.Add(new Enemy(enemyTexture, new Vector2(enemyPos.X / 2, enemyPos.Y /2)));
+            enemies.Add(new Enemy(enemyTexture, new Vector2(ScreenManager.Instance.Dimensions.X - enemyPos.X, ScreenManager.Instance.Dimensions.X - enemyPos.Y)));
             #endregion
 
 
