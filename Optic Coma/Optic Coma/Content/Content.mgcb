@@ -56,11 +56,11 @@
 /processorParam:TextureFormat=Compressed
 /build:buttonFont.spritefont
 
-#begin ingamescreen_title.spritefont
+#begin Level1Screen_title.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:TextureFormat=Compressed
-/build:ingamescreen_title.spritefont
+/build:Level1Screen_title.spritefont
 
 #begin samplemusic.wav
 /importer:WavImporter

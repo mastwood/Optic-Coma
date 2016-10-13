@@ -171,11 +171,11 @@ namespace Optic_Coma
             );
         }
     }
-    class InGameScreen : BaseScreen
+    class Level1Screen : BaseScreen
     {
         [XmlIgnore]
         Type type;
-        public InGameScreen()
+        public Level1Screen()
         {
             type = GetType();
         }
@@ -269,7 +269,7 @@ namespace Optic_Coma
             pauseButtonPos = Vector2.Zero;
             buttonFont = content.Load<SpriteFont>("buttonFont");
 
-            scoreDisplay = content.Load<SpriteFont>("ingamescreen_title");
+            scoreDisplay = content.Load<SpriteFont>("Level1Screen_title");
 
             btnUnpause = new Button();
             unpauseButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,

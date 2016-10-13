@@ -78,10 +78,10 @@ namespace Optic_Coma
             if (currentScreen is MenuScreen)
             {
                 currentScreen.UnloadContent();
-                currentScreen = new InGameScreen();
+                currentScreen = new Level1Screen();
                 currentScreen.LoadContent();
             }
-            else if (currentScreen is InGameScreen)
+            else if (currentScreen is Level1Screen)
             {
                 
                 currentScreen.UnloadContent();
@@ -91,13 +91,13 @@ namespace Optic_Coma
         }
         public void PauseKey_OnPress()
         {
-            if (currentScreen is InGameScreen)
+            if (currentScreen is Level1Screen)
             {
-                InGameScreen inGameScreen = (InGameScreen)currentScreen;
-                if (!inGameScreen.IsPaused)
-                    inGameScreen.IsPaused = true;
+                Level1Screen level1Screen = (Level1Screen)currentScreen;
+                if (!level1Screen.IsPaused)
+                    level1Screen.IsPaused = true;
                 else
-                    inGameScreen.IsPaused = false;
+                    level1Screen.IsPaused = false;
             }
 
         }
