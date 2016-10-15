@@ -127,15 +127,15 @@ namespace Optic_Coma
         private EffectParameter _lightCombinedEffectParamShadowMap;
         private EffectParameter _lightCombinedEffectParamNormalMap;
 
-        private RenderTarget2D _colorMapRenderTarget;
-        private RenderTarget2D _normalMapRenderTarget;
-        private RenderTarget2D _shadowMapRenderTarget;
+        public static RenderTarget2D _colorMapRenderTarget;
+        public static RenderTarget2D _normalMapRenderTarget;
+        public static RenderTarget2D _shadowMapRenderTarget;
 
         private Effect _lightEffect1;
         private Effect _lightEffect2;
 
-        private Color _ambientLight = new Color(.1f, .1f, .1f, 1);
-        private Vector4 _ambientLightV = new Vector4(.1f, .1f, .1f, 1);
+        private Color _ambientLight = new Color(.1f, .1f, 200, 255);
+        private Vector4 _ambientLightV = new Vector4(.1f, .1f, .1f, 255);
         private float _specularStrength = 1.0f;
 
         static PresentationParameters pp = Foundation.graphics.GraphicsDevice.PresentationParameters;
@@ -147,7 +147,7 @@ namespace Optic_Coma
 
         SurfaceFormat format = pp.BackBufferFormat;
 
-        public Lighting(GraphicsDevice graphicsDevice, Effect l1, Effect l2, Texture2D realtex)
+        public Lighting(GraphicsDevice graphicsDevice, Effect l1, Effect l2)
         {
             GDevice = graphicsDevice;
             _colorMapRenderTarget = new RenderTarget2D(GDevice, width, height);
@@ -224,7 +224,7 @@ namespace Optic_Coma
         }
         
         // Renders lights, then wherever there is not a light, returns a dark texture
-        private Texture2D GenerateShadowMap(List<Light> LightCollection)
+        public Texture2D GenerateShadowMap(List<Light> LightCollection)
         {
             GDevice.SetRenderTarget(_shadowMapRenderTarget);
             GDevice.Clear(Color.Transparent);
@@ -268,8 +268,10 @@ namespace Optic_Coma
         }
         
         //Combines shadow texture and light textures on the screen
-        private void DrawCombinedMaps(SpriteBatch spriteBatch)
+        public void DrawCombinedMaps(SpriteBatch spriteBatch)
         {
+            spriteBatch.End();
+
             _lightEffect2.CurrentTechnique = _lightCombinedEffectTechnique;
             _lightCombinedEffectParamAmbient.SetValue(1f);
             _lightCombinedEffectParamLightAmbient.SetValue(4f);
@@ -278,10 +280,11 @@ namespace Optic_Coma
             _lightCombinedEffectParamShadowMap.SetValue(_shadowMapRenderTarget);
             _lightCombinedEffectParamNormalMap.SetValue(_normalMapRenderTarget);
             _lightEffect2.CurrentTechnique.Passes[0].Apply();
-            spriteBatch.End();
+            
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, _lightEffect2);
             spriteBatch.Draw(_colorMapRenderTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
+
             spriteBatch.Begin(SpriteSortMode.BackToFront);
         }
         public static BlendState BlendBlack = new BlendState()

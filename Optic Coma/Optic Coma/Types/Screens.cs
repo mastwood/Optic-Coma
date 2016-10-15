@@ -310,14 +310,14 @@ namespace Optic_Coma
             floortextestC = content.Load<Texture2D>("floortextest_COLOR");
             l1 = content.Load<Effect>("LightingShadow");
             l2 = content.Load<Effect>("LightingCombined");
-            lightEngine = new Lighting(Foundation.graphics.GraphicsDevice, l1, l2, floortextestC);
+            lightEngine = new Lighting(Foundation.graphics.GraphicsDevice, l1, l2);
             testLight = new PointLight()
             {
                 IsEnabled = true,
-                Color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+                Color = new Vector4(100.0f, 100.0f, 100.0f, 255.0f),
                 Power = 1,
-                LightDecay = 200,
-                Position = new Vector3(300, 300, 80)
+                LightDecay = 100,
+                Position = new Vector3(300, 300, 20)
             };
             lCollection = new List<Light>();
             lCollection.Add(testLight);
@@ -382,9 +382,6 @@ namespace Optic_Coma
                 //playerTexture.GetData(playerColor);
                 //enemyTexture.GetData(enemyColor);
                 Rectangle playerArea = new Rectangle((int)playerPos.X, (int)playerPos.Y, 48, 48);
-
-
-
 
                 int spawnLocationIndicator = random.Next(0, 3);
 
@@ -460,8 +457,10 @@ namespace Optic_Coma
         }
         public void DrawScene(SpriteBatch spriteBatch, Texture2D t)
         {
+            spriteBatch.End();
+            spriteBatch.Begin();
             spriteBatch.Draw(
-                floortextestC,
+                t,
                 Vector2.Zero,
                 Color.White);
             spriteBatch.End();
@@ -472,7 +471,7 @@ namespace Optic_Coma
             spriteBatch.End();
             spriteBatch.Begin();
             spriteBatch.Draw(
-                floortextestN,
+                t,
                 Vector2.Zero,
                 Color.White);
             spriteBatch.End();
@@ -483,19 +482,41 @@ namespace Optic_Coma
             spriteBatch.End();
             spriteBatch.Begin();
             spriteBatch.Draw(
-                floortextestB,
+                t,
                 Vector2.Zero,
                 Color.White);
             spriteBatch.End();
             spriteBatch.Begin();
         }
+        GraphicsDevice GDevice = Foundation.graphics.GraphicsDevice;
         public override void Draw(SpriteBatch spriteBatch)
         {
             #region when not paused
             if (!IsPaused)
             {
+                GDevice.SetRenderTarget(Lighting._colorMapRenderTarget);
 
-                lightEngine.Draw(spriteBatch, DrawScene, DrawNormals, lCollection, floortextestN, floortextestC);
+                // Clear all render targets
+                GDevice.Clear(Color.Transparent);
+
+                DrawScene(spriteBatch, floortextestC);
+
+                GDevice.SetRenderTarget(null);
+                GDevice.SetRenderTarget(Lighting._normalMapRenderTarget);
+
+                // Clear all render targets
+                GDevice.Clear(Color.Transparent);
+
+                DrawNormals(spriteBatch, floortextestN);
+
+                // Deactive the render targets to resolve them
+                GDevice.SetRenderTarget(null);
+
+                lightEngine.GenerateShadowMap(lCollection);
+
+                // Finally draw the combined Maps onto the screen
+                lightEngine.DrawCombinedMaps(spriteBatch);
+
                 foreach (Enemy enemy in enemies)
                 {
                     enemy.Draw(spriteBatch);
