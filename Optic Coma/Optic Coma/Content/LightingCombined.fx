@@ -7,49 +7,13 @@
 	#define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
-matrix WorldViewProjection;
-
-struct VertexShaderInput
-{
-	float4 Position : SV_POSITION;
-	float4 Color : COLOR0;
-};
-
-struct VertexShaderOutput
-{
-	float4 Position : SV_POSITION;
-	float4 Color : COLOR0;
-};
-
-VertexShaderOutput MainVS(in VertexShaderInput input)
-{
-	VertexShaderOutput output = (VertexShaderOutput)0;
-
-	output.Position = mul(input.Position, WorldViewProjection);
-	output.Color = input.Color;
-
-	return output;
-}
-
-float4 MainPS(VertexShaderOutput input) : COLOR
-{
-	return input.Color;
-}
-
-technique BasicColorDrawing
-{
-	pass P0
-	{
-		VertexShader = compile VS_SHADERMODEL MainVS();
-		PixelShader = compile PS_SHADERMODEL MainPS();
-	}
-};
 float ambient;
 float4 ambientColor;
 float lightAmbient;
 
 Texture ColorMap;
-sampler ColorMapSampler = sampler_state {
+sampler ColorMapSampler = sampler_state
+{
 	texture = <ColorMap>;
 	magfilter = LINEAR;
 	minfilter = LINEAR;
@@ -59,8 +23,20 @@ sampler ColorMapSampler = sampler_state {
 };
 
 Texture ShadingMap;
-sampler ShadingMapSampler = sampler_state {
+sampler ShadingMapSampler = sampler_state
+{
 	texture = <ShadingMap>;
+	magfilter = LINEAR;
+	minfilter = LINEAR;
+	mipfilter = LINEAR;
+	AddressU = mirror;
+	AddressV = mirror;
+};
+
+Texture NormalMap;
+sampler NormalMapSampler = sampler_state
+{
+	texture = <NormalMap>;
 	magfilter = LINEAR;
 	minfilter = LINEAR;
 	mipfilter = LINEAR;
@@ -72,15 +48,27 @@ float4 CombinedPixelShader(float4 color : COLOR0, float2 texCoords : TEXCOORD0) 
 {
 	float4 color2 = tex2D(ColorMapSampler, texCoords);
 	float4 shading = tex2D(ShadingMapSampler, texCoords);
+	float normal = tex2D(NormalMapSampler, texCoords).rgb;
+		
+	if (normal > 0.0f)
+	{
+		//float4 finalColor = color2 * ambientColor;
+		//finalColor += shading;
+		//return finalColor;
 
-	float4 finalColor = (color2 * ambientColor * ambient);
-
-	finalColor += color2 * shading * lightAmbient;
-
-	return finalColor;
+		// Darker
+		float4 finalColor = color2 * ambientColor * ambient;
+		finalColor += (shading * color2) * lightAmbient;
+		
+		return finalColor;
+	}
+	else
+	{
+		return float4(0, 0, 0, 0);
+	}
 }
 
-technique DeferredCombined
+technique DeferredCombined2
 {
 	pass Pass1
 	{

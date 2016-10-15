@@ -219,7 +219,7 @@ namespace Optic_Coma
             );
         }
     }
-    class Level1Screen : LevelScreen, ILighting<Level1Screen>
+    class Level1Screen : LevelScreen
     {
         public bool Equals(Level1Screen level)
         {
@@ -238,6 +238,14 @@ namespace Optic_Coma
 
         #region fields
         public bool IsPaused = false;
+
+        Effect l1, l2;
+        Lighting lightEngine;
+        PointLight testLight;
+        List<Light> lCollection;
+        Texture2D floortextestC;
+        Texture2D floortextestN;
+        Texture2D floortextestB;
 
         int screenWidth = (int)ScreenManager.Instance.Dimensions.X;
         int screenHeight = (int)ScreenManager.Instance.Dimensions.Y;
@@ -308,7 +316,25 @@ namespace Optic_Coma
                 }
             }
 
+            floortextestC = content.Load<Texture2D>("floortextest_COLOR");
+            l1 = content.Load<Effect>("LightingShadow");
+            l2 = content.Load<Effect>("LightingCombined");
+            lightEngine = new Lighting(Foundation.graphics.GraphicsDevice, l1, l2, floortextestC);
+            testLight = new PointLight()
+            {
+                IsEnabled = true,
+                Color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+                Power = 1,
+                LightDecay = 200,
+                Position = new Vector3(300, 300, 80)
+            };
+            lCollection = new List<Light>();
+            lCollection.Add(testLight);
+            floortextestN = content.Load<Texture2D>("floortextest_NRM");
+            floortextestB= content.Load<Texture2D>("floortextest_SPEC");
+
             tileSystem = new TileSystem(4, 4);
+            floorTexture = content.Load<Texture2D>("floorSheet");
 
             music = content.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
@@ -335,7 +361,7 @@ namespace Optic_Coma
                                         ScreenManager.Instance.Dimensions.Y / 2 + 64 - 128);
             #endregion
             #region entities
-            floorTexture = content.Load<Texture2D>("floorSheet");
+            
             flashLightTexture = content.Load<Texture2D>(flashPath);
             playerTexture = content.Load<Texture2D>(playerPath);
             enemyTexture = content.Load<Texture2D>(enemyPath);
@@ -366,6 +392,9 @@ namespace Optic_Coma
                 //playerTexture.GetData(playerColor);
                 //enemyTexture.GetData(enemyColor);
                 Rectangle playerArea = new Rectangle((int)playerPos.X, (int)playerPos.Y, 48, 48);
+
+
+
 
                 int spawnLocationIndicator = random.Next(0, 3);
 
@@ -439,17 +468,52 @@ namespace Optic_Coma
                 base.Update(gameTime);
             }
         }
+        public void DrawScene(SpriteBatch spriteBatch, Texture2D t)
+        {
+            spriteBatch.Begin();
+            spriteBatch.Draw(
+                floortextestC,
+                Vector2.Zero,
+                Color.White);
+            spriteBatch.End();
+            spriteBatch.Begin();
+        }
+        public void DrawNormals(SpriteBatch spriteBatch, Texture2D t)
+        {
+            spriteBatch.End();
+            spriteBatch.Begin();
+            spriteBatch.Draw(
+                floortextestN,
+                Vector2.Zero,
+                Color.White);
+            spriteBatch.End();
+            spriteBatch.Begin();
+        }
+        public void DrawBumps(SpriteBatch spriteBatch, Texture2D t)
+        {
+            spriteBatch.End();
+            spriteBatch.Begin();
+            spriteBatch.Draw(
+                floortextestB,
+                Vector2.Zero,
+                Color.White);
+            spriteBatch.End();
+            spriteBatch.Begin();
+        }
         public override void Draw(SpriteBatch spriteBatch)
         {
             #region when not paused
             if (!IsPaused)
             {
+                spriteBatch.End();
+                lightEngine.Draw(spriteBatch, DrawScene, DrawNormals, lCollection, floortextestN, floortextestC);
+
                 foreach (Enemy enemy in enemies)
                 {
                     enemy.Draw(spriteBatch);
                 }
                 player.Draw(spriteBatch, buttonFont);
-                tileSystem.Draw(floorTexture, spriteBatch, goodTiles);
+                //tileSystem.Draw(floorTexture, spriteBatch, goodTiles);
                 pauseButton.Draw
                 (
                     buttonSheet,
