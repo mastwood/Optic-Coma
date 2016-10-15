@@ -10,23 +10,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Optic_Coma
 {
-    public class LightV1
-    {
-        public bool IsVisible;
-        public Color Color;
-        public float LightRadius;
-        public float Power;
-        // Position is a vector3 because you can change how high or low the light is to determine its effective power (it dims if its higher)
-        public Vector3 Position;
-        public LightV1(Color color, float radius, float power, Vector3 pos)
-        {
-            IsVisible = true;
-            Color = color;
-            LightRadius = radius;
-            Power = power;
-            Position = pos;
-        }
-    }
     public enum LightType
     {
         Point

@@ -39,7 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Gearbox\Save.cs" />
-    <Compile Include="Types\Lighting.cs" />
+    <Compile Include="Gearbox\Lighting Engine.cs" />
     <Compile Include="Types\Sprite.cs" />
     <Compile Include="Types\Entities.cs" />
     <Compile Include="Types\Screens.cs" />

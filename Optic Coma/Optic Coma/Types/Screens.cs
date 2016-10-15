@@ -226,8 +226,6 @@ namespace Optic_Coma
             return true;
         }
         
-
-        [XmlIgnore]
         Type type;
         public Level1Screen()
         {
@@ -252,15 +250,7 @@ namespace Optic_Coma
 
         Random random = new Random();
 
-        uint playerScore = 0;
-        public SpriteFont scoreDisplay;
-
-        Vector2 left;
-        Vector2 middle;
-        Vector2 right;
-
         Player player;
-        Vector2 playerPositionToSave;
 
         List<Enemy> enemies = new List<Enemy>();
 
@@ -316,6 +306,7 @@ namespace Optic_Coma
                 }
             }
 
+            #region Lighting
             floortextestC = content.Load<Texture2D>("floortextest_COLOR");
             l1 = content.Load<Effect>("LightingShadow");
             l2 = content.Load<Effect>("LightingCombined");
@@ -332,6 +323,7 @@ namespace Optic_Coma
             lCollection.Add(testLight);
             floortextestN = content.Load<Texture2D>("floortextest_NRM");
             floortextestB= content.Load<Texture2D>("floortextest_SPEC");
+            #endregion
 
             tileSystem = new TileSystem(4, 4);
             floorTexture = content.Load<Texture2D>("floorSheet");
@@ -347,8 +339,6 @@ namespace Optic_Coma
             pauseButton = new Button();
             pauseButtonPos = Vector2.Zero;
             buttonFont = content.Load<SpriteFont>("buttonFont");
-
-            scoreDisplay = content.Load<SpriteFont>("Level1Screen_title");
 
             btnUnpause = new Button();
             unpauseButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
@@ -470,7 +460,6 @@ namespace Optic_Coma
         }
         public void DrawScene(SpriteBatch spriteBatch, Texture2D t)
         {
-            spriteBatch.Begin();
             spriteBatch.Draw(
                 floortextestC,
                 Vector2.Zero,
@@ -505,15 +494,15 @@ namespace Optic_Coma
             #region when not paused
             if (!IsPaused)
             {
-                spriteBatch.End();
-                lightEngine.Draw(spriteBatch, DrawScene, DrawNormals, lCollection, floortextestN, floortextestC);
 
+                lightEngine.Draw(spriteBatch, DrawScene, DrawNormals, lCollection, floortextestN, floortextestC);
                 foreach (Enemy enemy in enemies)
                 {
                     enemy.Draw(spriteBatch);
                 }
                 player.Draw(spriteBatch, buttonFont);
-                //tileSystem.Draw(floorTexture, spriteBatch, goodTiles);
+                tileSystem.Draw(floorTexture, spriteBatch, goodTiles);
+                
                 pauseButton.Draw
                 (
                     buttonSheet,

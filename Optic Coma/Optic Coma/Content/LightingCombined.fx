@@ -11,7 +11,7 @@ float ambient;
 float4 ambientColor;
 float lightAmbient;
 
-Texture ColorMap;
+Texture2D ColorMap;
 sampler ColorMapSampler = sampler_state
 {
 	texture = <ColorMap>;
@@ -22,7 +22,7 @@ sampler ColorMapSampler = sampler_state
 	AddressV = mirror;
 };
 
-Texture ShadingMap;
+Texture2D ShadingMap;
 sampler ShadingMapSampler = sampler_state
 {
 	texture = <ShadingMap>;
@@ -33,7 +33,7 @@ sampler ShadingMapSampler = sampler_state
 	AddressV = mirror;
 };
 
-Texture NormalMap;
+Texture2D NormalMap;
 sampler NormalMapSampler = sampler_state
 {
 	texture = <NormalMap>;

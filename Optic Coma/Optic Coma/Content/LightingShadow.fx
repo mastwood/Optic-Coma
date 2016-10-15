@@ -18,7 +18,7 @@ float4 lightColor;
 float lightRadius;
 float specularStrength;
 
-Texture NormalMap;
+Texture2D NormalMap;
 sampler NormalMapSampler = sampler_state
 {
 	texture = <NormalMap>;
@@ -29,7 +29,7 @@ sampler NormalMapSampler = sampler_state
 	AddressV = mirror;
 };
 
-Texture ColorMap;
+Texture2D ColorMap;
 sampler ColorMapSampler = sampler_state
 {
 	texture = <ColorMap>;
