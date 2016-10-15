@@ -67,7 +67,25 @@ namespace Optic_Coma
             return false;
         }
     }
-
+    class LevelScreen : BaseScreen
+    {
+        public override void LoadContent()
+        {
+            base.LoadContent();
+        }
+        public override void UnloadContent()
+        {
+            base.UnloadContent();
+        }
+        public override void Update(GameTime gameTime) //gametime is a tick
+        {
+            base.Update(gameTime);
+        }
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
+        }
+    }
     class MenuScreen : BaseScreen
     {
         Button btnEnterGame;
@@ -201,8 +219,14 @@ namespace Optic_Coma
             );
         }
     }
-    class Level1Screen : BaseScreen
+    class Level1Screen : LevelScreen, ILighting<Level1Screen>
     {
+        public bool Equals(Level1Screen level)
+        {
+            return true;
+        }
+        
+
         [XmlIgnore]
         Type type;
         public Level1Screen()
