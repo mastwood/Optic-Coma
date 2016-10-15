@@ -201,11 +201,11 @@ namespace Optic_Coma
             );
         }
     }
-    class InGameScreen : BaseScreen
+    class Level1Screen : BaseScreen
     {
         [XmlIgnore]
         Type type;
-        public InGameScreen()
+        public Level1Screen()
         {
             type = GetType();
         }
@@ -230,7 +230,7 @@ namespace Optic_Coma
         Player player;
         Vector2 playerPositionToSave;
 
-        Enemy enemy;
+        List<Enemy> enemies = new List<Enemy>();
 
         TileSystem tileSystem;
 
@@ -298,7 +298,7 @@ namespace Optic_Coma
             pauseButtonPos = Vector2.Zero;
             buttonFont = content.Load<SpriteFont>("buttonFont");
 
-            scoreDisplay = content.Load<SpriteFont>("ingamescreen_title");
+            scoreDisplay = content.Load<SpriteFont>("Level1Screen_title");
 
             btnUnpause = new Button();
             unpauseButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
@@ -324,7 +324,8 @@ namespace Optic_Coma
 
             player = new Player(playerTexture, playerPos, flashLightTexture);
 
-            enemy = new Enemy(enemyTexture, enemyPos);
+            enemies.Add(new Enemy(enemyTexture, enemyPos));
+            enemies.Add(new Enemy(enemyTexture, new Vector2(ScreenManager.Instance.Dimensions.X - enemyPos.X, ScreenManager.Instance.Dimensions.X - enemyPos.Y)));
             #endregion
 
 
@@ -407,7 +408,10 @@ namespace Optic_Coma
                 #endregion
 
                 player.Update();
-                enemy.Update();
+                foreach (Enemy enemy in enemies)
+                {
+                    enemy.Update();
+                }
                 base.Update(gameTime);
             }
         }
@@ -416,7 +420,10 @@ namespace Optic_Coma
             #region when not paused
             if (!IsPaused)
             {
-                enemy.Draw(spriteBatch);
+                foreach (Enemy enemy in enemies)
+                {
+                    enemy.Draw(spriteBatch);
+                }
                 player.Draw(spriteBatch, buttonFont);
                 tileSystem.Draw(floorTexture, spriteBatch, goodTiles);
                 pauseButton.Draw

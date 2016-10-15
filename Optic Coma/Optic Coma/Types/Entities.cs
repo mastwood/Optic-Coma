@@ -134,8 +134,8 @@ namespace Optic_Coma
                 currentPosition.Y += (4 * walkMult(3 * (float)Math.PI / 2, flashAngle, 1, false));
             if (keyState.IsKeyDown(Keys.D))
                 currentPosition.X += (4 * walkMult((float)Math.PI, flashAngle, 1, false));      
-            spriteBatch.DrawString(font, "enemyAngle: " + Enemy.enemyAngle, new Vector2(700, 100), Color.White);
-            spriteBatch.DrawString(font, "moveAmp: " + Enemy.moveAmp, new Vector2(700, 120), Color.White);
+            //spriteBatch.DrawString(font, "enemyAngle: " + Enemy.enemyAngle, new Vector2(700, 100), Color.White);
+            //spriteBatch.DrawString(font, "moveAmp: " + Enemy.moveAmp, new Vector2(700, 120), Color.White);
             spriteBatch.Draw
             (
                 Texture,
@@ -183,21 +183,20 @@ namespace Optic_Coma
     }
     class Enemy : Entity
     {
-        public static float enemyAngle = 0f;
+        float enemyAngle = 0f;
         public Texture2D Texture { get; set; }
         public Vector2 CurrentPosition;
-        public Vector2 InitPosition;
-        Random random = new Random();
+        static Random random;
         int speed;
         int dir;
-        public static float moveAmp;
+        float moveAmp;
         public int acceleration = 0;
 
         public Enemy(Texture2D texture, Vector2 initPosition)
         {
+            random = new Random();
             Texture = texture;
-            InitPosition = initPosition;
-            CurrentPosition = InitPosition;
+            CurrentPosition = initPosition;
             speed = 2 + acceleration;
             moveAmp = -1;
         }
@@ -207,6 +206,7 @@ namespace Optic_Coma
             enemyAngle = (float)(Math.Atan2(Player.currentPosition.Y - CurrentPosition.Y, Player.currentPosition.X - CurrentPosition.X)) + (float)Math.PI;
             //moveAmp += 0.001f;
             moveAmp = 2; //We can toy around with this later.
+            dir = random.Next(0, 4);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
