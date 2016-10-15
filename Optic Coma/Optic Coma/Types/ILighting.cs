@@ -19,5 +19,19 @@ namespace Optic_Coma
     {
         // This is the "signature" not sure what its uses is yet... researching
         bool Equals(T obj);
+        Texture2D GenerateShadowMap();
+
+
+    }
+    public class Lighting : ILighting<Lighting>
+    {
+        bool Equals(Lighting lighting)
+        {
+            return true;
+        }
+        Texture2D GenerateShadowMap()
+        {
+            return;
+        }
     }
 }

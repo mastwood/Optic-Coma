@@ -152,3 +152,15 @@
 /processorParam:TextureFormat=Color
 /build:floorSheet.png
 
+#begin LightingCombined.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:LightingCombined.fx
+
+#begin LightingShadow.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:LightingShadow.fx
+
