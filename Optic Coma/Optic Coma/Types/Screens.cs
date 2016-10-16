@@ -36,6 +36,18 @@ namespace Optic_Coma
         {
 
         }
+        public static Rectangle RectangularHitbox(Orientation o, Rectangle r)
+        {
+            // rotates hitbox alongside players sprite
+            if (o == Orientation.Horiz)
+            {
+                return new Rectangle(r.Y, r.X, r.Height, r.Width);
+            }
+            else
+            {
+                return new Rectangle(r.X, r.Y, r.Width, r.Height);
+            }
+        }
         static bool IntersectPixels(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB)
         {
             // Find the bounds of the rectangle intersection

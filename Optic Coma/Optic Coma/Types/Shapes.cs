@@ -7,6 +7,11 @@ using Microsoft.Xna.Framework;
 
 namespace Optic_Coma
 {
+    public enum Orientation
+    {
+        Vert, Horiz
+    }
+
     public class TriangularHitBox
     {
         Vector2[] V;
@@ -19,7 +24,7 @@ namespace Optic_Coma
             V = v;
             area = 0.5 * (-V[1].Y * V[2].X + V[0].Y * (V[2].X - V[1].X) + V[0].X * (V[1].Y - V[2].Y) + V[1].X * V[2].Y); //magic code
         }
-
+        
         public bool ContainCorners(Rectangle r)
         {
             topright = new Vector2(r.Right, r.Top);
@@ -49,5 +54,6 @@ namespace Optic_Coma
 
             else return false;
         }
+        
     }
 }
