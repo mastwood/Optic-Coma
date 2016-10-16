@@ -105,7 +105,7 @@ namespace Optic_Coma
         }
     }
     public class Lighting
-    {
+    { 
         public VertexPositionColorTexture[] Vertices;
         public VertexBuffer vertexBuffer;
 
