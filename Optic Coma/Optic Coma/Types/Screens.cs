@@ -6,7 +6,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using System.Xml.Serialization;
-
+using System.Threading;
+using System.Threading.Tasks;
+using System.ComponentModel;
 namespace Optic_Coma
 {
     public class BaseScreen
@@ -247,10 +249,10 @@ namespace Optic_Coma
 
         List<Vector2> goodTiles = new List<Vector2>();
         Vector2 TileOffsetLocation;
-        
-
+        BackgroundWorker loader = new BackgroundWorker();
+        volatile bool hasLoaded;
         List <Entity> nonPlayerEntities = new List<Entity>();
-
+        
         #region fields
 
         Vector2 mouseLoc;
@@ -306,10 +308,17 @@ namespace Optic_Coma
         public float musicVolume = 0.02f;
         #endregion
 
-        public override void LoadContent()
+        protected void Complete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            loader.DoWork -= LoadAsync;
+            loader.RunWorkerCompleted -= Complete;
+            loader = null;
+            hasLoaded = true;
+        }
+        protected void LoadAsync(object sender, DoWorkEventArgs e)
         {
             IsPaused = false;
-
+            
             LevelSize = new Vector2(ScreenManager.Instance.Dimensions.X * 2, ScreenManager.Instance.Dimensions.Y * 2);
 
             base.LoadContent();
@@ -323,7 +332,7 @@ namespace Optic_Coma
 
             for (int i = 5; i < 7; i++)
             {
-                for (int j = 10; j < 25; j++)
+                for (int j = 5; j < 25; j++)
                 {
                     goodTiles.Add(new Vector2(i, j));
                 }
@@ -345,12 +354,11 @@ namespace Optic_Coma
             lCollection = new List<Light>();
             lCollection.Add(testLight);
             floortextestN = content.Load<Texture2D>("floortextest_NRM");
-            floortextestB= content.Load<Texture2D>("floortextest_SPEC");
+            floortextestB = content.Load<Texture2D>("floortextest_SPEC");
             #endregion
 
             tileSystem = new TileSystem(4, 4);
             floorTexture = content.Load<Texture2D>("floorSheet");
-
             music = content.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
             musicInstance.IsLooped = true;
@@ -391,8 +399,15 @@ namespace Optic_Coma
             enemies.Add(new Enemy(enemyTexture, new Vector2(ScreenManager.Instance.Dimensions.X - enemyPos.X, ScreenManager.Instance.Dimensions.X - enemyPos.Y)));
             foreach (var enemy in enemies) nonPlayerEntities.Add(enemy);
             #endregion
-
-
+            return;
+        }
+        public override void LoadContent()
+        {
+            hasLoaded = false;
+            loader.DoWork += new DoWorkEventHandler(LoadAsync);
+            loader.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Complete);
+            loader.RunWorkerAsync();
+            
         }
         public override void UnloadContent()
         {
@@ -400,146 +415,151 @@ namespace Optic_Coma
         }
         public override void Update(GameTime gameTime) //gametime is a tick
         {
-            if (!IsPaused)
+            if (hasLoaded)
             {
-                Color[] playerColor = new Color[64 * 64];
-                //playerTexture.GetData(playerColor);
-                //enemyTexture.GetData(enemyColor);
-                Rectangle playerArea = new Rectangle((int)playerPos.X, (int)playerPos.Y, 48, 48);
-
-                int spawnLocationIndicator = random.Next(0, 3);
-
-                #region commented
-                /*
-                timeSinceLastEnemy += gameTime.ElapsedGameTime.Milliseconds;
-                if (timeSinceLastEnemy > enemySpawnIncrement)
+                if (!IsPaused)
                 {
+                    Color[] playerColor = new Color[64 * 64];
+                    //playerTexture.GetData(playerColor);
+                    //enemyTexture.GetData(enemyColor);
+                    Rectangle playerArea = new Rectangle((int)playerPos.X, (int)playerPos.Y, 48, 48);
 
-                    if (spawnLocationIndicator == 0)
+                    int spawnLocationIndicator = random.Next(0, 3);
+
+                    #region commented
+                    /*
+                    timeSinceLastEnemy += gameTime.ElapsedGameTime.Milliseconds;
+                    if (timeSinceLastEnemy > enemySpawnIncrement)
                     {
-                        enemies.Capacity += 1;
-                        enemyInitPosition = left;
-                        Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
-                        enemies.Add(enemy);
+
+                        if (spawnLocationIndicator == 0)
+                        {
+                            enemies.Capacity += 1;
+                            enemyInitPosition = left;
+                            Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
+                            enemies.Add(enemy);
+                        }
+                        else if (spawnLocationIndicator == 1)
+                        {
+                            enemies.Capacity += 1;
+                            enemyInitPosition = middle;
+                            Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
+                            enemies.Add(enemy);
+                        }
+                        else if (spawnLocationIndicator == 2)
+                        {
+                            enemies.Capacity += 1;
+                            enemyInitPosition = right;
+                            Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
+                            enemies.Add(enemy);
+                        }
+                        foreach (Enemy enemy in enemies)
+                        {
+                            if (timeSinceLastEnemy > enemySpawnIncrement * 10)
+                                enemy.acceleration += 1;
+                        }
+                        timeSinceLastEnemy -= enemySpawnIncrement;  
                     }
-                    else if (spawnLocationIndicator == 1)
+
+                    for (int i = 0; i < enemies.Count; i++)
                     {
-                        enemies.Capacity += 1;
-                        enemyInitPosition = middle;
-                        Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
-                        enemies.Add(enemy);
+                        (enemies.ToArray())[i].Update();
+                        enemyArea = new Rectangle((int)(enemies.ToArray())[i].CurrentPosition.X + 16, (int)(enemies.ToArray())[i].CurrentPosition.Y + 32, 32, 32);
+
+                        bool intersecting = IntersectPixels(enemyArea, enemyColor, playerArea, playerColor);
+                        bool intersectingV2 = enemyArea.Intersects(playerArea);
+
+                        if ((enemies.ToArray())[i].CurrentPosition.Y >= screenHeight)
+                        {
+                            if (playerScore != 0)
+                                playerScore--;
+                            enemies.Remove((enemies.ToArray())[i]);
+                            enemies.Capacity--;
+                        }
+                        if (intersecting)
+                        {
+                            playerScore++;
+                            enemies.Remove((enemies.ToArray())[i]);
+                            enemies.Capacity--;
+                        }
                     }
-                    else if (spawnLocationIndicator == 2)
+
+
+                    */
+                    #endregion
+
+                    MouseState curMouse = Mouse.GetState();
+
+                    mouseLoc = new Vector2(curMouse.X, curMouse.Y);
+                    mouseLoc.X = curMouse.X;
+                    mouseLoc.Y = curMouse.Y;
+
+                    player.facingDirection = mouseLoc - player.currentPosition;
+
+                    // using radians
+                    // measure clockwise from left
+                    #region player movement
+                    player.flashAngle = (float)(Math.Atan2(player.facingDirection.Y, player.facingDirection.X)) + (float)Math.PI;
+
+                    if ((player.flashAngle > 0 && player.flashAngle <= Math.PI / 4) || (player.flashAngle > Math.PI * 7 / 4 && player.flashAngle <= 2 * Math.PI))
                     {
-                        enemies.Capacity += 1;
-                        enemyInitPosition = right;
-                        Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
-                        enemies.Add(enemy);
+                        player.playerAngle = (float)Math.PI; //Right
                     }
-                    foreach (Enemy enemy in enemies)
+                    else if (player.flashAngle > Math.PI / 4 && player.flashAngle <= Math.PI * 3 / 4)
                     {
-                        if (timeSinceLastEnemy > enemySpawnIncrement * 10)
-                            enemy.acceleration += 1;
+                        player.playerAngle = -(float)Math.PI / 2; //Down
                     }
-                    timeSinceLastEnemy -= enemySpawnIncrement;  
-                }
-
-                for (int i = 0; i < enemies.Count; i++)
-                {
-                    (enemies.ToArray())[i].Update();
-                    enemyArea = new Rectangle((int)(enemies.ToArray())[i].CurrentPosition.X + 16, (int)(enemies.ToArray())[i].CurrentPosition.Y + 32, 32, 32);
-
-                    bool intersecting = IntersectPixels(enemyArea, enemyColor, playerArea, playerColor);
-                    bool intersectingV2 = enemyArea.Intersects(playerArea);
-
-                    if ((enemies.ToArray())[i].CurrentPosition.Y >= screenHeight)
+                    else if (player.flashAngle > Math.PI * 3 / 4 && player.flashAngle <= Math.PI * 5 / 4)
                     {
-                        if (playerScore != 0)
-                            playerScore--;
-                        enemies.Remove((enemies.ToArray())[i]);
-                        enemies.Capacity--;
+                        player.playerAngle = 0f; //Left
                     }
-                    if (intersecting)
+                    else if (player.flashAngle > Math.PI * 5 / 4 && player.flashAngle <= Math.PI * 7 / 4)
                     {
-                        playerScore++;
-                        enemies.Remove((enemies.ToArray())[i]);
-                        enemies.Capacity--;
+                        player.playerAngle = (float)Math.PI / 2; //Up
                     }
-                }
+                    KeyboardState keyState = Keyboard.GetState();
 
-
-                */
-                #endregion
-
-                MouseState curMouse = Mouse.GetState();
-
-                mouseLoc = new Vector2(curMouse.X, curMouse.Y);
-                mouseLoc.X = curMouse.X;
-                mouseLoc.Y = curMouse.Y;
-
-                player.facingDirection = mouseLoc - player.currentPosition;
-
-                // using radians
-                // measure clockwise from left
-                player.flashAngle = (float)(Math.Atan2(player.facingDirection.Y, player.facingDirection.X)) + (float)Math.PI;
-
-                if ((player.flashAngle > 0 && player.flashAngle <= Math.PI / 4) || (player.flashAngle > Math.PI * 7 / 4 && player.flashAngle <= 2 * Math.PI))
-                {
-                    player.playerAngle = (float)Math.PI; //Right
-                }
-                else if (player.flashAngle > Math.PI / 4 && player.flashAngle <= Math.PI * 3 / 4)
-                {
-                    player.playerAngle = -(float)Math.PI / 2; //Down
-                }
-                else if (player.flashAngle > Math.PI * 3 / 4 && player.flashAngle <= Math.PI * 5 / 4)
-                {
-                    player.playerAngle = 0f; //Left
-                }
-                else if (player.flashAngle > Math.PI * 5 / 4 && player.flashAngle <= Math.PI * 7 / 4)
-                {
-                    player.playerAngle = (float)Math.PI / 2; //Up
-                }
-                KeyboardState keyState = Keyboard.GetState();
-
-                if (keyState.IsKeyDown(Keys.W))
-                {
-                    foreach (var nonPlayer in nonPlayerEntities)
+                    if (keyState.IsKeyDown(Keys.W))
                     {
-                        nonPlayer.currentPosition.Y += (4 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
+                        foreach (var nonPlayer in nonPlayerEntities)
+                        {
+                            nonPlayer.currentPosition.Y += (4 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
+                        }
+                        TileOffsetLocation.Y += (4 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
                     }
-                    TileOffsetLocation.Y += (4 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
-                }
-                if (keyState.IsKeyDown(Keys.A))
-                {
-                    foreach (var nonPlayer in nonPlayerEntities)
+                    if (keyState.IsKeyDown(Keys.A))
                     {
-                        nonPlayer.currentPosition.X += (4 * Entity.walkMult(0, player.flashAngle, 1, false));
+                        foreach (var nonPlayer in nonPlayerEntities)
+                        {
+                            nonPlayer.currentPosition.X += (4 * Entity.walkMult(0, player.flashAngle, 1, false));
+                        }
+                        TileOffsetLocation.X += (4 * Entity.walkMult(0, player.flashAngle, 1, false));
                     }
-                    TileOffsetLocation.X += (4 * Entity.walkMult(0, player.flashAngle, 1, false));
-                }
-                if (keyState.IsKeyDown(Keys.S))
-                {
-                    foreach (var nonPlayer in nonPlayerEntities)
+                    if (keyState.IsKeyDown(Keys.S))
                     {
-                        nonPlayer.currentPosition.Y -= (4 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
+                        foreach (var nonPlayer in nonPlayerEntities)
+                        {
+                            nonPlayer.currentPosition.Y -= (4 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
+                        }
+                        TileOffsetLocation.Y -= (4 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
                     }
-                    TileOffsetLocation.Y -= (4 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
-                }
-                if (keyState.IsKeyDown(Keys.D))
-                {
-                    foreach (var nonPlayer in nonPlayerEntities)
+                    if (keyState.IsKeyDown(Keys.D))
                     {
-                        nonPlayer.currentPosition.X -= (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
+                        foreach (var nonPlayer in nonPlayerEntities)
+                        {
+                            nonPlayer.currentPosition.X -= (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
+                        }
+                        TileOffsetLocation.X -= (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
                     }
-                    TileOffsetLocation.X -= (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
+                    #endregion
+                    foreach (Enemy enemy in nonPlayerEntities)
+                    {
+                        enemy.Update();
+                    }
+                    
                 }
-
-                foreach (Enemy enemy in nonPlayerEntities)
-                {
-                    enemy.Update();
-                }
-                base.Update(gameTime);
             }
+            base.Update(gameTime);
         }
         public void DrawScene(SpriteBatch spriteBatch, Texture2D t)
         {
@@ -575,88 +595,92 @@ namespace Optic_Coma
             spriteBatch.Begin();
         }
         GraphicsDevice GDevice = Foundation.graphics.GraphicsDevice;
+
         public override void Draw(SpriteBatch spriteBatch)
         {
-            #region when not paused
-            if (!IsPaused)
+            if (hasLoaded)
             {
-                GDevice.SetRenderTarget(Lighting._colorMapRenderTarget);
-
-                // Clear all render targets
-                GDevice.Clear(Color.Transparent);
-
-                DrawScene(spriteBatch, floortextestC);
-
-                GDevice.SetRenderTarget(null);
-                GDevice.SetRenderTarget(Lighting._normalMapRenderTarget);
-
-                // Clear all render targets
-                GDevice.Clear(Color.Transparent);
-
-                DrawNormals(spriteBatch, floortextestN);
-
-                // Deactive the render targets to resolve them
-                GDevice.SetRenderTarget(null);
-
-                lightEngine.GenerateShadowMap(lCollection);
-
-                // Finally draw the combined Maps onto the screen
-                lightEngine.DrawCombinedMaps(spriteBatch);
-
-                foreach (Enemy enemy in enemies)
+                #region when not paused
+                if (!IsPaused)
                 {
-                    enemy.Draw(spriteBatch);
+                    GDevice.SetRenderTarget(Lighting._colorMapRenderTarget);
+
+                    // Clear all render targets
+                    GDevice.Clear(Color.Transparent);
+
+                    DrawScene(spriteBatch, floortextestC);
+
+                    GDevice.SetRenderTarget(null);
+                    GDevice.SetRenderTarget(Lighting._normalMapRenderTarget);
+
+                    // Clear all render targets
+                    GDevice.Clear(Color.Transparent);
+
+                    DrawNormals(spriteBatch, floortextestN);
+
+                    // Deactive the render targets to resolve them
+                    GDevice.SetRenderTarget(null);
+
+                    lightEngine.GenerateShadowMap(lCollection);
+
+                    // Finally draw the combined Maps onto the screen
+                    lightEngine.DrawCombinedMaps(spriteBatch);
+
+                    foreach (Enemy enemy in enemies)
+                    {
+                        enemy.Draw(spriteBatch);
+                    }
+                    player.Draw(spriteBatch, buttonFont);
+                    tileSystem.Draw(floorTexture, spriteBatch, goodTiles, TileOffsetLocation, LevelSize);
+
+                    pauseButton.Draw
+                    (
+                        buttonSheet,
+                        spriteBatch,
+                        ScreenManager.Instance.PauseKey_OnPress,
+                        pauseButtonPos,
+                        buttonFont,
+                        "Pause Game",
+                        Color.Black
+                    );
                 }
-                player.Draw(spriteBatch, buttonFont);
-                tileSystem.Draw(floorTexture, spriteBatch, goodTiles, TileOffsetLocation, LevelSize);
-                
-                pauseButton.Draw
-                (
-                    buttonSheet,
-                    spriteBatch,
-                    ScreenManager.Instance.PauseKey_OnPress,
-                    pauseButtonPos,
-                    buttonFont,
-                    "Pause Game",
-                    Color.Black
-                );
+                #endregion
+                #region when paused (contains options menu)
+                else
+                {
+                    btnExit.Draw
+                    (
+                        buttonSheet,
+                        spriteBatch,
+                        ScreenManager.Instance.ExitKey_OnPress,
+                        exitButtonPos,
+                        buttonFont,
+                        "Exit Game",
+                        Color.Black
+                    );
+                    btnUnpause.Draw
+                    (
+                        buttonSheet,
+                        spriteBatch,
+                        ScreenManager.Instance.PauseKey_OnPress,
+                        unpauseButtonPos,
+                        buttonFont,
+                        "Un-Pause Game",
+                        Color.Black
+                    );
+                    btnFullscreen.Draw
+                    (
+                        buttonSheet,
+                        spriteBatch,
+                        ScreenManager.Instance.ChangeScreenMode,
+                        fullButtonPos,
+                        buttonFont,
+                        "   Toggle \nFullscreen",
+                        Color.Black
+                    );
+                }
+                #endregion
             }
-            #endregion
-            #region when paused (contains options menu)
-            else
-            {
-                btnExit.Draw
-                (
-                    buttonSheet,
-                    spriteBatch,
-                    ScreenManager.Instance.ExitKey_OnPress,
-                    exitButtonPos,
-                    buttonFont,
-                    "Exit Game",
-                    Color.Black
-                );
-                btnUnpause.Draw
-                (
-                    buttonSheet,
-                    spriteBatch,
-                    ScreenManager.Instance.PauseKey_OnPress,
-                    unpauseButtonPos,
-                    buttonFont,
-                    "Un-Pause Game",
-                    Color.Black
-                );
-                btnFullscreen.Draw
-                (
-                    buttonSheet,
-                    spriteBatch,
-                    ScreenManager.Instance.ChangeScreenMode,
-                    fullButtonPos,
-                    buttonFont,
-                    "   Toggle \nFullscreen",
-                    Color.Black
-                );
-            }
-            #endregion
         }
         
     }
