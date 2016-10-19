@@ -7,6 +7,7 @@ namespace Optic_Coma
 {
     public abstract class Entity
     {
+        public Vector2 currentPosition;
         public Entity()
         {
 
@@ -70,19 +71,19 @@ namespace Optic_Coma
 
     public class Player : Entity
     {
-        static float flashAngle = 0f;
-        float playerAngle = 0f;
-        Vector2 facingDirection;
+        public float flashAngle = 0f;
+        public float playerAngle = 0f;
+        public Vector2 facingDirection;
         public Texture2D Texture { get; set; }
-        Vector2 initPosition;
+        public Vector2 initPosition;
+        public Texture2D LightTexture;
+        public static Vector2 currentPosToSend;
 
-        public static Vector2 currentPosition;
-
-        Vector2 mouseLoc;
         Texture2D flashLightTexture;
 
-        public Player(Texture2D texture, Vector2 initPos, Texture2D flashlightTexture)
+        public Player(Texture2D texture, Vector2 initPos, Texture2D flashlightTexture, Texture2D lightTexture)
         {
+            LightTexture = lightTexture;
             initPosition = initPos;
             currentPosition = initPos;
             Texture = texture;
@@ -91,49 +92,13 @@ namespace Optic_Coma
 
         public override void Update()
         {
-            MouseState curMouse = Mouse.GetState();
-
-            mouseLoc = new Vector2(curMouse.X, curMouse.Y);
-            mouseLoc.X = curMouse.X;
-            mouseLoc.Y = curMouse.Y;
-
-            facingDirection = mouseLoc - currentPosition;
-
-            // using radians
-            // measure clockwise from left
-            flashAngle = (float)(Math.Atan2(facingDirection.Y, facingDirection.X)) + (float)Math.PI;
-
-            if ((flashAngle > 0 && flashAngle <= Math.PI / 4) || (flashAngle > Math.PI * 7 / 4 && flashAngle <= 2 * Math.PI))
-            {
-                playerAngle = (float)Math.PI; //Right
-            }
-            else if (flashAngle > Math.PI / 4 && flashAngle <= Math.PI * 3 / 4)
-            {
-                playerAngle = -(float)Math.PI / 2; //Down
-            }
-            else if (flashAngle > Math.PI * 3 / 4 && flashAngle <= Math.PI * 5 / 4)
-            {
-                playerAngle = 0f; //Left
-            }
-            else if (flashAngle > Math.PI * 5 / 4 && flashAngle <= Math.PI * 7 / 4)
-            {
-                playerAngle = (float)Math.PI / 2; //Up
-            }
+            currentPosToSend = currentPosition;
 
         }
 
         public override void Draw(SpriteBatch spriteBatch, SpriteFont font)
         {
-            KeyboardState keyState = Keyboard.GetState();
-
-            if (keyState.IsKeyDown(Keys.W))
-                currentPosition.Y -= (4 * walkMult((float)Math.PI / 2, flashAngle, 1, false));
-            if (keyState.IsKeyDown(Keys.A))
-                currentPosition.X -= (4 * walkMult(0, flashAngle, 1, false));
-            if (keyState.IsKeyDown(Keys.S))
-                currentPosition.Y += (4 * walkMult(3 * (float)Math.PI / 2, flashAngle, 1, false));
-            if (keyState.IsKeyDown(Keys.D))
-                currentPosition.X += (4 * walkMult((float)Math.PI, flashAngle, 1, false));      
+            
             //spriteBatch.DrawString(font, "enemyAngle: " + Enemy.enemyAngle, new Vector2(700, 100), Color.White);
             //spriteBatch.DrawString(font, "moveAmp: " + Enemy.moveAmp, new Vector2(700, 120), Color.White);
             spriteBatch.Draw
@@ -157,6 +122,26 @@ namespace Optic_Coma
                 SpriteEffects.None,
                 ScreenManager.Instance.EntityLayer
             );
+            spriteBatch.Draw(
+                LightTexture,
+                new Rectangle
+                (
+                    (int)currentPosition.X,
+                    (int)currentPosition.Y - LightTexture.Height / 2,
+                    LightTexture.Width,
+                    LightTexture.Height
+                ),
+                null,
+                Color.White,
+                (float)Math.PI + flashAngle,
+                new Vector2
+                (
+                    0,
+                    (float)Math.Sin(flashAngle + (float)Math.PI) * LightTexture.Height
+                ),
+                SpriteEffects.None,
+                ScreenManager.Instance.FlashlightLayer
+            );
             spriteBatch.Draw
             (
                 flashLightTexture,
@@ -169,7 +154,7 @@ namespace Optic_Coma
                 ),
                 null,
                 Color.White,
-                flashAngle,
+                (float)Math.PI + flashAngle,
                 new Vector2
                 (
                     flashLightTexture.Width / 2,
@@ -185,7 +170,7 @@ namespace Optic_Coma
     {
         float enemyAngle = 0f;
         public Texture2D Texture { get; set; }
-        public Vector2 CurrentPosition;
+
         static Random random;
         int speed;
         int dir;
@@ -196,14 +181,14 @@ namespace Optic_Coma
         {
             random = new Random();
             Texture = texture;
-            CurrentPosition = initPosition;
+            currentPosition = initPosition;
             speed = 2 + acceleration;
             moveAmp = -1;
         }
 
         public override void Update()
         {
-            enemyAngle = (float)(Math.Atan2(Player.currentPosition.Y - CurrentPosition.Y, Player.currentPosition.X - CurrentPosition.X)) + (float)Math.PI;
+            enemyAngle = (float)(Math.Atan2(Player.currentPosToSend.Y - currentPosition.Y, Player.currentPosToSend.X - currentPosition.X)) + (float)Math.PI;
             //moveAmp += 0.001f;
             moveAmp = 2; //We can toy around with this later.
             dir = random.Next(0, 4);
@@ -213,20 +198,20 @@ namespace Optic_Coma
         {
             dir = random.Next(0, 4);
             if (dir == 0)
-                CurrentPosition.Y -= (4 * walkMult((float)Math.PI / 2, enemyAngle, moveAmp, false));
+                currentPosition.Y -= (4 * walkMult((float)Math.PI / 2, enemyAngle, moveAmp, false));
             else if (dir == 1)
-                CurrentPosition.X -= (4 * walkMult(0, enemyAngle, moveAmp, false));
+                currentPosition.X -= (4 * walkMult(0, enemyAngle, moveAmp, false));
             else if (dir == 2)
-                CurrentPosition.Y += (4 * walkMult(3 * (float)Math.PI / 2, enemyAngle, moveAmp, false));
+                currentPosition.Y += (4 * walkMult(3 * (float)Math.PI / 2, enemyAngle, moveAmp, false));
             else
-                CurrentPosition.X += (4 * walkMult((float)Math.PI, enemyAngle, moveAmp, false));
+                currentPosition.X += (4 * walkMult((float)Math.PI, enemyAngle, moveAmp, false));
             spriteBatch.Draw
             (
                 Texture,
                 new Rectangle
                 (
-                    (int)CurrentPosition.X,
-                    (int)CurrentPosition.Y,
+                    (int)currentPosition.X,
+                    (int)currentPosition.Y,
                     Texture.Width,
                     Texture.Height
                 ),

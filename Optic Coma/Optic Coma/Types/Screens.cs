@@ -81,6 +81,7 @@ namespace Optic_Coma
     }
     class LevelScreen : BaseScreen
     {
+        public Vector2 LevelSize;
         public override void LoadContent()
         {
             base.LoadContent();
@@ -245,8 +246,15 @@ namespace Optic_Coma
         }
 
         List<Vector2> goodTiles = new List<Vector2>();
+        Vector2 TileOffsetLocation;
+        
+
+        List <Entity> nonPlayerEntities = new List<Entity>();
 
         #region fields
+
+        Vector2 mouseLoc;
+
         public bool IsPaused = false;
 
         Effect l1, l2;
@@ -268,6 +276,7 @@ namespace Optic_Coma
 
         TileSystem tileSystem;
 
+        Texture2D lightTexture;
         Texture2D flashLightTexture;
         Texture2D playerTexture;
         Texture2D enemyTexture;
@@ -300,7 +309,9 @@ namespace Optic_Coma
         public override void LoadContent()
         {
             IsPaused = false;
-            
+
+            LevelSize = new Vector2(ScreenManager.Instance.Dimensions.X * 2, ScreenManager.Instance.Dimensions.Y * 2);
+
             base.LoadContent();
             for (int i = 10; i < 20; i++)
             {
@@ -363,7 +374,7 @@ namespace Optic_Coma
                                         ScreenManager.Instance.Dimensions.Y / 2 + 64 - 128);
             #endregion
             #region entities
-            
+            lightTexture = content.Load<Texture2D>("light");
             flashLightTexture = content.Load<Texture2D>(flashPath);
             playerTexture = content.Load<Texture2D>(playerPath);
             enemyTexture = content.Load<Texture2D>(enemyPath);
@@ -374,10 +385,11 @@ namespace Optic_Coma
             enemyPos = new Vector2(ScreenManager.Instance.Dimensions.X / 4 - playerTexture.Width / 2,
                                      ScreenManager.Instance.Dimensions.Y / 4 - playerTexture.Height / 8);
 
-            player = new Player(playerTexture, playerPos, flashLightTexture);
+            player = new Player(playerTexture, playerPos, flashLightTexture, lightTexture);
 
             enemies.Add(new Enemy(enemyTexture, enemyPos));
             enemies.Add(new Enemy(enemyTexture, new Vector2(ScreenManager.Instance.Dimensions.X - enemyPos.X, ScreenManager.Instance.Dimensions.X - enemyPos.Y)));
+            foreach (var enemy in enemies) nonPlayerEntities.Add(enemy);
             #endregion
 
 
@@ -459,7 +471,69 @@ namespace Optic_Coma
                 */
                 #endregion
 
-                player.Update();
+                MouseState curMouse = Mouse.GetState();
+
+                mouseLoc = new Vector2(curMouse.X, curMouse.Y);
+                mouseLoc.X = curMouse.X;
+                mouseLoc.Y = curMouse.Y;
+
+                player.facingDirection = mouseLoc - player.currentPosition;
+
+                // using radians
+                // measure clockwise from left
+                player.flashAngle = (float)(Math.Atan2(player.facingDirection.Y, player.facingDirection.X)) + (float)Math.PI;
+
+                if ((player.flashAngle > 0 && player.flashAngle <= Math.PI / 4) || (player.flashAngle > Math.PI * 7 / 4 && player.flashAngle <= 2 * Math.PI))
+                {
+                    player.playerAngle = (float)Math.PI; //Right
+                }
+                else if (player.flashAngle > Math.PI / 4 && player.flashAngle <= Math.PI * 3 / 4)
+                {
+                    player.playerAngle = -(float)Math.PI / 2; //Down
+                }
+                else if (player.flashAngle > Math.PI * 3 / 4 && player.flashAngle <= Math.PI * 5 / 4)
+                {
+                    player.playerAngle = 0f; //Left
+                }
+                else if (player.flashAngle > Math.PI * 5 / 4 && player.flashAngle <= Math.PI * 7 / 4)
+                {
+                    player.playerAngle = (float)Math.PI / 2; //Up
+                }
+                KeyboardState keyState = Keyboard.GetState();
+
+                if (keyState.IsKeyDown(Keys.W))
+                {
+                    foreach (var nonPlayer in nonPlayerEntities)
+                    {
+                        nonPlayer.currentPosition.Y += (4 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
+                    }
+                    TileOffsetLocation.Y += (4 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
+                }
+                if (keyState.IsKeyDown(Keys.A))
+                {
+                    foreach (var nonPlayer in nonPlayerEntities)
+                    {
+                        nonPlayer.currentPosition.X += (4 * Entity.walkMult(0, player.flashAngle, 1, false));
+                    }
+                    TileOffsetLocation.X += (4 * Entity.walkMult(0, player.flashAngle, 1, false));
+                }
+                if (keyState.IsKeyDown(Keys.S))
+                {
+                    foreach (var nonPlayer in nonPlayerEntities)
+                    {
+                        nonPlayer.currentPosition.Y -= (4 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
+                    }
+                    TileOffsetLocation.Y -= (4 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
+                }
+                if (keyState.IsKeyDown(Keys.D))
+                {
+                    foreach (var nonPlayer in nonPlayerEntities)
+                    {
+                        nonPlayer.currentPosition.X -= (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
+                    }
+                    TileOffsetLocation.X -= (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
+                }
+
                 foreach (Enemy enemy in enemies)
                 {
                     enemy.Update();
@@ -534,7 +608,7 @@ namespace Optic_Coma
                     enemy.Draw(spriteBatch);
                 }
                 player.Draw(spriteBatch, buttonFont);
-                tileSystem.Draw(floorTexture, spriteBatch, goodTiles);
+                tileSystem.Draw(floorTexture, spriteBatch, goodTiles, TileOffsetLocation, LevelSize);
                 
                 pauseButton.Draw
                 (
