@@ -534,7 +534,7 @@ namespace Optic_Coma
                     TileOffsetLocation.X -= (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
                 }
 
-                foreach (Enemy enemy in enemies)
+                foreach (Enemy enemy in nonPlayerEntities)
                 {
                     enemy.Update();
                 }

@@ -8,6 +8,7 @@ namespace Optic_Coma
     public abstract class Entity
     {
         public Vector2 currentPosition;
+        public static Vector2 centerScreen = new Vector2(ScreenManager.Instance.Dimensions.X / 2, ScreenManager.Instance.Dimensions.Y / 2);
         public Entity()
         {
 
@@ -75,16 +76,14 @@ namespace Optic_Coma
         public float playerAngle = 0f;
         public Vector2 facingDirection;
         public Texture2D Texture { get; set; }
-        public Vector2 initPosition;
+        
         public Texture2D LightTexture;
-        public static Vector2 currentPosToSend;
 
         Texture2D flashLightTexture;
 
         public Player(Texture2D texture, Vector2 initPos, Texture2D flashlightTexture, Texture2D lightTexture)
         {
             LightTexture = lightTexture;
-            initPosition = initPos;
             currentPosition = initPos;
             Texture = texture;
             flashLightTexture = flashlightTexture;
@@ -92,8 +91,6 @@ namespace Optic_Coma
 
         public override void Update()
         {
-            currentPosToSend = currentPosition;
-
         }
 
         public override void Draw(SpriteBatch spriteBatch, SpriteFont font)
@@ -106,8 +103,8 @@ namespace Optic_Coma
                 Texture,
                 new Rectangle
                 (
-                    (int)currentPosition.X,
-                    (int)currentPosition.Y,
+                    (int)centerScreen.X,
+                    (int)centerScreen.Y,
                     Texture.Width,
                     Texture.Height
                 ),
@@ -126,8 +123,8 @@ namespace Optic_Coma
                 LightTexture,
                 new Rectangle
                 (
-                    (int)currentPosition.X,
-                    (int)currentPosition.Y - LightTexture.Height / 2,
+                    (int)centerScreen.X,
+                    (int)centerScreen.Y ,
                     LightTexture.Width,
                     LightTexture.Height
                 ),
@@ -137,7 +134,7 @@ namespace Optic_Coma
                 new Vector2
                 (
                     0,
-                    (float)Math.Sin(flashAngle + (float)Math.PI) * LightTexture.Height
+                    LightTexture.Height / 2
                 ),
                 SpriteEffects.None,
                 ScreenManager.Instance.FlashlightLayer
@@ -147,8 +144,8 @@ namespace Optic_Coma
                 flashLightTexture,
                 new Rectangle
                 (
-                    (int)currentPosition.X,
-                    (int)currentPosition.Y,
+                    (int)centerScreen.X,
+                    (int)centerScreen.Y,
                     flashLightTexture.Width,
                     flashLightTexture.Height
                 ),
@@ -188,7 +185,8 @@ namespace Optic_Coma
 
         public override void Update()
         {
-            enemyAngle = (float)(Math.Atan2(Player.currentPosToSend.Y - currentPosition.Y, Player.currentPosToSend.X - currentPosition.X)) + (float)Math.PI;
+            enemyAngle = (float)(Math.Atan2(centerScreen.Y - currentPosition.Y,
+                centerScreen.X - currentPosition.X)) + (float)Math.PI;
             //moveAmp += 0.001f;
             moveAmp = 2; //We can toy around with this later.
             dir = random.Next(0, 4);
@@ -205,6 +203,7 @@ namespace Optic_Coma
                 currentPosition.Y += (4 * walkMult(3 * (float)Math.PI / 2, enemyAngle, moveAmp, false));
             else
                 currentPosition.X += (4 * walkMult((float)Math.PI, enemyAngle, moveAmp, false));
+
             spriteBatch.Draw
             (
                 Texture,
