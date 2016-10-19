@@ -7,8 +7,8 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using System.Xml.Serialization;
 using System.Threading;
-using System.Threading.Tasks;
 using System.ComponentModel;
+
 namespace Optic_Coma
 {
     public class BaseScreen
@@ -247,14 +247,10 @@ namespace Optic_Coma
             type = GetType();
         }
 
-        List<Vector2> goodTiles = new List<Vector2>();
-        Vector2 TileOffsetLocation;
-        BackgroundWorker loader = new BackgroundWorker();
-        volatile bool hasLoaded;
-        List <Entity> nonPlayerEntities = new List<Entity>();
-
         #region fields
         Texture2D loadingScreen;
+        BackgroundWorker loader = new BackgroundWorker();
+        volatile bool hasLoaded; //volatile means that the variable can be used in multiple threads at once
 
         Vector2 mouseLoc;
 
@@ -276,6 +272,7 @@ namespace Optic_Coma
         Player player;
 
         List<Enemy> enemies = new List<Enemy>();
+        List<Entity> nonPlayerEntities = new List<Entity>();
 
         TileSystem tileSystem;
 
@@ -284,6 +281,8 @@ namespace Optic_Coma
         Texture2D playerTexture;
         Texture2D enemyTexture;
         Texture2D floorTexture;
+        List<Vector2> goodTiles = new List<Vector2>();
+        Vector2 TileOffsetLocation;
         Vector2 playerPos;
         Vector2 enemyPos;
         string playerPath = "player";
