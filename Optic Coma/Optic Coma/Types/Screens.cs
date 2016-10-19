@@ -252,8 +252,9 @@ namespace Optic_Coma
         BackgroundWorker loader = new BackgroundWorker();
         volatile bool hasLoaded;
         List <Entity> nonPlayerEntities = new List<Entity>();
-        
+
         #region fields
+        Texture2D loadingScreen;
 
         Vector2 mouseLoc;
 
@@ -308,6 +309,7 @@ namespace Optic_Coma
         public float musicVolume = 0.02f;
         #endregion
 
+        //this method is called after everything loads
         protected void Complete(object sender, RunWorkerCompletedEventArgs e)
         {
             loader.DoWork -= LoadAsync;
@@ -315,13 +317,16 @@ namespace Optic_Coma
             loader = null;
             hasLoaded = true;
         }
+        //this method is called by a background thread while the loading screen is displayed
         protected void LoadAsync(object sender, DoWorkEventArgs e)
         {
             IsPaused = false;
-            
+
+            Thread.Sleep(2000); //for testing the loading screen
+
             LevelSize = new Vector2(ScreenManager.Instance.Dimensions.X * 2, ScreenManager.Instance.Dimensions.Y * 2);
 
-            base.LoadContent();
+            
             for (int i = 10; i < 20; i++)
             {
                 for (int j = 3; j < 5; j++)
@@ -401,12 +406,17 @@ namespace Optic_Coma
             #endregion
             return;
         }
+        
         public override void LoadContent()
         {
+            base.LoadContent();
+            loadingScreen = content.Load<Texture2D>("loadingScreen");
             hasLoaded = false;
-            loader.DoWork += new DoWorkEventHandler(LoadAsync);
-            loader.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Complete);
-            loader.RunWorkerAsync();
+
+            //"loader" is a "BackgroundWorker", meaning it opens up a thread and performs a method while the program can continue running
+            loader.DoWork += new DoWorkEventHandler(LoadAsync); //makes the action to perform "LoadAsync()"
+            loader.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Complete); //makes the action to perform when done "Complete()"
+            loader.RunWorkerAsync(); //runs the worker then continues the game loop (right now just the loading screen until everything is done)
             
         }
         public override void UnloadContent()
@@ -681,7 +691,10 @@ namespace Optic_Coma
                 }
                 #endregion
             }
+            else
+            {
+                spriteBatch.Draw(loadingScreen, new Rectangle(0, 0, 1024, 800), Color.White);
+            }
         }
-        
     }
 }
