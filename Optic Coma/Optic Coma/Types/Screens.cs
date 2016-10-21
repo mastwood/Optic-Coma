@@ -326,7 +326,7 @@ namespace Optic_Coma
             LevelSize = new Vector2(ScreenManager.Instance.Dimensions.X * 2, ScreenManager.Instance.Dimensions.Y * 2);
 
             
-            for (int i = 10; i < 20; i++)
+            for (int i = 10; i < 30; i++)
             {
                 for (int j = 3; j < 5; j++)
                 {
@@ -334,9 +334,9 @@ namespace Optic_Coma
                 }
             }
 
-            for (int i = 5; i < 7; i++)
+            for (int i = 5; i < 30; i++)
             {
-                for (int j = 5; j < 25; j++)
+                for (int j = 5; j < 10; j++)
                 {
                     goodTiles.Add(new Vector2(i, j));
                 }
