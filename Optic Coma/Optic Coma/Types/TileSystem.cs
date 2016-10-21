@@ -9,11 +9,11 @@ namespace Optic_Coma
         int width, height;
         int rows, columns;
         int[,] chosenRow, chosenColumn;
-
+        List<Vector2> goodTiles = new List<Vector2>();
         Random random = new Random();
         Vector2 location;
         //This method is called when you make a new TileSystem.
-        public TileSystem(int numRows, int numColumns)
+        public TileSystem(int numRows, int numColumns, int level)
         {
             rows = numRows;
             columns = numColumns;
@@ -31,10 +31,28 @@ namespace Optic_Coma
                     chosenColumn[i, j] = random.Next(0, columns);
                 }
             }
+            if (level == 1)
+            {
+                for (int i = 10; i < 30; i++)
+                {
+                    for (int j = 3; j < 5; j++)
+                    {
+                        goodTiles.Add(new Vector2(i, j));
+                    }
+                }
+
+                for (int i = 5; i < 30; i++)
+                {
+                    for (int j = 5; j < 10; j++)
+                    {
+                        goodTiles.Add(new Vector2(i, j));
+                    }
+                }
+            }
         }
 
         //Calling draw to draw our tiles across the entire screen.
-        public void Draw(Texture2D texture, SpriteBatch spriteBatch, List<Vector2> goodTiles, Vector2 locOffset, Vector2 LevelSize)
+        public void Draw(Texture2D texture, SpriteBatch spriteBatch, Vector2 locOffset, Vector2 LevelSize)
         {
             width = texture.Width / columns;
             height = texture.Height / rows;

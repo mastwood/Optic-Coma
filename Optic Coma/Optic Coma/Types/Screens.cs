@@ -281,7 +281,7 @@ namespace Optic_Coma
         Texture2D playerTexture;
         Texture2D enemyTexture;
         Texture2D floorTexture;
-        List<Vector2> goodTiles = new List<Vector2>();
+        
         Vector2 TileOffsetLocation;
         Vector2 playerPos;
         Vector2 enemyPos;
@@ -326,21 +326,7 @@ namespace Optic_Coma
             LevelSize = new Vector2(ScreenManager.Instance.Dimensions.X * 2, ScreenManager.Instance.Dimensions.Y * 2);
 
             
-            for (int i = 10; i < 30; i++)
-            {
-                for (int j = 3; j < 5; j++)
-                {
-                    goodTiles.Add(new Vector2(i, j));
-                }
-            }
-
-            for (int i = 5; i < 30; i++)
-            {
-                for (int j = 5; j < 10; j++)
-                {
-                    goodTiles.Add(new Vector2(i, j));
-                }
-            }
+            
 
             #region Lighting
             floortextestC = content.Load<Texture2D>("floortextest_COLOR");
@@ -361,7 +347,7 @@ namespace Optic_Coma
             floortextestB = content.Load<Texture2D>("floortextest_SPEC");
             #endregion
 
-            tileSystem = new TileSystem(4, 4);
+            tileSystem = new TileSystem(4, 4, 1);
             floorTexture = content.Load<Texture2D>("floorSheet");
             music = content.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
@@ -640,7 +626,7 @@ namespace Optic_Coma
                         enemy.Draw(spriteBatch);
                     }
                     player.Draw(spriteBatch, buttonFont);
-                    tileSystem.Draw(floorTexture, spriteBatch, goodTiles, TileOffsetLocation, LevelSize);
+                    tileSystem.Draw(floorTexture, spriteBatch, TileOffsetLocation, LevelSize);
 
                     pauseButton.Draw
                     (
