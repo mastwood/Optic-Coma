@@ -42,7 +42,7 @@ namespace Optic_Coma
             //bottom
             for (int i = 0; i < Math.Floor(levelSize.X / (floorTexture.Width / columns)); i++)
             {
-                goodTiles.Add(new Vector2(i, ((levelSize.Y / (floorTexture.Height / rows)) - (floorTexture.Height / rows))));
+                goodTiles.Add(new Vector2(i, (levelSize.Y / (floorTexture.Height / rows)) - 1));
             }
             //left 
             for (int j = 0; j < Math.Floor(levelSize.Y / (floorTexture.Height / rows)); j++)
@@ -52,7 +52,7 @@ namespace Optic_Coma
             //right
             for (int j = 0; j < Math.Floor(levelSize.Y / (floorTexture.Height / rows)); j++)
             {
-                goodTiles.Add(new Vector2(((levelSize.X / (floorTexture.Width / columns)) - (floorTexture.Width / columns)), j));
+                goodTiles.Add(new Vector2(((levelSize.X / (floorTexture.Width / columns)) - 1), j));
             }
             //Each level will have a different layout of goodtiles.
             if (level == 1)
