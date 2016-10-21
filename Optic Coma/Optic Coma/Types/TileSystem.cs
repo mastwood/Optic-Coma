@@ -33,6 +33,27 @@ namespace Optic_Coma
                     chosenColumn[i, j] = random.Next(0, columns);
                 }
             }
+            //First, I draw tiles around the level border.
+            //top
+            for (int i = 0; i < Math.Floor(levelSize.X / (floorTexture.Width / columns)); i++)
+            {
+                goodTiles.Add(new Vector2(i, 0));
+            }
+            //bottom
+            for (int i = 0; i < Math.Floor(levelSize.X / (floorTexture.Width / columns)); i++)
+            {
+                goodTiles.Add(new Vector2(i, ((levelSize.Y / (floorTexture.Height / rows)) - (floorTexture.Height / rows))));
+            }
+            //left 
+            for (int j = 0; j < Math.Floor(levelSize.Y / (floorTexture.Height / rows)); j++)
+            {
+                goodTiles.Add(new Vector2(0, j));
+            }
+            //right
+            for (int j = 0; j < Math.Floor(levelSize.Y / (floorTexture.Height / rows)); j++)
+            {
+                goodTiles.Add(new Vector2(((levelSize.X / (floorTexture.Width / columns)) - (floorTexture.Width / columns)), j));
+            }
             //Each level will have a different layout of goodtiles.
             if (level == 1)
             {
