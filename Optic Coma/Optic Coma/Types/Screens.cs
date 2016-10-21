@@ -345,10 +345,10 @@ namespace Optic_Coma
             lCollection.Add(testLight);
             floortextestN = content.Load<Texture2D>("floortextest_NRM");
             floortextestB = content.Load<Texture2D>("floortextest_SPEC");
-            #endregion
+            #endregion         
 
-            tileSystem = new TileSystem(4, 4, 1);
             floorTexture = content.Load<Texture2D>("floorSheet");
+            tileSystem = new TileSystem(floorTexture, 4, 4, 1);
             music = content.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
             musicInstance.IsLooped = true;
@@ -626,7 +626,7 @@ namespace Optic_Coma
                         enemy.Draw(spriteBatch);
                     }
                     player.Draw(spriteBatch, buttonFont);
-                    tileSystem.Draw(floorTexture, spriteBatch, TileOffsetLocation, LevelSize);
+                    tileSystem.Draw(spriteBatch, TileOffsetLocation, LevelSize);
 
                     pauseButton.Draw
                     (
