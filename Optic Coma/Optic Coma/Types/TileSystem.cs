@@ -14,20 +14,20 @@ namespace Optic_Coma
         Vector2 location;
         Texture2D texture;
         //This method is called when you make a new TileSystem.
-        public TileSystem(Texture2D floorTexture, int numRows, int numColumns, int level)
+        public TileSystem(Texture2D floorTexture, int numRows, int numColumns, int level, Vector2 levelSize)
         {
             texture = floorTexture;
             rows = numRows;           
             columns = numColumns;
-            chosenRow = new int[(int)ScreenManager.Instance.Dimensions.X, (int)ScreenManager.Instance.Dimensions.Y];
-            chosenColumn = new int[(int)ScreenManager.Instance.Dimensions.X, (int)ScreenManager.Instance.Dimensions.Y];
+            chosenRow = new int[(int)levelSize.X, (int)levelSize.Y];
+            chosenColumn = new int[(int)levelSize.X, (int)levelSize.Y];
             width = 0;
             height = 0;
             location = Vector2.Zero;
 
-            for (int i = 0; i < ScreenManager.Instance.Dimensions.X; i++)
+            for (int i = 0; i < levelSize.X; i++)
             {
-                for (int j = 0; j < ScreenManager.Instance.Dimensions.Y; j++)
+                for (int j = 0; j < levelSize.Y; j++)
                 {
                     chosenRow[i, j] = random.Next(0, rows);
                     chosenColumn[i, j] = random.Next(0, columns);

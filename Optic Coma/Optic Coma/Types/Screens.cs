@@ -348,7 +348,7 @@ namespace Optic_Coma
             #endregion         
 
             floorTexture = content.Load<Texture2D>("floorSheet");
-            tileSystem = new TileSystem(floorTexture, 4, 4, 1);
+            tileSystem = new TileSystem(floorTexture, 4, 4, 1, LevelSize);
             music = content.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
             musicInstance.IsLooped = true;
