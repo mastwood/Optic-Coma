@@ -321,12 +321,9 @@ namespace Optic_Coma
         {
             IsPaused = false;
 
-            Thread.Sleep(2000); //for testing the loading screen
+            //Thread.Sleep(2000); //for testing the loading screen
 
             LevelSize = new Vector2(ScreenManager.Instance.Dimensions.X * 2, ScreenManager.Instance.Dimensions.Y * 2);
-
-            
-            
 
             #region Lighting
             floortextestC = content.Load<Texture2D>("floortextest_COLOR");
@@ -516,35 +513,47 @@ namespace Optic_Coma
 
                     if (keyState.IsKeyDown(Keys.W))
                     {
-                        foreach (var nonPlayer in nonPlayerEntities)
+                        if (TileOffsetLocation.Y + (4 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false)) <= 368)
                         {
-                            nonPlayer.currentPosition.Y += (4 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
+                            foreach (var nonPlayer in nonPlayerEntities)
+                            {
+                                nonPlayer.currentPosition.Y += (4 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
+                            }
+                            TileOffsetLocation.Y += (4 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
                         }
-                        TileOffsetLocation.Y += (4 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
                     }
                     if (keyState.IsKeyDown(Keys.A))
                     {
-                        foreach (var nonPlayer in nonPlayerEntities)
+                        if (TileOffsetLocation.X + (4 * Entity.walkMult(0, player.flashAngle, 1, false)) <= 478)
                         {
-                            nonPlayer.currentPosition.X += (4 * Entity.walkMult(0, player.flashAngle, 1, false));
+                            foreach (var nonPlayer in nonPlayerEntities)
+                            {
+                                nonPlayer.currentPosition.X += (4 * Entity.walkMult(0, player.flashAngle, 1, false));
+                            }
+                            TileOffsetLocation.X += (4 * Entity.walkMult(0, player.flashAngle, 1, false));
                         }
-                        TileOffsetLocation.X += (4 * Entity.walkMult(0, player.flashAngle, 1, false));
                     }
                     if (keyState.IsKeyDown(Keys.S))
                     {
-                        foreach (var nonPlayer in nonPlayerEntities)
+                        if (TileOffsetLocation.Y - (4 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false)) >= -1160)
                         {
-                            nonPlayer.currentPosition.Y -= (4 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
+                            foreach (var nonPlayer in nonPlayerEntities)
+                            {
+                                nonPlayer.currentPosition.Y -= (4 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
+                            }
+                            TileOffsetLocation.Y -= (4 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
                         }
-                        TileOffsetLocation.Y -= (4 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
                     }
                     if (keyState.IsKeyDown(Keys.D))
                     {
-                        foreach (var nonPlayer in nonPlayerEntities)
+                        if (TileOffsetLocation.X - (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false)) >= -1500)
                         {
-                            nonPlayer.currentPosition.X -= (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
+                            foreach (var nonPlayer in nonPlayerEntities)
+                            {
+                                nonPlayer.currentPosition.X -= (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
+                            }
+                            TileOffsetLocation.X -= (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
                         }
-                        TileOffsetLocation.X -= (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
                     }
                     #endregion
                     foreach (Enemy enemy in nonPlayerEntities)
@@ -628,6 +637,7 @@ namespace Optic_Coma
                     player.Draw(spriteBatch, buttonFont);
                     tileSystem.Draw(spriteBatch, TileOffsetLocation, LevelSize);
 
+                    spriteBatch.DrawString(buttonFont, "" + TileOffsetLocation.X + "," + TileOffsetLocation.Y, new Vector2(400, 0), Color.White);
                     pauseButton.Draw
                     (
                         buttonSheet,
