@@ -83,6 +83,7 @@ namespace Optic_Coma
     }
     class LevelScreen : BaseScreen
     {
+        public FrameCounter frameCounter = new FrameCounter();
         public Vector2 LevelSize;
         public override void LoadContent()
         {
@@ -248,6 +249,7 @@ namespace Optic_Coma
         }
 
         #region fields
+        
         Texture2D loadingScreen;
         BackgroundWorker loader = new BackgroundWorker();
         volatile bool hasLoaded; //volatile means that the variable can be used in multiple threads at once
@@ -255,6 +257,10 @@ namespace Optic_Coma
         Vector2 mouseLoc;
 
         public bool IsPaused = false;
+
+        List<Rectangle> acceptedMovementBoxes;
+        Texture2D debugColRect;
+        List<Vector2> movementTiles;
 
         Effect l1, l2;
         Lighting lightEngine;
@@ -266,6 +272,8 @@ namespace Optic_Coma
 
         int screenWidth = (int)ScreenManager.Instance.Dimensions.X;
         int screenHeight = (int)ScreenManager.Instance.Dimensions.Y;
+
+        float deltaTime;
 
         Random random = new Random();
 
@@ -335,17 +343,35 @@ namespace Optic_Coma
                 IsEnabled = true,
                 Color = new Vector4(100.0f, 100.0f, 100.0f, 255.0f),
                 Power = 1,
-                LightDecay = 100,
+                LightDecay = 10,
                 Position = new Vector3(300, 300, 20)
             };
             lCollection = new List<Light>();
             lCollection.Add(testLight);
             floortextestN = content.Load<Texture2D>("floortextest_NRM");
             floortextestB = content.Load<Texture2D>("floortextest_SPEC");
-            #endregion         
-
+            #endregion
+            #region tiles
+            movementTiles = new List<Vector2>();
+            for (int i = 10; i < 30; i++)
+            {
+                for (int j = 3; j < 5; j++)
+                {
+                    movementTiles.Add(new Vector2(i, j));
+                }
+            }
+            for (int i = 5; i < 30; i++)
+            {
+                for (int j = 5; j < 10; j++)
+                {
+                    movementTiles.Add(new Vector2(i, j));
+                }
+            }
+            debugColRect = content.Load<Texture2D>("rectbox");
             floorTexture = content.Load<Texture2D>("floorSheet");
-            tileSystem = new TileSystem(floorTexture, 4, 4, 1, LevelSize);
+            tileSystem = new TileSystem(debugColRect, 1, 1, 1, LevelSize, movementTiles);
+            #endregion
+
             music = content.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
             musicInstance.IsLooped = true;
@@ -409,6 +435,9 @@ namespace Optic_Coma
         {
             if (hasLoaded)
             {
+                deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                frameCounter.Update(deltaTime);
+
                 if (!IsPaused)
                 {
                     Color[] playerColor = new Color[64 * 64];
@@ -513,46 +542,46 @@ namespace Optic_Coma
 
                     if (keyState.IsKeyDown(Keys.W))
                     {
-                        if (TileOffsetLocation.Y + (4 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false)) <= 368)
+                        if (TileOffsetLocation.Y + (4.25 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false)) <= 368)
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
-                                nonPlayer.currentPosition.Y += (4 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
+                                nonPlayer.currentPosition.Y += (float)(4.25 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
                             }
-                            TileOffsetLocation.Y += (4 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
+                            TileOffsetLocation.Y += (float)(4.25 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
                         }
                     }
                     if (keyState.IsKeyDown(Keys.A))
                     {
-                        if (TileOffsetLocation.X + (4 * Entity.walkMult(0, player.flashAngle, 1, false)) <= 478)
+                        if (TileOffsetLocation.X + (4.25 * Entity.walkMult(0, player.flashAngle, 1, false)) <= 478)
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
-                                nonPlayer.currentPosition.X += (4 * Entity.walkMult(0, player.flashAngle, 1, false));
+                                nonPlayer.currentPosition.X += (float)(4.25 * Entity.walkMult(0, player.flashAngle, 1, false));
                             }
-                            TileOffsetLocation.X += (4 * Entity.walkMult(0, player.flashAngle, 1, false));
+                            TileOffsetLocation.X += (float)(4.25 * Entity.walkMult(0, player.flashAngle, 1, false));
                         }
                     }
                     if (keyState.IsKeyDown(Keys.S))
                     {
-                        if (TileOffsetLocation.Y - (4 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false)) >= -1160)
+                        if (TileOffsetLocation.Y - (4.25 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false)) >= -1160)
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
-                                nonPlayer.currentPosition.Y -= (4 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
+                                nonPlayer.currentPosition.Y -= (float)(4.25 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
                             }
-                            TileOffsetLocation.Y -= (4 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
+                            TileOffsetLocation.Y -= (float)(4.25 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
                         }
                     }
                     if (keyState.IsKeyDown(Keys.D))
                     {
-                        if (TileOffsetLocation.X - (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false)) >= -1500)
+                        if (TileOffsetLocation.X - (4.25 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false)) >= -1500)
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
-                                nonPlayer.currentPosition.X -= (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
+                                nonPlayer.currentPosition.X -= (float)(4.25 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
                             }
-                            TileOffsetLocation.X -= (4 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
+                            TileOffsetLocation.X -= (float)(4.25 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
                         }
                     }
                     #endregion
@@ -604,6 +633,9 @@ namespace Optic_Coma
         {
             if (hasLoaded)
             {
+
+                var fps = string.Format("FPS: {0}", frameCounter.AverageFramesPerSecond);
+
                 #region when not paused
                 if (!IsPaused)
                 {
@@ -638,6 +670,8 @@ namespace Optic_Coma
                     tileSystem.Draw(spriteBatch, TileOffsetLocation, LevelSize);
 
                     spriteBatch.DrawString(buttonFont, "" + TileOffsetLocation.X + "," + TileOffsetLocation.Y, new Vector2(400, 0), Color.White);
+                    spriteBatch.DrawString(buttonFont, fps, new Vector2(1, 65), Color.White);
+
                     pauseButton.Draw
                     (
                         buttonSheet,

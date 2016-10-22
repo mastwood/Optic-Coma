@@ -15,8 +15,9 @@ namespace Optic_Coma
         Vector2 location;
         Texture2D texture;
         //This method is called when you make a new TileSystem.
-        public TileSystem(Texture2D borderTexture, int numRows, int numColumns, int level, Vector2 levelSize)
+        public TileSystem(Texture2D borderTexture, int numRows, int numColumns, int level, Vector2 levelSize, List<Vector2> gT)
         {
+            goodTiles = gT;
             texture = borderTexture;
             rows = numRows;           
             columns = numColumns;
@@ -56,24 +57,8 @@ namespace Optic_Coma
                 borderTiles.Add(new Vector2(((levelSize.X / (borderTexture.Width / columns)) - 1), j));
             }
             //Each level will have a different layout of goodtiles.
-            if (level == 1)
-            {
-                for (int i = 10; i < 30; i++)
-                {
-                    for (int j = 3; j < 5; j++)
-                    {
-                        goodTiles.Add(new Vector2(i, j));
-                    }
-                }
-
-                for (int i = 5; i < 30; i++)
-                {
-                    for (int j = 5; j < 10; j++)
-                    {
-                        goodTiles.Add(new Vector2(i, j));
-                    }
-                }
-            }
+            
+            
         }
 
         //Calling draw to draw our tiles across the entire screen.

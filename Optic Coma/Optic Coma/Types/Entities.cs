@@ -179,7 +179,7 @@ namespace Optic_Coma
             random = new Random();
             Texture = texture;
             currentPosition = initPosition;
-            speed = 2 + acceleration;
+            speed = 4 + acceleration;
             moveAmp = -1;
         }
 
@@ -188,7 +188,7 @@ namespace Optic_Coma
             enemyAngle = (float)(Math.Atan2(centerScreen.Y - currentPosition.Y,
                 centerScreen.X - currentPosition.X)) + (float)Math.PI;
             //moveAmp += 0.001f;
-            moveAmp = 2; //We can toy around with this later.
+            moveAmp = 4; //We can toy around with this later.
             dir = random.Next(0, 4);
         }
 
