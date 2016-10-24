@@ -90,7 +90,7 @@ namespace Optic_Coma
     {
         public FrameCounter frameCounter = new FrameCounter();
         public Vector2 LevelSize;
-        float getDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
+        public float getDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
         {
             double lowDist, curDist;
             lowDist = -1;
@@ -159,7 +159,6 @@ namespace Optic_Coma
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-
             spriteBatch.Draw
             (
                 bg,
