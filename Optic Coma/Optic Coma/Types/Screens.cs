@@ -88,15 +88,16 @@ namespace Optic_Coma
     }
     class LevelScreen : BaseScreen
     {
+        double lowDist, curDist;
         public FrameCounter frameCounter = new FrameCounter();
         public Vector2 LevelSize;
         public float getDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
         {
-            double lowDist, curDist;
             lowDist = -1;
             foreach (Enemy enemy in enemies)
             {
-                curDist = Math.Sqrt(
+                curDist = Math.Sqrt
+                (
                     Math.Pow((double)(Math.Abs(source.X - enemy.currentPosition.X)), 2) +
                     Math.Pow((double)(Math.Abs(source.Y - enemy.currentPosition.Y)), 2)
                 );
@@ -483,9 +484,9 @@ namespace Optic_Coma
                     {
                         enemy.Update();
                     }
-                    if(getDistToClosestEnemy(enemies, playerPos) < 254f)
+                    if(getDistToClosestEnemy(enemies, playerPos) <= 255f)
                     {
-                        testLight.Color = new Color(255, getDistToClosestEnemy(enemies, playerPos), getDistToClosestEnemy(enemies, playerPos), 255);
+                        testLight.Color = new Color(255f, getDistToClosestEnemy(enemies, playerPos), getDistToClosestEnemy(enemies, playerPos), 255f);
                     }
                     else
                     {
@@ -526,10 +527,12 @@ namespace Optic_Coma
 
                     spriteBatch.End();
                     Foundation.lightingEngine.Draw(gameTime);
+
                     spriteBatch.Begin(SpriteSortMode.BackToFront);
                     spriteBatch.DrawString(buttonFont, "Position: " + TileOffsetLocation.X + "," + TileOffsetLocation.Y, new Vector2(1, 84), Color.White);
                     spriteBatch.DrawString(buttonFont, fps, new Vector2(1, 65), Color.White);
                     spriteBatch.DrawString(buttonFont, "Lighting Debug Enabled?: " + Foundation.lightingEngine.Debug, new Vector2(1, 103), Color.White);
+                    spriteBatch.DrawString(buttonFont, "Distance to Closest Enemy: " + getDistToClosestEnemy(enemies, Entity.centerScreen), new Vector2(1, 123), Color.White);
                     pauseButton.Draw
                     (
                         buttonSheet,

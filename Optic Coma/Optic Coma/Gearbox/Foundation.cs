@@ -28,7 +28,7 @@ namespace Optic_Coma
         public string InstallDirectory;
         public Foundation()
         {
-            x = new XmlSerializer(typeof(GameState));
+            //x = new XmlSerializer(typeof(GameState));
             lightingEngine = new PenumbraComponent(this);
 
             IsMouseVisible = true;
