@@ -90,7 +90,7 @@ namespace Optic_Coma
     {
         public FrameCounter frameCounter = new FrameCounter();
         public Vector2 LevelSize;
-        float getDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
+        public float getDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
         {
             double lowDist, curDist;
             lowDist = -1;
@@ -483,6 +483,14 @@ namespace Optic_Coma
                     foreach (Enemy enemy in nonPlayerEntities)
                     {
                         enemy.Update();
+                    }
+                    if(getDistToClosestEnemy(enemies, playerPos) < 254f)
+                    {
+                        testLight.Color = new Color(255, getDistToClosestEnemy(enemies, playerPos), getDistToClosestEnemy(enemies, playerPos), 255);
+                    }
+                    else
+                    {
+                        testLight.Color = Color.White;
                     }
                     testLight.Rotation = (float)Math.PI + player.flashAngle;
                     Foundation.lightingEngine.Hulls.Clear();
