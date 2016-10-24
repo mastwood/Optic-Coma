@@ -122,6 +122,7 @@ namespace Optic_Coma
                 SpriteEffects.None,
                 ScreenManager.Instance.EntityLayer
             );
+            /*
             spriteBatch.Draw(
                 LightTexture,
                 new Rectangle
@@ -142,6 +143,7 @@ namespace Optic_Coma
                 SpriteEffects.None,
                 ScreenManager.Instance.FlashlightLayer
             );
+            */
             spriteBatch.Draw
             (
                 flashLightTexture,

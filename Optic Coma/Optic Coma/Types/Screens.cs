@@ -197,7 +197,7 @@ namespace Optic_Coma
 
         #region fields
 
-        PointLight testLight;
+        Spotlight testLight;
 
         Texture2D loadingScreen;
         BackgroundWorker loader = new BackgroundWorker();
@@ -268,7 +268,7 @@ namespace Optic_Coma
         protected void LoadAsync(object sender, DoWorkEventArgs e)
         {
             IsPaused = false;
-            testLight = new PointLight()
+            testLight = new Spotlight()
             {
                 Position = Entity.centerScreen,
                 Radius = 900,
@@ -467,6 +467,7 @@ namespace Optic_Coma
                     {
                         enemy.Update();
                     }
+                    testLight.Rotation = (float)Math.PI + player.flashAngle;
                     Foundation.lightingEngine.Hulls.Clear();
                     foreach(Entity e in nonPlayerEntities)
                     {
