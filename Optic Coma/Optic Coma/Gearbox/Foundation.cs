@@ -32,7 +32,7 @@ namespace Optic_Coma
             Content.RootDirectory = "Content";
             InstallDirectory = Content.RootDirectory;
             Components.Add(lightingEngine);
-            lightingEngine.AmbientColor = new Color(70,0,0,255);
+            lightingEngine.AmbientColor = new Color(30,0,0,255);
             lightingEngine.Debug = true;
         }
 
