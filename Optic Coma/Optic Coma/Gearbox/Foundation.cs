@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Penumbra;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
+
 namespace Optic_Coma
 {
     /// <summary>
@@ -11,6 +13,9 @@ namespace Optic_Coma
 
     public class Foundation : Game
     {
+
+        [XmlInclude(typeof int)] 
+
         public static PenumbraComponent lightingEngine;
 
         public static GraphicsDeviceManager graphics;
@@ -32,7 +37,7 @@ namespace Optic_Coma
             Content.RootDirectory = "Content";
             InstallDirectory = Content.RootDirectory;
             Components.Add(lightingEngine);
-            lightingEngine.AmbientColor = new Color(70,0,0,255);
+            lightingEngine.AmbientColor = new Color(30,0,0,255);
             lightingEngine.Debug = true;
         }
 

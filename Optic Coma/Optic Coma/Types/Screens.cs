@@ -488,7 +488,6 @@ namespace Optic_Coma
                 #region when not paused
                 if (!IsPaused)
                 {
-                    
                     spriteBatch.End();
 
                     Foundation.lightingEngine.BeginDraw();
