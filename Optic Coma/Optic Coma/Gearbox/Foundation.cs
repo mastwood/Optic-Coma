@@ -3,14 +3,18 @@ using Microsoft.Xna.Framework.Graphics;
 using Penumbra;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
+
 namespace Optic_Coma
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-
     public class Foundation : Game
     {
+        XmlSerializer x;
+        GameState g;
+
         public static PenumbraComponent lightingEngine;
 
         public static GraphicsDeviceManager graphics;
@@ -24,6 +28,7 @@ namespace Optic_Coma
         public string InstallDirectory;
         public Foundation()
         {
+            x = new XmlSerializer(typeof(GameState));
             lightingEngine = new PenumbraComponent(this);
 
             IsMouseVisible = true;
@@ -146,5 +151,10 @@ namespace Optic_Coma
             TotalSeconds += deltaTime;
             return true;
         }
+    }
+    struct GameState
+    {
+        public int STAGE;
+        public int SUBSTAGE;
     }
 }

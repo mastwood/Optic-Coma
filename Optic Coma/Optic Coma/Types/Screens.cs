@@ -159,7 +159,6 @@ namespace Optic_Coma
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-
             spriteBatch.Draw
             (
                 bg,
@@ -513,7 +512,6 @@ namespace Optic_Coma
                 #region when not paused
                 if (!IsPaused)
                 {
-                    
                     spriteBatch.End();
 
                     Foundation.lightingEngine.BeginDraw();
