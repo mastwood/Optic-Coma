@@ -98,8 +98,8 @@ namespace Optic_Coma
             {
                 curDist = Math.Sqrt
                 (
-                    Math.Pow((double)(Math.Abs(source.X - enemy.currentPosition.X)), 2) +
-                    Math.Pow((double)(Math.Abs(source.Y - enemy.currentPosition.Y)), 2)
+                    Math.Pow((Math.Abs(source.X - enemy.currentPosition.X)), 2) +
+                    Math.Pow((Math.Abs(source.Y - enemy.currentPosition.Y)), 2)
                 );
                 if( lowDist == -1 || curDist < lowDist)
                 {
@@ -484,9 +484,10 @@ namespace Optic_Coma
                     {
                         enemy.Update();
                     }
-                    if(getDistToClosestEnemy(enemies, playerPos) <= 255f)
+                    float dist = getDistToClosestEnemy(enemies, playerPos);
+                    if (dist <= 255f)
                     {
-                        testLight.Color = new Color(255f, getDistToClosestEnemy(enemies, playerPos), getDistToClosestEnemy(enemies, playerPos), 255f);
+                        testLight.Color = new Color(1f, dist / 255, dist / 255, 1f);
                     }
                     else
                     {
