@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Penumbra;
 using System.Collections.Generic;
 using System.Linq;
 namespace Optic_Coma
@@ -10,6 +11,8 @@ namespace Optic_Coma
 
     public class Foundation : Game
     {
+        public static PenumbraComponent lightingEngine;
+
         public static GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
@@ -21,11 +24,16 @@ namespace Optic_Coma
         public string InstallDirectory;
         public Foundation()
         {
+            lightingEngine = new PenumbraComponent(this);
+
             IsMouseVisible = true;
             graphics = new GraphicsDeviceManager(this);
 
             Content.RootDirectory = "Content";
             InstallDirectory = Content.RootDirectory;
+            Components.Add(lightingEngine);
+            lightingEngine.AmbientColor = Color.Black;
+            lightingEngine.Debug = true;
         }
 
         /// <summary>
@@ -56,7 +64,7 @@ namespace Optic_Coma
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             //Instantiate spriteBatch
-            ScreenManager.Instance.LoadContent(Content);
+            ScreenManager.Instance.LoadContent(Content, lightingEngine);
         }
 
         /// <summary>
@@ -87,7 +95,7 @@ namespace Optic_Coma
                 graphics.PreferredBackBufferHeight = (int)ScreenManager.Instance.Dimensions.Y;
                 graphics.IsFullScreen = false;
             }
-            ScreenManager.Instance.Update(gameTime);
+            ScreenManager.Instance.Update(gameTime, lightingEngine);
             base.Update(gameTime);
         }
 
@@ -98,12 +106,9 @@ namespace Optic_Coma
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            
             spriteBatch.Begin(SpriteSortMode.BackToFront);
-            ScreenManager.Instance.Draw(spriteBatch);
+            ScreenManager.Instance.Draw(spriteBatch, gameTime, lightingEngine);
             spriteBatch.End();
-
-            base.Draw(gameTime);
         }
     }
     public class FrameCounter

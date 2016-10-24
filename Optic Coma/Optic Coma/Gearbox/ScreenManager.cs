@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Penumbra;
 
 namespace Optic_Coma
 {
@@ -43,18 +44,21 @@ namespace Optic_Coma
             currentScreen = new MenuScreen();
 
         }
-        public void LoadContent(ContentManager Content)
+        public void LoadContent(ContentManager Content, PenumbraComponent lightingEngine)
         {
             this.Content = new ContentManager(Content.ServiceProvider, "Content");
             //instantiate content, then tell it where the content is stored as the 2nd parameter, as well as the pipeline to load the content, called "ServiceProvider"
-            currentScreen.LoadContent();
+            if(currentScreen is MenuScreen)
+                currentScreen.LoadContent();
+            else if(currentScreen is Level1Screen)
+                currentScreen.LoadContent();
             //Load whatever content is on the current screen into the window
         }
         public void UnloadContent()
         {
             currentScreen.UnloadContent();
         }
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, PenumbraComponent lightingEngine)
         {
             KeyboardState newState = Keyboard.GetState();
 
@@ -66,11 +70,19 @@ namespace Optic_Coma
 
             oldState = newState;
 
-            currentScreen.Update(gameTime);
+            if (currentScreen is Level1Screen)
+                currentScreen.Update(gameTime);
+            else if (currentScreen is MenuScreen)
+                currentScreen.Update(gameTime);
         }
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GameTime gT, PenumbraComponent lightingEngine)
         {
-            currentScreen.Draw(spriteBatch);
+            if (currentScreen is Level1Screen)
+            {
+                currentScreen.Draw(spriteBatch, gT);
+            }
+            else if (currentScreen is MenuScreen)
+                currentScreen.Draw(spriteBatch);
         }
 
         public void MenuKey_OnPress()

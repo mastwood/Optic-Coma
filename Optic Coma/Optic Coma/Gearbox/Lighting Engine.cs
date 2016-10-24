@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Optic_Coma
 {
+    /*
     public enum LightType
     {
         Point
@@ -298,4 +299,5 @@ namespace Optic_Coma
             AlphaDestinationBlend = Blend.One
         };
     }
+    */
 }

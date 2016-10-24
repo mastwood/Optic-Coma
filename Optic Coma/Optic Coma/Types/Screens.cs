@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Audio;
 using System.Xml.Serialization;
 using System.Threading;
 using System.ComponentModel;
+using Penumbra;
 
 namespace Optic_Coma
 {
@@ -35,6 +36,10 @@ namespace Optic_Coma
 
         }
         public virtual void Draw(SpriteBatch spriteBatch)
+        {
+
+        }
+        public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
 
         }
@@ -109,14 +114,11 @@ namespace Optic_Coma
         Texture2D enterButtonTexture;
         Vector2 enterButtonPos;
         Texture2D titleGraphic;
-        sTitleFlicker titleFlicker;
         Texture2D bg;
         public override void LoadContent()
         {
             base.LoadContent();
             titleGraphic = content.Load<Texture2D>("ocbigSheet");
-
-            titleFlicker = new sTitleFlicker(titleGraphic, 2, 1);
 
             btnEnterGame = new Button();
             enterButtonTexture = content.Load<Texture2D>("buttonSheet");
@@ -135,102 +137,47 @@ namespace Optic_Coma
 
         public override void Update(GameTime gameTime)
         {
-            titleFlicker.Update(gameTime);
             base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            #region background image scaling for screen sizes
-            if (Foundation.isFullScreen) {
-                if ((Foundation.ScreenWidth - bg.Width) > (Foundation.ScreenHeight - bg.Height)) {
-                    spriteBatch.Draw
-                    (
-                        bg,
-                        new Rectangle(0,0, Foundation.ScreenWidth, Foundation.ScreenHeight * Foundation.ScreenHeight / bg.Height), //scale horizontally
-                        null,
-                        Color.White,
-                        0f,
-                        Vector2.Zero,
-                        SpriteEffects.None,
-                        ScreenManager.Instance.BGLayer
-                    );
-                }
-                else if ((Foundation.ScreenWidth - bg.Width) < (Foundation.ScreenHeight - bg.Height))
-                {
-                    spriteBatch.Draw
-                    (
-                        bg,
-                        new Rectangle(0,0, Foundation.ScreenWidth * Foundation.ScreenWidth / bg.Width, Foundation.ScreenHeight), //scale vertically
-                        null,
-                        Color.White,
-                        0f,
-                        Vector2.Zero,
-                        SpriteEffects.None,
-                        ScreenManager.Instance.BGLayer
-                    );
-                }
-                else
-                {
-                    spriteBatch.Draw
-                    (
-                        bg,
-                        new Rectangle(0,0, Foundation.ScreenWidth, Foundation.ScreenHeight),
-                        null,
-                        Color.White,
-                        0f,
-                        Vector2.Zero,
-                        SpriteEffects.None,
-                        ScreenManager.Instance.BGLayer
-                    );
-                }
-            }
-            else
-            {
-                spriteBatch.Draw
-                (
-                    bg,
-                    new Rectangle(0, 0, bg.Width, bg.Height),
-                    null,
-                    Color.White,
-                    0f,
-                    Vector2.Zero,
-                    SpriteEffects.None,
-                    ScreenManager.Instance.BGLayer
-                );
-            }
-            #endregion
 
             spriteBatch.Draw
             (
                 bg,
-                Vector2.Zero,
+                null,
+                new Rectangle(0,0,(int)ScreenManager.Instance.Dimensions.X, (int)ScreenManager.Instance.Dimensions.Y),
+                null, 
+                null,
+                0,
                 null,
                 Color.White,
-                0,
-                Vector2.Zero,
-                1,
                 SpriteEffects.None,
                 ScreenManager.Instance.BGLayer
             );
-            titleFlicker.Draw(spriteBatch, new Vector2((ScreenManager.Instance.Dimensions.X - 822) / 2, 20));
+            spriteBatch.Draw
+            (
+                titleGraphic,
+                null,
+                new Rectangle((int)Entity.centerScreen.X - titleGraphic.Width / 2, 0, titleGraphic.Width, titleGraphic.Height/2),
+                new Rectangle(0, 0, titleGraphic.Width, titleGraphic.Height/2),
+                null,
+                0,
+                null,
+                Color.White,
+                SpriteEffects.None,
+                ScreenManager.Instance.BGLayer-0.01f
+            );
             //We're making our button! Woo!
             btnEnterGame.Draw
             (
-                //We already defined this thing.
                 enterButtonTexture,
-                //Spritebatch is love, spritebatch is life.
                 spriteBatch,
-                //Our event! It passes a method located in ScreenManager.cs. Note the instance - it's a singleton, and remember
-                //don't be a simpleton, use instance for singletons!
                 ScreenManager.Instance.MenuKey_OnPress,
-                //Here's where we want to put our button.
                 enterButtonPos,
-                //Golly gee, I hope it's Rock Salt.
                 buttonFont,
-                //What do we want it to say?
                 "Enter Game",
-                //What color is the text?
                 Color.Black
             );
         }
@@ -249,7 +196,9 @@ namespace Optic_Coma
         }
 
         #region fields
-        
+
+        PointLight testLight;
+
         Texture2D loadingScreen;
         BackgroundWorker loader = new BackgroundWorker();
         volatile bool hasLoaded; //volatile means that the variable can be used in multiple threads at once
@@ -258,18 +207,9 @@ namespace Optic_Coma
 
         public bool IsPaused = false;
 
-        List<Rectangle> acceptedMovementBoxes;
         Texture2D debugColRect;
         List<Vector2> movementTiles;
-
-        Effect l1, l2;
-        Lighting lightEngine;
-        PointLight testLight;
-        List<Light> lCollection;
-        Texture2D floortextestC;
-        Texture2D floortextestN;
-        Texture2D floortextestB;
-
+        
         int screenWidth = (int)ScreenManager.Instance.Dimensions.X;
         int screenHeight = (int)ScreenManager.Instance.Dimensions.Y;
 
@@ -307,7 +247,7 @@ namespace Optic_Coma
 
         private Button btnExit;
         Vector2 exitButtonPos;
-
+        Texture2D bg;
         private Button btnFullscreen;
         Vector2 fullButtonPos;
 
@@ -328,29 +268,21 @@ namespace Optic_Coma
         protected void LoadAsync(object sender, DoWorkEventArgs e)
         {
             IsPaused = false;
-
-            //Thread.Sleep(2000); //for testing the loading screen
+            testLight = new PointLight()
+            {
+                Position = Entity.centerScreen,
+                Radius = 900,
+                Enabled = true,
+                CastsShadows = true,
+                Scale = new Vector2(900, 900),
+                Color = Color.White,
+                Intensity = 2,
+                ShadowType = ShadowType.Occluded,
+            };
+            Foundation.lightingEngine.Lights.Add(testLight);
 
             LevelSize = new Vector2(ScreenManager.Instance.Dimensions.X * 2, ScreenManager.Instance.Dimensions.Y * 2);
 
-            #region Lighting
-            floortextestC = content.Load<Texture2D>("floortextest_COLOR");
-            l1 = content.Load<Effect>("LightingShadow");
-            l2 = content.Load<Effect>("LightingCombined");
-            lightEngine = new Lighting(Foundation.graphics.GraphicsDevice, l1, l2);
-            testLight = new PointLight()
-            {
-                IsEnabled = true,
-                Color = new Vector4(100.0f, 100.0f, 100.0f, 255.0f),
-                Power = 1,
-                LightDecay = 10,
-                Position = new Vector3(300, 300, 20)
-            };
-            lCollection = new List<Light>();
-            lCollection.Add(testLight);
-            floortextestN = content.Load<Texture2D>("floortextest_NRM");
-            floortextestB = content.Load<Texture2D>("floortextest_SPEC");
-            #endregion
             #region tiles
             movementTiles = new List<Vector2>();
             for (int i = 10; i < 30; i++)
@@ -369,7 +301,7 @@ namespace Optic_Coma
             }
             debugColRect = content.Load<Texture2D>("rectbox");
             floorTexture = content.Load<Texture2D>("floorSheet");
-            tileSystem = new TileSystem(debugColRect, 1, 1, 1, LevelSize, movementTiles);
+            tileSystem = new TileSystem(floorTexture, 4, 4, 1, LevelSize, movementTiles);
             #endregion
 
             music = content.Load<SoundEffect>("samplemusic");
@@ -377,6 +309,8 @@ namespace Optic_Coma
             musicInstance.IsLooped = true;
             musicInstance.Volume = musicVolume;
             //musicInstance.Play();
+
+            bg = content.Load<Texture2D>("starsbg");
 
             #region buttons
             buttonSheet = content.Load<Texture2D>("buttonSheet");
@@ -431,6 +365,7 @@ namespace Optic_Coma
         {
             base.UnloadContent();
         }
+        KeyboardState prevState;
         public override void Update(GameTime gameTime) //gametime is a tick
         {
             if (hasLoaded)
@@ -440,74 +375,9 @@ namespace Optic_Coma
 
                 if (!IsPaused)
                 {
-                    Color[] playerColor = new Color[64 * 64];
-                    //playerTexture.GetData(playerColor);
-                    //enemyTexture.GetData(enemyColor);
                     Rectangle playerArea = new Rectangle((int)playerPos.X, (int)playerPos.Y, 48, 48);
 
                     int spawnLocationIndicator = random.Next(0, 3);
-
-                    #region commented
-                    /*
-                    timeSinceLastEnemy += gameTime.ElapsedGameTime.Milliseconds;
-                    if (timeSinceLastEnemy > enemySpawnIncrement)
-                    {
-
-                        if (spawnLocationIndicator == 0)
-                        {
-                            enemies.Capacity += 1;
-                            enemyInitPosition = left;
-                            Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
-                            enemies.Add(enemy);
-                        }
-                        else if (spawnLocationIndicator == 1)
-                        {
-                            enemies.Capacity += 1;
-                            enemyInitPosition = middle;
-                            Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
-                            enemies.Add(enemy);
-                        }
-                        else if (spawnLocationIndicator == 2)
-                        {
-                            enemies.Capacity += 1;
-                            enemyInitPosition = right;
-                            Enemy enemy = new Enemy(enemyTexture, enemyInitPosition);
-                            enemies.Add(enemy);
-                        }
-                        foreach (Enemy enemy in enemies)
-                        {
-                            if (timeSinceLastEnemy > enemySpawnIncrement * 10)
-                                enemy.acceleration += 1;
-                        }
-                        timeSinceLastEnemy -= enemySpawnIncrement;  
-                    }
-
-                    for (int i = 0; i < enemies.Count; i++)
-                    {
-                        (enemies.ToArray())[i].Update();
-                        enemyArea = new Rectangle((int)(enemies.ToArray())[i].CurrentPosition.X + 16, (int)(enemies.ToArray())[i].CurrentPosition.Y + 32, 32, 32);
-
-                        bool intersecting = IntersectPixels(enemyArea, enemyColor, playerArea, playerColor);
-                        bool intersectingV2 = enemyArea.Intersects(playerArea);
-
-                        if ((enemies.ToArray())[i].CurrentPosition.Y >= screenHeight)
-                        {
-                            if (playerScore != 0)
-                                playerScore--;
-                            enemies.Remove((enemies.ToArray())[i]);
-                            enemies.Capacity--;
-                        }
-                        if (intersecting)
-                        {
-                            playerScore++;
-                            enemies.Remove((enemies.ToArray())[i]);
-                            enemies.Capacity--;
-                        }
-                    }
-
-
-                    */
-                    #endregion
 
                     MouseState curMouse = Mouse.GetState();
 
@@ -539,7 +409,11 @@ namespace Optic_Coma
                         player.playerAngle = (float)Math.PI / 2; //Up
                     }
                     KeyboardState keyState = Keyboard.GetState();
-
+                    if (keyState.IsKeyDown(Keys.R) && keyState != prevState)
+                    {
+                        Foundation.lightingEngine.Debug = !Foundation.lightingEngine.Debug;
+                    }
+                    prevState = keyState;
                     if (keyState.IsKeyDown(Keys.W))
                     {
                         if (TileOffsetLocation.Y + (4.25 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false)) <= 368)
@@ -547,6 +421,7 @@ namespace Optic_Coma
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
                                 nonPlayer.currentPosition.Y += (float)(4.25 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
+                                nonPlayer.hull.Position = nonPlayer.currentPosition;
                             }
                             TileOffsetLocation.Y += (float)(4.25 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false));
                         }
@@ -558,6 +433,7 @@ namespace Optic_Coma
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
                                 nonPlayer.currentPosition.X += (float)(4.25 * Entity.walkMult(0, player.flashAngle, 1, false));
+                                nonPlayer.hull.Position = nonPlayer.currentPosition;
                             }
                             TileOffsetLocation.X += (float)(4.25 * Entity.walkMult(0, player.flashAngle, 1, false));
                         }
@@ -569,6 +445,7 @@ namespace Optic_Coma
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
                                 nonPlayer.currentPosition.Y -= (float)(4.25 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
+                                nonPlayer.hull.Position = nonPlayer.currentPosition;
                             }
                             TileOffsetLocation.Y -= (float)(4.25 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false));
                         }
@@ -580,6 +457,7 @@ namespace Optic_Coma
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
                                 nonPlayer.currentPosition.X -= (float)(4.25 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
+                                nonPlayer.hull.Position = nonPlayer.currentPosition;
                             }
                             TileOffsetLocation.X -= (float)(4.25 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false));
                         }
@@ -589,79 +467,32 @@ namespace Optic_Coma
                     {
                         enemy.Update();
                     }
-                    
+                    Foundation.lightingEngine.Hulls.Clear();
+                    foreach(Entity e in nonPlayerEntities)
+                    {
+                        Foundation.lightingEngine.Hulls.Add(e.hull);
+                    }
                 }
             }
+
             base.Update(gameTime);
         }
-        public void DrawScene(SpriteBatch spriteBatch, Texture2D t)
-        {
-            spriteBatch.End();
-            spriteBatch.Begin();
-            spriteBatch.Draw(
-                t,
-                Vector2.Zero,
-                Color.White);
-            spriteBatch.End();
-            spriteBatch.Begin();
-        }
-        public void DrawNormals(SpriteBatch spriteBatch, Texture2D t)
-        {
-            spriteBatch.End();
-            spriteBatch.Begin();
-            spriteBatch.Draw(
-                t,
-                Vector2.Zero,
-                Color.White);
-            spriteBatch.End();
-            spriteBatch.Begin();
-        }
-        public void DrawBumps(SpriteBatch spriteBatch, Texture2D t)
-        {
-            spriteBatch.End();
-            spriteBatch.Begin();
-            spriteBatch.Draw(
-                t,
-                Vector2.Zero,
-                Color.White);
-            spriteBatch.End();
-            spriteBatch.Begin();
-        }
-        GraphicsDevice GDevice = Foundation.graphics.GraphicsDevice;
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (hasLoaded)
             {
-
                 var fps = string.Format("FPS: {0}", frameCounter.AverageFramesPerSecond);
 
                 #region when not paused
                 if (!IsPaused)
                 {
-                    GDevice.SetRenderTarget(Lighting._colorMapRenderTarget);
+                    
+                    spriteBatch.End();
 
-                    // Clear all render targets
-                    GDevice.Clear(Color.Transparent);
-
-                    DrawScene(spriteBatch, floortextestC);
-
-                    GDevice.SetRenderTarget(null);
-                    GDevice.SetRenderTarget(Lighting._normalMapRenderTarget);
-
-                    // Clear all render targets
-                    GDevice.Clear(Color.Transparent);
-
-                    DrawNormals(spriteBatch, floortextestN);
-
-                    // Deactive the render targets to resolve them
-                    GDevice.SetRenderTarget(null);
-
-                    lightEngine.GenerateShadowMap(lCollection);
-
-                    // Finally draw the combined Maps onto the screen
-                    lightEngine.DrawCombinedMaps(spriteBatch);
-
+                    Foundation.lightingEngine.BeginDraw();
+                    spriteBatch.Begin(SpriteSortMode.BackToFront);
+                    spriteBatch.Draw(bg, new Rectangle(0, 0, screenWidth, screenHeight), null, Color.White, 0, Vector2.Zero, SpriteEffects.None, ScreenManager.Instance.BGLayer);
                     foreach (Enemy enemy in enemies)
                     {
                         enemy.Draw(spriteBatch);
@@ -669,9 +500,12 @@ namespace Optic_Coma
                     player.Draw(spriteBatch, buttonFont);
                     tileSystem.Draw(spriteBatch, TileOffsetLocation, LevelSize);
 
-                    spriteBatch.DrawString(buttonFont, "" + TileOffsetLocation.X + "," + TileOffsetLocation.Y, new Vector2(400, 0), Color.White);
+                    spriteBatch.End();
+                    Foundation.lightingEngine.Draw(gameTime);
+                    spriteBatch.Begin(SpriteSortMode.BackToFront);
+                    spriteBatch.DrawString(buttonFont, "Position: " + TileOffsetLocation.X + "," + TileOffsetLocation.Y, new Vector2(1, 84), Color.White);
                     spriteBatch.DrawString(buttonFont, fps, new Vector2(1, 65), Color.White);
-
+                    spriteBatch.DrawString(buttonFont, "Lighting Debug Enabled?: " + Foundation.lightingEngine.Debug, new Vector2(1, 103), Color.White);
                     pauseButton.Draw
                     (
                         buttonSheet,

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Penumbra;
 
 namespace Optic_Coma
 {
@@ -9,6 +10,8 @@ namespace Optic_Coma
     {
         public Vector2 currentPosition;
         public static Vector2 centerScreen = new Vector2(ScreenManager.Instance.Dimensions.X / 2, ScreenManager.Instance.Dimensions.Y / 2);
+        public float angle;
+        public Hull hull;
         public Entity()
         {
 
@@ -165,9 +168,8 @@ namespace Optic_Coma
     }
     class Enemy : Entity
     {
-        float enemyAngle = 0f;
+        public float enemyAngle = 0f;
         public Texture2D Texture { get; set; }
-
         static Random random;
         int speed;
         int dir;
@@ -181,6 +183,7 @@ namespace Optic_Coma
             currentPosition = initPosition;
             speed = 4 + acceleration;
             moveAmp = -1;
+            hull = Hull.CreateRectangle(currentPosition, new Vector2(texture.Width, texture.Height), angle, new Vector2(texture.Width/2, texture.Height/2));
         }
 
         public override void Update()
@@ -190,6 +193,9 @@ namespace Optic_Coma
             //moveAmp += 0.001f;
             moveAmp = 4; //We can toy around with this later.
             dir = random.Next(0, 4);
+            angle = enemyAngle;
+            hull.Rotation = angle;
+            hull.Origin = new Vector2(currentPosition.X / 2, currentPosition.Y / 2);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
