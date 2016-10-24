@@ -90,6 +90,23 @@ namespace Optic_Coma
     {
         public FrameCounter frameCounter = new FrameCounter();
         public Vector2 LevelSize;
+        float getDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
+        {
+            double lowDist, curDist;
+            lowDist = -1;
+            foreach (Enemy enemy in enemies)
+            {
+                curDist = Math.Sqrt(
+                    Math.Pow((double)(Math.Abs(source.X - enemy.currentPosition.X)), 2) +
+                    Math.Pow((double)(Math.Abs(source.Y - enemy.currentPosition.Y)), 2)
+                );
+                if( lowDist == -1 || curDist < lowDist)
+                {
+                    lowDist = curDist;
+                }
+            }
+            return (float)lowDist;
+        }
         public override void LoadContent()
         {
             base.LoadContent();
