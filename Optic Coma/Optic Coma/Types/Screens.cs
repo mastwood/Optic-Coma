@@ -91,7 +91,7 @@ namespace Optic_Coma
         double lowDist, curDist;
         public FrameCounter frameCounter = new FrameCounter();
         public Vector2 LevelSize;
-        public float getDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
+        public float GetDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
         {
             lowDist = -1;
             foreach (Enemy enemy in enemies)
@@ -107,6 +107,12 @@ namespace Optic_Coma
                 }
             }
             return (float)lowDist;
+        }
+        public double LogisticForLight(float x)
+        {
+            double xD;
+            xD = Convert.ToDouble(x);
+            return (350 / (1 + Math.Exp(-0.02d*(xD - 200d))));
         }
         public override void LoadContent()
         {
@@ -484,10 +490,17 @@ namespace Optic_Coma
                     {
                         enemy.Update();
                     }
-                    float dist = getDistToClosestEnemy(enemies, playerPos);
-                    if (dist <= 255f)
+                    float dist = GetDistToClosestEnemy(enemies, playerPos);
+                    float colorVal;
+                    if (dist <= 370f && dist >= 100)
                     {
-                        testLight.Color = new Color(1f, dist / 255, dist / 255, 1f);
+                        colorVal = (float)LogisticForLight(dist);
+                        testLight.Color = new Color(1f, colorVal / 350, colorVal / 350, 1f);
+                    }
+                    else if (dist < 100f)
+                    {
+                        colorVal = (float)LogisticForLight(dist);
+                        testLight.Color = new Color(1f, colorVal / 350, colorVal / 350, colorVal / 100);
                     }
                     else
                     {
@@ -504,7 +517,7 @@ namespace Optic_Coma
 
             base.Update(gameTime);
         }
-
+  
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (hasLoaded)
@@ -533,7 +546,7 @@ namespace Optic_Coma
                     spriteBatch.DrawString(buttonFont, "Position: " + TileOffsetLocation.X + "," + TileOffsetLocation.Y, new Vector2(1, 84), Color.White);
                     spriteBatch.DrawString(buttonFont, fps, new Vector2(1, 65), Color.White);
                     spriteBatch.DrawString(buttonFont, "Lighting Debug Enabled?: " + Foundation.lightingEngine.Debug, new Vector2(1, 103), Color.White);
-                    spriteBatch.DrawString(buttonFont, "Distance to Closest Enemy: " + getDistToClosestEnemy(enemies, Entity.centerScreen), new Vector2(1, 123), Color.White);
+                    spriteBatch.DrawString(buttonFont, "Distance to Closest Enemy: " + GetDistToClosestEnemy(enemies, Entity.centerScreen), new Vector2(1, 123), Color.White);
                     pauseButton.Draw
                     (
                         buttonSheet,
