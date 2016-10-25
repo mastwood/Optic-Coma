@@ -9,16 +9,16 @@ namespace Optic_Coma
         int width, height;
         int rows, columns;
         int[,] chosenRow, chosenColumn;
-        List<Vector2> goodTiles = new List<Vector2>();
-        List<Vector2> borderTiles = new List<Vector2>();
+        List<Vector2> tiles = new List<Vector2>();
         Random random = new Random();
         Vector2 location;
         Texture2D texture;
+
         //This method is called when you make a new TileSystem.
-        public TileSystem(Texture2D borderTexture, int numRows, int numColumns, int level, Vector2 levelSize, List<Vector2> gT)
+        public TileSystem(Texture2D t, int numRows, int numColumns, int level, Vector2 levelSize, List<Vector2> gT)
         {
-            goodTiles = gT;
-            texture = borderTexture;
+            tiles = gT;
+            texture = t;
             rows = numRows;           
             columns = numColumns;
             chosenRow = new int[(int)levelSize.X, (int)levelSize.Y];
@@ -35,30 +35,6 @@ namespace Optic_Coma
                     chosenColumn[i, j] = random.Next(0, columns);
                 }
             }
-            //First, I draw tiles around the level border.
-            //top
-            for (int i = 0; i < Math.Floor(levelSize.X / (borderTexture.Width / columns)); i++)
-            {
-                borderTiles.Add(new Vector2(i, 0));
-            }
-            //bottom
-            for (int i = 0; i < Math.Floor(levelSize.X / (borderTexture.Width / columns)); i++)
-            {
-                borderTiles.Add(new Vector2(i, (levelSize.Y / (borderTexture.Height / rows)) - 1));
-            }
-            //left 
-            for (int j = 0; j < Math.Floor(levelSize.Y / (borderTexture.Height / rows)); j++)
-            {
-                borderTiles.Add(new Vector2(0, j));
-            }
-            //right
-            for (int j = 0; j < Math.Floor(levelSize.Y / (borderTexture.Height / rows)); j++)
-            {
-                borderTiles.Add(new Vector2(((levelSize.X / (borderTexture.Width / columns)) - 1), j));
-            }
-            //Each level will have a different layout of goodtiles.
-            
-            
         }
 
         //Calling draw to draw our tiles across the entire screen.
@@ -66,31 +42,11 @@ namespace Optic_Coma
         {
             width = texture.Width / columns;
             height = texture.Height / rows;
-            for (int i = 0; i < LevelSize.X; i++)
+            for (int i = 0; i <= LevelSize.X; i+=32)
             {
-                for (int j = 0; j < LevelSize.Y; j++)
+                for (int j = 0; j <= LevelSize.Y; j+=32)
                 {
-                    if (i % width == 0 && j % height == 0 && (goodTiles.Contains(new Vector2(i / width, j / height))))
-                    {
-                        location.X = i;
-                        location.Y = j;
-
-                        Rectangle sourceRectangle = new Rectangle(width * chosenColumn[i, j], height * chosenRow[i, j], width, height);
-
-                        spriteBatch.Draw
-                        (
-                            texture,
-                            new Vector2(location.X + locOffset.X, location.Y + locOffset.Y),
-                            sourceRectangle,
-                            Color.White,
-                            0f,
-                            Vector2.Zero,
-                            1f,
-                            SpriteEffects.None,
-                            ScreenManager.Instance.TileLayer
-                        );
-                    }
-                    else if (i % width == 0 && j % height == 0 && (borderTiles.Contains(new Vector2(i / width, j / height))))
+                    if (i % width == 0 && j % height == 0 && (tiles.Contains(new Vector2(i / width, j / height))))
                     {
                         location.X = i;
                         location.Y = j;
@@ -113,5 +69,6 @@ namespace Optic_Coma
                 }
             }
         }
+
     }
 }

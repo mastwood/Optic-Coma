@@ -88,9 +88,26 @@ namespace Optic_Coma
     }
     class LevelScreen : BaseScreen
     {
+        public List<Vector2> walkableTiles = new List<Vector2>();
         double lowDist, curDist;
         public FrameCounter frameCounter = new FrameCounter();
         public Vector2 LevelSize;
+        public bool OutOfBounds(Player p)
+        {
+            foreach(var t in walkableTiles)
+            {
+                Rectangle area = new Rectangle((int)t.X, (int)t.Y, 32, 32);
+                if (area.Contains(t))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
         public float GetDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
         {
             lowDist = -1;
@@ -231,7 +248,6 @@ namespace Optic_Coma
         public bool IsPaused = false;
 
         Texture2D debugColRect;
-        List<Vector2> movementTiles;
         
         int screenWidth = (int)ScreenManager.Instance.Dimensions.X;
         int screenHeight = (int)ScreenManager.Instance.Dimensions.Y;
@@ -245,7 +261,7 @@ namespace Optic_Coma
         List<Enemy> enemies = new List<Enemy>();
         List<Entity> nonPlayerEntities = new List<Entity>();
 
-        TileSystem tileSystem;
+        TileSystem walkableTileRenderer;
 
         Texture2D lightTexture;
         Texture2D flashLightTexture;
@@ -279,6 +295,22 @@ namespace Optic_Coma
         public float musicVolume = 0.02f;
         #endregion
 
+
+        //TILE SIZE IS 32x32
+        //SCREEN SIZE IS 1024x800
+        public List<Vector2> TileSetup()
+        {
+            List<Vector2> t = new List<Vector2>();
+            for(int x = 11; x <= 20; x++)
+            {
+                for(int y = 8; y <= 16; y++)
+                {
+                    t.Add(new Vector2(x, y));
+                }
+            }
+            return t;
+        }
+
         //this method is called after everything loads
         protected void Complete(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -291,10 +323,12 @@ namespace Optic_Coma
         protected void LoadAsync(object sender, DoWorkEventArgs e)
         {
             IsPaused = false;
+
+            walkableTiles = TileSetup();
+
             testLight = new Spotlight()
             {
                 Position = Entity.centerScreen,
-                Radius = 900,
                 Enabled = true,
                 CastsShadows = true,
                 Scale = new Vector2(900, 900),
@@ -306,26 +340,9 @@ namespace Optic_Coma
 
             LevelSize = new Vector2(ScreenManager.Instance.Dimensions.X * 2, ScreenManager.Instance.Dimensions.Y * 2);
 
-            #region tiles
-            movementTiles = new List<Vector2>();
-            for (int i = 10; i < 30; i++)
-            {
-                for (int j = 3; j < 5; j++)
-                {
-                    movementTiles.Add(new Vector2(i, j));
-                }
-            }
-            for (int i = 5; i < 70; i++)
-            {
-                for (int j = 30; j < 50; j++)
-                {
-                    movementTiles.Add(new Vector2(i, j));
-                }
-            }
             debugColRect = content.Load<Texture2D>("rectbox");
             floorTexture = content.Load<Texture2D>("floorSheet");
-            tileSystem = new TileSystem(floorTexture, 4, 4, 1, LevelSize, movementTiles);
-            #endregion
+            walkableTileRenderer = new TileSystem(floorTexture, 4, 4, 1, LevelSize, walkableTiles);
 
             music = content.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
@@ -537,7 +554,7 @@ namespace Optic_Coma
                         enemy.Draw(spriteBatch);
                     }
                     player.Draw(spriteBatch, buttonFont);
-                    tileSystem.Draw(spriteBatch, TileOffsetLocation, LevelSize);
+                    walkableTileRenderer.Draw(spriteBatch, TileOffsetLocation, LevelSize);
 
                     spriteBatch.End();
                     Foundation.lightingEngine.Draw(gameTime);
