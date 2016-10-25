@@ -315,9 +315,9 @@ namespace Optic_Coma
                     movementTiles.Add(new Vector2(i, j));
                 }
             }
-            for (int i = 5; i < 30; i++)
+            for (int i = 5; i < 70; i++)
             {
-                for (int j = 5; j < 10; j++)
+                for (int j = 30; j < 50; j++)
                 {
                     movementTiles.Add(new Vector2(i, j));
                 }
