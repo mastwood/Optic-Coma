@@ -88,28 +88,32 @@ namespace Optic_Coma
     }
     class LevelScreen : BaseScreen
     {
+
         public List<Vector2> walkableTiles = new List<Vector2>();
+        public List<Rectangle> levelArea = new List<Rectangle>();
         double lowDist, curDist;
         public FrameCounter frameCounter = new FrameCounter();
         public Vector2 LevelSize;
-        public bool OutOfBounds(Player p)
+        public Vector2 locOffset;
+
+        public bool NotOutOfBounds()
         {
-            bool r = false;
-            foreach(var t in walkableTiles)
+            levelArea.Clear();
+            bool b = false;
+            foreach (Vector2 v in walkableTiles)
             {
-                Rectangle area = new Rectangle((int)t.X, (int)t.Y, 32, 32);
-                if (area.Contains(t))
+                levelArea.Add(new Rectangle((int)(v.X + locOffset.X), (int)(v.Y + locOffset.Y), 32, 32));
+            }
+            foreach (Rectangle z in levelArea)
+            {
+                if (z.Contains(Entity.centerScreen))
                 {
-                    r = true;
-                }
-                else
-                {
-                    r = false;
+                    b = true;
                 }
             }
-            return r;
+            return b;
         }
-
+        
         public float GetDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
         {
             lowDist = -1;
@@ -326,6 +330,7 @@ namespace Optic_Coma
         {
             IsPaused = false;
 
+            locOffset = TileOffsetLocation;
             walkableTiles = TileSetup();
 
             testLight = new Spotlight()
@@ -456,9 +461,10 @@ namespace Optic_Coma
                         Foundation.lightingEngine.Debug = !Foundation.lightingEngine.Debug;
                     }
                     prevState = keyState;
+                    bool oob = NotOutOfBounds();
                     if (keyState.IsKeyDown(Keys.W))
                     {
-                        if (TileOffsetLocation.Y + (4.25 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false)) <= 368)
+                        if (oob)
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
@@ -470,7 +476,7 @@ namespace Optic_Coma
                     }
                     if (keyState.IsKeyDown(Keys.A))
                     {
-                        if (TileOffsetLocation.X + (4.25 * Entity.walkMult(0, player.flashAngle, 1, false)) <= 478)
+                        if (oob)
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
@@ -482,7 +488,7 @@ namespace Optic_Coma
                     }
                     if (keyState.IsKeyDown(Keys.S))
                     {
-                        if (TileOffsetLocation.Y - (4.25 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false)) >= -1160)
+                        if (oob)
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
@@ -494,7 +500,7 @@ namespace Optic_Coma
                     }
                     if (keyState.IsKeyDown(Keys.D))
                     {
-                        if (TileOffsetLocation.X - (4.25 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false)) >= -1500)
+                        if (oob)
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
@@ -505,6 +511,7 @@ namespace Optic_Coma
                         }
                     }
                     #endregion
+
                     foreach (Enemy enemy in nonPlayerEntities)
                     {
                         enemy.Update();
