@@ -94,18 +94,20 @@ namespace Optic_Coma
         public Vector2 LevelSize;
         public bool OutOfBounds(Player p)
         {
+            bool r = false;
             foreach(var t in walkableTiles)
             {
                 Rectangle area = new Rectangle((int)t.X, (int)t.Y, 32, 32);
                 if (area.Contains(t))
                 {
-                    return true;
+                    r = true;
                 }
                 else
                 {
-                    return false;
+                    r = false;
                 }
             }
+            return r;
         }
 
         public float GetDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
