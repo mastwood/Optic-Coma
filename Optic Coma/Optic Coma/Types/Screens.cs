@@ -96,11 +96,11 @@ namespace Optic_Coma
         public Vector2 LevelSize;
         public Vector2 locOffset;
 
-        public bool NotOutOfBounds()
+        public bool NotOutOfBounds(List<Vector2> w)
         {
             levelArea.Clear();
             bool b = false;
-            foreach (Vector2 v in walkableTiles)
+            foreach (Vector2 v in w)
             {
                 levelArea.Add(new Rectangle((int)(v.X + locOffset.X), (int)(v.Y + locOffset.Y), 32, 32));
             }
@@ -461,7 +461,7 @@ namespace Optic_Coma
                         Foundation.lightingEngine.Debug = !Foundation.lightingEngine.Debug;
                     }
                     prevState = keyState;
-                    bool oob = NotOutOfBounds();
+                    bool oob = NotOutOfBounds(walkableTiles);
                     if (keyState.IsKeyDown(Keys.W))
                     {
                         if (oob)
