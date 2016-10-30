@@ -102,16 +102,18 @@ namespace Optic_Coma
             bool b = false;
             foreach (Vector2 v in w)
             {
-                levelArea.Add(new Rectangle((int)(v.X + locOffset.X), (int)(v.Y + locOffset.Y), 32, 32));
+                levelArea.Add(new Rectangle((int)(v.X * 32 + locOffset.X), (int)(v.Y * 32 + locOffset.Y), 32, 32));
             }
             foreach (Rectangle z in levelArea)
             {
                 if (z.Contains(Entity.centerScreen))
                 {
                     b = true;
-                }
+                    return b;
+                }               
             }
-            return b;
+
+            return false;
         }
         
         public float GetDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
@@ -252,6 +254,7 @@ namespace Optic_Coma
         Vector2 mouseLoc;
 
         public bool IsPaused = false;
+        bool oob;
 
         Texture2D debugColRect;
         
@@ -461,7 +464,7 @@ namespace Optic_Coma
                         Foundation.lightingEngine.Debug = !Foundation.lightingEngine.Debug;
                     }
                     prevState = keyState;
-                    bool oob = NotOutOfBounds(walkableTiles);
+                    oob = NotOutOfBounds(walkableTiles);
                     if (keyState.IsKeyDown(Keys.W))
                     {
                         if (oob)
