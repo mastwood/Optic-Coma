@@ -90,7 +90,7 @@ namespace Optic_Coma
     {
 
         public List<Vector2> walkableTiles = new List<Vector2>();
-        public List<Rectangle> levelArea = new List<Rectangle>();
+        
         double lowDist, curDist;
         public FrameCounter frameCounter = new FrameCounter();
         public Vector2 LevelSize;
@@ -98,7 +98,7 @@ namespace Optic_Coma
 
         public bool NotOutOfBounds(List<Vector2> w)
         {
-            levelArea.Clear();
+            List<Rectangle> levelArea = new List<Rectangle>();
             bool b = false;
             foreach (Vector2 v in w)
             {
@@ -113,7 +113,7 @@ namespace Optic_Coma
                 }               
             }
 
-            return false;
+            return b;
         }
         
         public float GetDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
