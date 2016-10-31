@@ -35,12 +35,8 @@ namespace Optic_Coma
         {
             try
             {
-                using (TextWriter f = new StreamWriter(@"save1.xml"))
+                using (TextWriter f = new StreamWriter(@"Content\save1.xml"))
                 {
-                    if (File.Exists(@"save1.xml"))
-                    {
-                        File.Delete(@"save1.xml");
-                    }
                     xml.Serialize(f, i);
                 }
             }
@@ -54,7 +50,7 @@ namespace Optic_Coma
             float[] i = new float[3];
             try
             {
-                using(FileStream f = new FileStream(@"save1.xml", FileMode.Open))
+                using(FileStream f = new FileStream(@"Content\save1.xml", FileMode.Open))
                     i = (float[])xml.Deserialize(f);
 
                 return i;
