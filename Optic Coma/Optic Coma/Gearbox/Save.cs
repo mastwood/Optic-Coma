@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Serialization;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Optic_Coma
 {
@@ -31,6 +33,7 @@ namespace Optic_Coma
             Console.WriteLine("StrackTrace: {0}", ex.StackTrace);
             Console.WriteLine("TargetSite: {0}", ex.TargetSite);
         }
+
         public static void Save(XmlSerializer xml, float[] i)
         {
             try
@@ -48,6 +51,7 @@ namespace Optic_Coma
         public static float[] Load(XmlSerializer xml)
         {
             float[] i = new float[3];
+
             try
             {
                 using(FileStream f = new FileStream(@"Content\save1.xml", FileMode.Open))
@@ -61,6 +65,7 @@ namespace Optic_Coma
             }
         }
     }
+   
     public class LogWriter
     {
         public string[] lines;
