@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Xml.Serialization;
 using Penumbra;
 
 namespace Optic_Coma
@@ -48,10 +49,13 @@ namespace Optic_Coma
         {
             this.Content = new ContentManager(Content.ServiceProvider, "Content");
             //instantiate content, then tell it where the content is stored as the 2nd parameter, as well as the pipeline to load the content, called "ServiceProvider"
-            if(currentScreen is MenuScreen)
+
+            if (currentScreen is MenuScreen)
                 currentScreen.LoadContent();
-            else if(currentScreen is Level1Screen)
+            else if (currentScreen is Level1Screen)
+            {
                 currentScreen.LoadContent();
+            }
             //Load whatever content is on the current screen into the window
         }
         public void UnloadContent()
@@ -107,7 +111,10 @@ namespace Optic_Coma
             {
                 Level1Screen level1Screen = (Level1Screen)currentScreen;
                 if (!level1Screen.IsPaused)
+                {
+                    SaveFileSerializer.Save(Foundation.saveReaderWriter, level1Screen.dataToSave);
                     level1Screen.IsPaused = true;
+                }
                 else
                     level1Screen.IsPaused = false;
             }

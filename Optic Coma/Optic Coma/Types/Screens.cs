@@ -88,32 +88,37 @@ namespace Optic_Coma
     }
     class LevelScreen : BaseScreen
     {
-
         public List<Vector2> walkableTiles = new List<Vector2>();
         
         double lowDist, curDist;
         public FrameCounter frameCounter = new FrameCounter();
         public Vector2 LevelSize;
-        public Vector2 locOffset;
 
-        public bool NotOutOfBounds(List<Vector2> w)
+        public static bool NotOutOfBounds(List<Vector2> walkableTiles, List<Triangle> nonWalkableTriangles, Vector2 location, Rectangle playerHitBox)
         {
             List<Rectangle> levelArea = new List<Rectangle>();
             bool b = false;
-            foreach (Vector2 v in w)
+            foreach (Vector2 v in walkableTiles)
             {
-                levelArea.Add(new Rectangle((int)(v.X * 32 + locOffset.X), (int)(v.Y * 32 + locOffset.Y), 32, 32));
+                levelArea.Add(new Rectangle((int)(v.X * 32 + location.X), (int)(v.Y * 32 + location.Y), 32, 32));
             }
             foreach (Rectangle z in levelArea)
             {
                 if (z.Contains(Entity.centerScreen))
                 {
-                    b = true;
-                    return b;
+                    return true;
                 }               
             }
-
-            return b;
+            if (nonWalkableTriangles != null) {
+                foreach (Triangle t in nonWalkableTriangles)
+                {
+                    if (t.ContainsCornersOf(playerHitBox))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return false;
         }
         
         public float GetDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
@@ -254,7 +259,7 @@ namespace Optic_Coma
         Vector2 mouseLoc;
 
         public bool IsPaused = false;
-        bool oob;
+        bool notOutOfBounds;
 
         Texture2D debugColRect;
         
@@ -304,6 +309,7 @@ namespace Optic_Coma
         public float musicVolume = 0.02f;
         #endregion
 
+        public float[] dataToSave = new float[3];
 
         //TILE SIZE IS 32x32
         //SCREEN SIZE IS 1024x800
@@ -333,7 +339,6 @@ namespace Optic_Coma
         {
             IsPaused = false;
 
-            locOffset = TileOffsetLocation;
             walkableTiles = TileSetup();
 
             testLight = new Spotlight()
@@ -396,6 +401,9 @@ namespace Optic_Coma
             enemies.Add(new Enemy(enemyTexture, new Vector2(ScreenManager.Instance.Dimensions.X - enemyPos.X, ScreenManager.Instance.Dimensions.X - enemyPos.Y)));
             foreach (var enemy in enemies) nonPlayerEntities.Add(enemy);
             #endregion
+
+            TileOffsetLocation = new Vector2(SaveData.Location_X, SaveData.Location_Y);
+
             return;
         }
         
@@ -422,7 +430,7 @@ namespace Optic_Coma
             {
                 deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 frameCounter.Update(deltaTime);
-
+                #region  not paused
                 if (!IsPaused)
                 {
                     Rectangle playerArea = new Rectangle((int)playerPos.X, (int)playerPos.Y, 48, 48);
@@ -439,7 +447,7 @@ namespace Optic_Coma
 
                     // using radians
                     // measure clockwise from left
-                    #region player movement
+                    #region player rotation
                     player.flashAngle = (float)(Math.Atan2(player.facingDirection.Y, player.facingDirection.X)) + (float)Math.PI;
 
                     if ((player.flashAngle > 0 && player.flashAngle <= Math.PI / 4) || (player.flashAngle > Math.PI * 7 / 4 && player.flashAngle <= 2 * Math.PI))
@@ -463,11 +471,12 @@ namespace Optic_Coma
                     {
                         Foundation.lightingEngine.Debug = !Foundation.lightingEngine.Debug;
                     }
+                    #endregion
                     prevState = keyState;
-                    oob = NotOutOfBounds(walkableTiles);
+                    #region collision and movement
                     if (keyState.IsKeyDown(Keys.W))
                     {
-                        if (oob)
+                        if (NotOutOfBounds(walkableTiles, null, new Vector2(TileOffsetLocation.X, TileOffsetLocation.Y + (float)(4.25 * Entity.walkMult((float)Math.PI / 2, player.flashAngle, 1, false))), player.Texture.Bounds))
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
@@ -479,7 +488,7 @@ namespace Optic_Coma
                     }
                     if (keyState.IsKeyDown(Keys.A))
                     {
-                        if (oob)
+                        if (NotOutOfBounds(walkableTiles, null, new Vector2(TileOffsetLocation.X + (float)(4.25 * Entity.walkMult(0, player.flashAngle, 1, false)), TileOffsetLocation.Y), player.Texture.Bounds))
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
@@ -491,7 +500,7 @@ namespace Optic_Coma
                     }
                     if (keyState.IsKeyDown(Keys.S))
                     {
-                        if (oob)
+                        if (NotOutOfBounds(walkableTiles, null, new Vector2(TileOffsetLocation.X, TileOffsetLocation.Y - (float)(4.25 * Entity.walkMult(3 * (float)Math.PI / 2, player.flashAngle, 1, false))), player.Texture.Bounds))
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
@@ -503,7 +512,7 @@ namespace Optic_Coma
                     }
                     if (keyState.IsKeyDown(Keys.D))
                     {
-                        if (oob)
+                        if (NotOutOfBounds(walkableTiles, null, new Vector2(TileOffsetLocation.X - (float)(4.25 * Entity.walkMult((float)Math.PI, player.flashAngle, 1, false)), TileOffsetLocation.Y), player.Texture.Bounds))
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
@@ -541,7 +550,15 @@ namespace Optic_Coma
                     {
                         Foundation.lightingEngine.Hulls.Add(e.hull);
                     }
+                    dataToSave[0] = TileOffsetLocation.X; dataToSave[1] = TileOffsetLocation.Y; dataToSave[2] = 0;
                 }
+                #endregion
+                #region paused
+                if (IsPaused)
+                {
+                    //?
+                }
+                #endregion
             }
 
             base.Update(gameTime);

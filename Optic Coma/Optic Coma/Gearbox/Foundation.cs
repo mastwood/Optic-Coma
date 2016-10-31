@@ -7,13 +7,22 @@ using System.Xml.Serialization;
 using System;
 namespace Optic_Coma
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
+    [Serializable]
+    public struct SaveData
+    {
+        [XmlElement("Location_X")]
+        public static float Location_X { get; set; }
+
+        [XmlElement("Location_Y")]
+        public static float Location_Y { get; set; }
+
+        [XmlElement("RecentSavePoint")]
+        public static float RecentSavePoint { get; set; }
+    }
+    
     public class Foundation : Game
     {
-        XmlSerializer x;
-        GameState g;
+        public static XmlSerializer saveReaderWriter = new XmlSerializer(typeof(float[]));
 
         public static PenumbraComponent lightingEngine;
 
@@ -49,6 +58,8 @@ namespace Optic_Coma
         /// </summary>
         protected override void Initialize()
         {
+            float[] i = new float[3];
+
             ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             ScreenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
@@ -58,6 +69,13 @@ namespace Optic_Coma
 
             graphics.ApplyChanges();
             //Send the size to the graphics manager
+
+            if (SaveFileSerializer.Load(saveReaderWriter) != null)
+            {
+                i = SaveFileSerializer.Load(saveReaderWriter);
+                SaveData.Location_X = i[0]; SaveData.Location_Y = i[1]; SaveData.RecentSavePoint = i[2];
+            }
+
             base.Initialize();
         }
 
@@ -151,11 +169,5 @@ namespace Optic_Coma
             TotalSeconds += deltaTime;
             return true;
         }
-    }
-    struct GameState
-    {
-        public int STAGE;
-        public int SUBSTAGE;
-    }
-    
+    }  
 }
