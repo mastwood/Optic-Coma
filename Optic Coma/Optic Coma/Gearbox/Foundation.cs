@@ -11,10 +11,10 @@ namespace Optic_Coma
     public struct SaveData
     {
         [XmlElement("Location_X")]
-        public static float Location_X { get; set; }
+        public static float LocationX { get; set; }
 
         [XmlElement("Location_Y")]
-        public static float Location_Y { get; set; }
+        public static float LocationY { get; set; }
 
         [XmlElement("RecentSavePoint")]
         public static float RecentSavePoint { get; set; }
@@ -22,32 +22,32 @@ namespace Optic_Coma
     
     public class Foundation : Game
     {
-        public static XmlSerializer saveReaderWriter = new XmlSerializer(typeof(float[]));
+        public static XmlSerializer SaveReaderWriter = new XmlSerializer(typeof(float[]));
 
-        public static PenumbraComponent lightingEngine;
+        public static PenumbraComponent LightingEngine;
 
-        public static GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        public static GraphicsDeviceManager Graphics;
+        private SpriteBatch _spriteBatch;
 
         public static int ScreenWidth;
         public static int ScreenHeight;
         
-        public static bool isFullScreen;
+        public static bool IsFullScreen;
 
         public string InstallDirectory;
         public Foundation()
         {
             //x = new XmlSerializer(typeof(GameState));
-            lightingEngine = new PenumbraComponent(this);
+            LightingEngine = new PenumbraComponent(this);
 
             IsMouseVisible = true;
-            graphics = new GraphicsDeviceManager(this);
+            Graphics = new GraphicsDeviceManager(this);
 
             Content.RootDirectory = "Content";
             InstallDirectory = Content.RootDirectory;
-            Components.Add(lightingEngine);
-            lightingEngine.AmbientColor = new Color(30,0,0,255);
-            lightingEngine.Debug = true;
+            Components.Add(LightingEngine);
+            LightingEngine.AmbientColor = new Color(30,0,0,255);
+            LightingEngine.Debug = true;
         }
 
         /// <summary>
@@ -63,17 +63,17 @@ namespace Optic_Coma
             ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             ScreenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
-            graphics.PreferredBackBufferWidth = (int)ScreenManager.Instance.Dimensions.X;
-            graphics.PreferredBackBufferHeight = (int)ScreenManager.Instance.Dimensions.Y;
-            graphics.IsFullScreen = false;
+            Graphics.PreferredBackBufferWidth = (int)ScreenManager.Instance.Dimensions.X;
+            Graphics.PreferredBackBufferHeight = (int)ScreenManager.Instance.Dimensions.Y;
+            Graphics.IsFullScreen = false;
 
-            graphics.ApplyChanges();
+            Graphics.ApplyChanges();
             //Send the size to the graphics manager
 
-            if (SaveFileSerializer.Load(saveReaderWriter) != null)
+            if (SaveFileSerializer.Load(SaveReaderWriter) != null)
             {
-                i = SaveFileSerializer.Load(saveReaderWriter);
-                SaveData.Location_X = i[0]; SaveData.Location_Y = i[1]; SaveData.RecentSavePoint = i[2];
+                i = SaveFileSerializer.Load(SaveReaderWriter);
+                SaveData.LocationX = i[0]; SaveData.LocationY = i[1]; SaveData.RecentSavePoint = i[2];
             }
 
             base.Initialize();
@@ -85,9 +85,9 @@ namespace Optic_Coma
         /// </summary>
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
             //Instantiate spriteBatch
-            ScreenManager.Instance.LoadContent(Content, lightingEngine);
+            ScreenManager.Instance.LoadContent(Content, LightingEngine);
         }
 
         /// <summary>
@@ -106,19 +106,19 @@ namespace Optic_Coma
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (isFullScreen)
+            if (IsFullScreen)
             {
-                graphics.PreferredBackBufferWidth = ScreenWidth;
-                graphics.PreferredBackBufferHeight = ScreenHeight;
-                graphics.IsFullScreen = true;
+                Graphics.PreferredBackBufferWidth = ScreenWidth;
+                Graphics.PreferredBackBufferHeight = ScreenHeight;
+                Graphics.IsFullScreen = true;
             }
             else
             {
-                graphics.PreferredBackBufferWidth = (int)ScreenManager.Instance.Dimensions.X;
-                graphics.PreferredBackBufferHeight = (int)ScreenManager.Instance.Dimensions.Y;
-                graphics.IsFullScreen = false;
+                Graphics.PreferredBackBufferWidth = (int)ScreenManager.Instance.Dimensions.X;
+                Graphics.PreferredBackBufferHeight = (int)ScreenManager.Instance.Dimensions.Y;
+                Graphics.IsFullScreen = false;
             }
-            ScreenManager.Instance.Update(gameTime, lightingEngine);
+            ScreenManager.Instance.Update(gameTime, LightingEngine);
             base.Update(gameTime);
         }
 
@@ -129,9 +129,9 @@ namespace Optic_Coma
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            spriteBatch.Begin(SpriteSortMode.BackToFront);
-            ScreenManager.Instance.Draw(spriteBatch, gameTime, lightingEngine);
-            spriteBatch.End();
+            _spriteBatch.Begin(SpriteSortMode.BackToFront);
+            ScreenManager.Instance.Draw(_spriteBatch, gameTime, LightingEngine);
+            _spriteBatch.End();
         }
     }
     public class FrameCounter
@@ -145,7 +145,7 @@ namespace Optic_Coma
         public float AverageFramesPerSecond { get; private set; }
         public float CurrentFramesPerSecond { get; private set; }
 
-        public const int MAXIMUM_SAMPLES = 100;
+        public const int MaximumSamples = 100;
 
         private Queue<float> _sampleBuffer = new Queue<float>();
 
@@ -155,7 +155,7 @@ namespace Optic_Coma
 
             _sampleBuffer.Enqueue(CurrentFramesPerSecond);
 
-            if (_sampleBuffer.Count > MAXIMUM_SAMPLES)
+            if (_sampleBuffer.Count > MaximumSamples)
             {
                 _sampleBuffer.Dequeue();
                 AverageFramesPerSecond = _sampleBuffer.Average(i => i);

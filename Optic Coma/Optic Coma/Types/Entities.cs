@@ -8,14 +8,11 @@ namespace Optic_Coma
 {
     public abstract class Entity
     {
-        public Vector2 currentPosition;
-        public static Vector2 centerScreen = new Vector2(ScreenManager.Instance.Dimensions.X / 2, ScreenManager.Instance.Dimensions.Y / 2);
-        public float angle;
-        public Hull hull;
-        public Entity()
-        {
+        public Vector2 CurrentPosition;
+        public static Vector2 CenterScreen = new Vector2(ScreenManager.Instance.Dimensions.X / 2, ScreenManager.Instance.Dimensions.Y / 2);
+        public float Angle;
+        public Hull Hull;
 
-        }
         public virtual void Update()
         {
 
@@ -30,7 +27,7 @@ namespace Optic_Coma
         {
 
         }
-        public static float walkMult(float dir, float angle, float amp, bool useExp)
+        public static float WalkMult(float dir, float angle, float amp, bool useExp)
         {
             //dir, in this method, is equal to the angle in radians the character is moving.
             //angle is the "best" angle - the one that results in fastest movement.
@@ -75,21 +72,21 @@ namespace Optic_Coma
 
     public class Player : Entity
     {
-        public float flashAngle = 0f;
-        public float playerAngle = 0f;
-        public Vector2 facingDirection;
+        public float FlashAngle = 0f;
+        public float PlayerAngle = 0f;
+        public Vector2 FacingDirection;
         public Texture2D Texture { get; set; }
         
         public Texture2D LightTexture;
 
-        Texture2D flashLightTexture;
+        private Texture2D _flashLightTexture;
 
         public Player(Texture2D texture, Vector2 initPos, Texture2D flashlightTexture, Texture2D lightTexture)
         {
             LightTexture = lightTexture;
-            currentPosition = initPos;
+            CurrentPosition = initPos;
             Texture = texture;
-            flashLightTexture = flashlightTexture;
+            _flashLightTexture = flashlightTexture;
         }
 
         public override void Update()
@@ -106,14 +103,14 @@ namespace Optic_Coma
                 Texture,
                 new Rectangle
                 (
-                    (int)centerScreen.X,
-                    (int)centerScreen.Y,
+                    (int)CenterScreen.X,
+                    (int)CenterScreen.Y,
                     Texture.Width,
                     Texture.Height
                 ),
                 null,
                 Color.White,
-                playerAngle,
+                PlayerAngle,
                 new Vector2
                 (
                     Texture.Width / 2,
@@ -146,21 +143,21 @@ namespace Optic_Coma
             */
             spriteBatch.Draw
             (
-                flashLightTexture,
+                _flashLightTexture,
                 new Rectangle
                 (
-                    (int)centerScreen.X,
-                    (int)centerScreen.Y,
-                    flashLightTexture.Width,
-                    flashLightTexture.Height
+                    (int)CenterScreen.X,
+                    (int)CenterScreen.Y,
+                    _flashLightTexture.Width,
+                    _flashLightTexture.Height
                 ),
                 null,
                 Color.White,
-                (float)Math.PI + flashAngle,
+                (float)Math.PI + FlashAngle,
                 new Vector2
                 (
-                    flashLightTexture.Width / 2,
-                    flashLightTexture.Height / 2
+                    _flashLightTexture.Width / 2,
+                    _flashLightTexture.Height / 2
                 ),
                 SpriteEffects.None,
                 ScreenManager.Instance.FlashlightLayer
@@ -168,63 +165,64 @@ namespace Optic_Coma
         }
         
     }
-    class Enemy : Entity
+
+    internal class Enemy : Entity
     {
-        public float enemyAngle = 0f;
+        public float EnemyAngle = 0f;
         public Texture2D Texture { get; set; }
-        static Random random;
-        int speed;
-        int dir;
-        float moveAmp;
-        public int acceleration = 0;
+        private static Random _random;
+        private int _speed;
+        private int _dir;
+        private float _moveAmp;
+        public int Acceleration = 0;
 
         public Enemy(Texture2D texture, Vector2 initPosition)
         {
-            random = new Random();
+            _random = new Random();
             Texture = texture;
-            currentPosition = initPosition;
-            speed = 4 + acceleration;
-            moveAmp = -1;
-            hull = Hull.CreateRectangle(currentPosition, new Vector2(texture.Width, texture.Height), angle, new Vector2(texture.Width/2, texture.Height/2));
+            CurrentPosition = initPosition;
+            _speed = 4 + Acceleration;
+            _moveAmp = -1;
+            Hull = Hull.CreateRectangle(CurrentPosition, new Vector2(texture.Width, texture.Height), Angle, new Vector2(texture.Width/2, texture.Height/2));
         }
 
         public override void Update()
         {
-            enemyAngle = (float)(Math.Atan2(centerScreen.Y - currentPosition.Y,
-                centerScreen.X - currentPosition.X)) + (float)Math.PI;
+            EnemyAngle = (float)(Math.Atan2(CenterScreen.Y - CurrentPosition.Y,
+                CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
             //moveAmp += 0.001f;
-            moveAmp = 4; //We can toy around with this later.
-            dir = random.Next(0, 4);
-            angle = enemyAngle;
-            hull.Rotation = angle;
-            hull.Origin = new Vector2(currentPosition.X / 2, currentPosition.Y / 2);
+            _moveAmp = 4; //We can toy around with this later.
+            _dir = _random.Next(0, 4);
+            Angle = EnemyAngle;
+            Hull.Rotation = Angle;
+            Hull.Origin = new Vector2(CurrentPosition.X / 2, CurrentPosition.Y / 2);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            dir = random.Next(0, 4);
-            if (dir == 0)
-                currentPosition.Y -= (4 * walkMult((float)Math.PI / 2, enemyAngle, moveAmp, false));
-            else if (dir == 1)
-                currentPosition.X -= (4 * walkMult(0, enemyAngle, moveAmp, false));
-            else if (dir == 2)
-                currentPosition.Y += (4 * walkMult(3 * (float)Math.PI / 2, enemyAngle, moveAmp, false));
+            _dir = _random.Next(0, 4);
+            if (_dir == 0)
+                CurrentPosition.Y -= (4 * WalkMult((float)Math.PI / 2, EnemyAngle, _moveAmp, false));
+            else if (_dir == 1)
+                CurrentPosition.X -= (4 * WalkMult(0, EnemyAngle, _moveAmp, false));
+            else if (_dir == 2)
+                CurrentPosition.Y += (4 * WalkMult(3 * (float)Math.PI / 2, EnemyAngle, _moveAmp, false));
             else
-                currentPosition.X += (4 * walkMult((float)Math.PI, enemyAngle, moveAmp, false));
+                CurrentPosition.X += (4 * WalkMult((float)Math.PI, EnemyAngle, _moveAmp, false));
 
             spriteBatch.Draw
             (
                 Texture,
                 new Rectangle
                 (
-                    (int)currentPosition.X,
-                    (int)currentPosition.Y,
+                    (int)CurrentPosition.X,
+                    (int)CurrentPosition.Y,
                     Texture.Width,
                     Texture.Height
                 ),
                 null,
                 Color.White,
-                enemyAngle,
+                EnemyAngle,
                 new Vector2
                 (
                     Texture.Width / 2,

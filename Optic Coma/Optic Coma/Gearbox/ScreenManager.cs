@@ -9,12 +9,12 @@ namespace Optic_Coma
 {
     public class ScreenManager
     {
-        public float TileLayer = 0.9f, ButtonLayer = 0.1f, ButtonTextLayer = 0.05f, BGLayer = 1f, MGLayer = 0.5f, EntityLayer = 0.6f, FlashlightLayer = 0.61f, FGLayer = 0.4f; 
+        public float TileLayer = 0.9f, ButtonLayer = 0.1f, ButtonTextLayer = 0.05f, BgLayer = 1f, MgLayer = 0.5f, EntityLayer = 0.6f, FlashlightLayer = 0.61f, FgLayer = 0.4f; 
 
-        private KeyboardState oldState;
+        private KeyboardState _oldState;
         ///Create a new instance of screen manager and called it, incidentally, "instance".
         ///This instance can not be changed or redefined by other classes, but may be used
-        private static ScreenManager instance;
+        private static ScreenManager _instance;
 
         public Vector2 Dimensions { private set; get; }
         //Private set public get means that it can only be changed in this class, but other classes can recive the information stored
@@ -22,16 +22,16 @@ namespace Optic_Coma
         public ContentManager Content { private set; get; }
 
 
-        public BaseScreen currentScreen { set; get; }
+        public BaseScreen CurrentScreen { set; get; }
 
         //Oh boy it's a singleton
         public static ScreenManager Instance
         {
             get
             {
-                if (instance == null)
-                    instance = new ScreenManager();
-                return instance;
+                if (_instance == null)
+                    _instance = new ScreenManager();
+                return _instance;
             }
         }
 
@@ -42,77 +42,77 @@ namespace Optic_Coma
             Dimensions = new Vector2(1024, 800);
 
             //Changes the screen to the splash screen upon start up
-            currentScreen = new MenuScreen();
+            CurrentScreen = new MenuScreen();
 
         }
-        public void LoadContent(ContentManager Content, PenumbraComponent lightingEngine)
+        public void LoadContent(ContentManager content, PenumbraComponent lightingEngine)
         {
-            this.Content = new ContentManager(Content.ServiceProvider, "Content");
+            this.Content = new ContentManager(content.ServiceProvider, "Content");
             //instantiate content, then tell it where the content is stored as the 2nd parameter, as well as the pipeline to load the content, called "ServiceProvider"
 
-            if (currentScreen is MenuScreen)
-                currentScreen.LoadContent();
-            else if (currentScreen is Level1Screen)
+            if (CurrentScreen is MenuScreen)
+                CurrentScreen.LoadContent();
+            else if (CurrentScreen is Level1Screen)
             {
-                currentScreen.LoadContent();
+                CurrentScreen.LoadContent();
             }
             //Load whatever content is on the current screen into the window
         }
         public void UnloadContent()
         {
-            currentScreen.UnloadContent();
+            CurrentScreen.UnloadContent();
         }
         public void Update(GameTime gameTime, PenumbraComponent lightingEngine)
         {
             KeyboardState newState = Keyboard.GetState();
 
-            if (oldState.IsKeyUp(Keys.Q) && newState.IsKeyDown(Keys.Q))
+            if (_oldState.IsKeyUp(Keys.Q) && newState.IsKeyDown(Keys.Q))
             {
                 // this will only be called when the key is first pressed
                 MenuKey_OnPress();
             }
 
-            oldState = newState;
+            _oldState = newState;
 
-            if (currentScreen is Level1Screen)
-                currentScreen.Update(gameTime);
-            else if (currentScreen is MenuScreen)
-                currentScreen.Update(gameTime);
+            if (CurrentScreen is Level1Screen)
+                CurrentScreen.Update(gameTime);
+            else if (CurrentScreen is MenuScreen)
+                CurrentScreen.Update(gameTime);
         }
         public void Draw(SpriteBatch spriteBatch, GameTime gT, PenumbraComponent lightingEngine)
         {
-            if (currentScreen is Level1Screen)
+            if (CurrentScreen is Level1Screen)
             {
-                currentScreen.Draw(spriteBatch, gT);
+                CurrentScreen.Draw(spriteBatch, gT);
             }
-            else if (currentScreen is MenuScreen)
-                currentScreen.Draw(spriteBatch);
+            else if (CurrentScreen is MenuScreen)
+                CurrentScreen.Draw(spriteBatch);
         }
 
         public void MenuKey_OnPress()
         {
-            if (currentScreen is MenuScreen)
+            if (CurrentScreen is MenuScreen)
             {
-                currentScreen.UnloadContent();
-                currentScreen = new Level1Screen();
-                currentScreen.LoadContent();
+                CurrentScreen.UnloadContent();
+                CurrentScreen = new Level1Screen();
+                CurrentScreen.LoadContent();
             }
-            else if (currentScreen is Level1Screen)
+            else if (CurrentScreen is Level1Screen)
             {
                 
-                currentScreen.UnloadContent();
-                currentScreen = new MenuScreen();
-                currentScreen.LoadContent();
+                CurrentScreen.UnloadContent();
+                CurrentScreen = new MenuScreen();
+                CurrentScreen.LoadContent();
             }
         }
         public void PauseKey_OnPress()
         {
-            if (currentScreen is Level1Screen)
+            if (CurrentScreen is Level1Screen)
             {
-                Level1Screen level1Screen = (Level1Screen)currentScreen;
+                Level1Screen level1Screen = (Level1Screen)CurrentScreen;
                 if (!level1Screen.IsPaused)
                 {
-                    SaveFileSerializer.Save(Foundation.saveReaderWriter, level1Screen.dataToSave);
+                    SaveFileSerializer.Save(Foundation.SaveReaderWriter, level1Screen.DataToSave);
                     level1Screen.IsPaused = true;
                 }
                 else
@@ -122,18 +122,18 @@ namespace Optic_Coma
         }
         public void ChangeScreenMode()
         {
-            if (Foundation.isFullScreen)
+            if (Foundation.IsFullScreen)
             {
-                Foundation.isFullScreen = false;
-                Foundation.graphics.ApplyChanges();
+                Foundation.IsFullScreen = false;
+                Foundation.Graphics.ApplyChanges();
             }
             else
             {
-                Foundation.isFullScreen = true;
-                Foundation.graphics.ApplyChanges();
+                Foundation.IsFullScreen = true;
+                Foundation.Graphics.ApplyChanges();
             }
         }
-        public Foundation foundation;
+        public Foundation Foundation;
         public void ExitKey_OnPress()
         {
             

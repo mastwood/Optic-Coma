@@ -6,57 +6,57 @@ namespace Optic_Coma
 {
     public class TileSystem
     {
-        int width, height;
-        int rows, columns;
-        int[,] chosenRow, chosenColumn;
-        List<Vector2> tiles = new List<Vector2>();
-        Random random = new Random();
-        Vector2 location;
-        Texture2D texture;
+        private int _width, _height;
+        private int _rows, _columns;
+        private int[,] _chosenRow, _chosenColumn;
+        private List<Vector2> _tiles = new List<Vector2>();
+        private Random _random = new Random();
+        private Vector2 _location;
+        private Texture2D _texture;
 
         //This method is called when you make a new TileSystem.
         public TileSystem(Texture2D t, int numRows, int numColumns, int level, Vector2 levelSize, List<Vector2> gT)
         {
-            tiles = gT;
-            texture = t;
-            rows = numRows;           
-            columns = numColumns;
-            chosenRow = new int[(int)levelSize.X, (int)levelSize.Y];
-            chosenColumn = new int[(int)levelSize.X, (int)levelSize.Y];
-            width = 0;
-            height = 0;
-            location = Vector2.Zero;
+            _tiles = gT;
+            _texture = t;
+            _rows = numRows;           
+            _columns = numColumns;
+            _chosenRow = new int[(int)levelSize.X, (int)levelSize.Y];
+            _chosenColumn = new int[(int)levelSize.X, (int)levelSize.Y];
+            _width = 0;
+            _height = 0;
+            _location = Vector2.Zero;
 
             for (int i = 0; i < levelSize.X; i++)
             {
                 for (int j = 0; j < levelSize.Y; j++)
                 {
-                    chosenRow[i, j] = random.Next(0, rows);
-                    chosenColumn[i, j] = random.Next(0, columns);
+                    _chosenRow[i, j] = _random.Next(0, _rows);
+                    _chosenColumn[i, j] = _random.Next(0, _columns);
                 }
             }
         }
 
         //Calling draw to draw our tiles across the entire screen.
-        public void Draw(SpriteBatch spriteBatch, Vector2 locOffset, Vector2 LevelSize)
+        public void Draw(SpriteBatch spriteBatch, Vector2 locOffset, Vector2 levelSize)
         {
-            width = texture.Width / columns;
-            height = texture.Height / rows;
-            for (int i = 0; i <= LevelSize.X; i+=32)
+            _width = _texture.Width / _columns;
+            _height = _texture.Height / _rows;
+            for (int i = 0; i <= levelSize.X; i+=32)
             {
-                for (int j = 0; j <= LevelSize.Y; j+=32)
+                for (int j = 0; j <= levelSize.Y; j+=32)
                 {
-                    if (i % width == 0 && j % height == 0 && (tiles.Contains(new Vector2(i / width, j / height))))
+                    if (i % _width == 0 && j % _height == 0 && (_tiles.Contains(new Vector2(i / _width, j / _height))))
                     {
-                        location.X = i;
-                        location.Y = j;
+                        _location.X = i;
+                        _location.Y = j;
 
-                        Rectangle sourceRectangle = new Rectangle(width * chosenColumn[i, j], height * chosenRow[i, j], width, height);
+                        Rectangle sourceRectangle = new Rectangle(_width * _chosenColumn[i, j], _height * _chosenRow[i, j], _width, _height);
 
                         spriteBatch.Draw
                         (
-                            texture,
-                            new Vector2(location.X + locOffset.X, location.Y + locOffset.Y),
+                            _texture,
+                            new Vector2(_location.X + locOffset.X, _location.Y + locOffset.Y),
                             sourceRectangle,
                             Color.White,
                             0f,

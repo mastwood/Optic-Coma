@@ -14,7 +14,7 @@ namespace Optic_Coma
 
     public class Triangle
     {
-        Vector2[] V;
+        readonly Vector2[] V;
         Vector2 topright, topleft, botright, botleft;
         double area;
         double s, t;

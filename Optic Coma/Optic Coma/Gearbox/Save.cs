@@ -50,11 +50,11 @@ namespace Optic_Coma
         }
         public static float[] Load(XmlSerializer xml)
         {
-            float[] i = new float[3];
+            var i = new float[3];
 
             try
             {
-                using(FileStream f = new FileStream(@"Content\save1.xml", FileMode.Open))
+                using(var f = new FileStream(@"Content\save1.xml", FileMode.Open))
                     i = (float[])xml.Deserialize(f);
 
                 return i;
@@ -68,16 +68,16 @@ namespace Optic_Coma
    
     public class LogWriter
     {
-        public string[] lines;
-        public static string path = "";
-        public DateTime dateTime = DateTime.Now;
+        public string[] Lines;
+        public static string Path = "";
+        public DateTime DateTime = DateTime.Now;
 
         public static void Write(string message, string stackTrace, string errorCode)
         {
-            if (!File.Exists(path))
+            if (!File.Exists(Path))
             {
                 // Create a file to write to.
-                using (StreamWriter sw = File.CreateText(path))
+                using (var sw = File.CreateText(Path))
                 {
                     sw.WriteLine("ERROR LOG {dateTime} \r \r");
 

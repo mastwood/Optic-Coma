@@ -51,37 +51,37 @@ using System.Security.Cryptography;
 
 namespace Optic_Coma
 {
-    class BlowFish
+    internal class BlowFish
     {
         #region "Global variables and constants"
 
-        const int ROUNDS = 16; //standard is 16, to increase the number of rounds, bf_P needs to be equal to the number of rouds. Use digits of PI.
+        private const int Rounds = 16; //standard is 16, to increase the number of rounds, bf_P needs to be equal to the number of rouds. Use digits of PI.
 
         //Random number generator for creating IVs
-        RNGCryptoServiceProvider randomSource;
+        private RNGCryptoServiceProvider _randomSource;
 
         //SBLOCKS
-        private uint[] bf_s0;
-        private uint[] bf_s1;
-        private uint[] bf_s2;
-        private uint[] bf_s3;
+        private uint[] _bfS0;
+        private uint[] _bfS1;
+        private uint[] _bfS2;
+        private uint[] _bfS3;
 
-        private uint[] bf_P;
+        private uint[] _bfP;
 
         //KEY
-        private byte[] key;
+        private byte[] _key;
 
         //HALF-BLOCKS
-        private uint xl_par;
-        private uint xr_par;
+        private uint _xlPar;
+        private uint _xrPar;
 
         //Initialization Vector for CBC and CTR mode
-        private byte[] InitVector;
-        private bool IVSet;
+        private byte[] _initVector;
+        private bool _ivSet;
 
         //For compatibility with the javascript crypto library:
         //  http://etherhack.co.uk/symmetric/blowfish/blowfish.html
-        private bool nonStandardMethod;
+        private bool _nonStandardMethod;
 
         #endregion
 
@@ -93,7 +93,7 @@ namespace Optic_Coma
         /// <param name="hexKey">Cipher key as a hex string</param>
         public BlowFish(string hexKey)
         {
-            randomSource = new RNGCryptoServiceProvider();
+            _randomSource = new RNGCryptoServiceProvider();
             SetupKey(HexToByte(hexKey));
         }
 
@@ -103,7 +103,7 @@ namespace Optic_Coma
         /// <param name="cipherKey">Cipher key as a byte array</param>
         public BlowFish(byte[] cipherKey)
         {
-            randomSource = new RNGCryptoServiceProvider();
+            _randomSource = new RNGCryptoServiceProvider();
             SetupKey(cipherKey);
         }
 
@@ -118,9 +118,9 @@ namespace Optic_Coma
         /// <returns>Ciphertext with IV appended to front</returns>
         public string Encrypt_CBC(string pt)
         {
-            if (!IVSet)
-                SetRandomIV();
-            return ByteToHex(InitVector) + ByteToHex(Encrypt_CBC(Encoding.ASCII.GetBytes(pt)));
+            if (!_ivSet)
+                SetRandomIv();
+            return ByteToHex(_initVector) + ByteToHex(Encrypt_CBC(Encoding.ASCII.GetBytes(pt)));
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Optic_Coma
         /// <returns>Plaintext</returns>
         public string Decrypt_CBC(string ct)
         {
-            IV = HexToByte(ct.Substring(0, 16));
+            Iv = HexToByte(ct.Substring(0, 16));
             return Encoding.ASCII.GetString(Decrypt_CBC(HexToByte(ct.Substring(16)))).Replace("\0", "");
         }
 
@@ -203,9 +203,9 @@ namespace Optic_Coma
         /// <returns>The ciphertext</returns>
         public string Encrypt_CTR(string pt)
         {
-            if (!IVSet)
-                SetRandomIV();
-            return ByteToHex(InitVector) + ByteToHex(Crypt_CTR(Encoding.ASCII.GetBytes(pt), 2));
+            if (!_ivSet)
+                SetRandomIv();
+            return ByteToHex(_initVector) + ByteToHex(Crypt_CTR(Encoding.ASCII.GetBytes(pt), 2));
         }
 
         /// <summary>
@@ -215,22 +215,22 @@ namespace Optic_Coma
         /// <returns>The plaintext</returns>
         public string Decrypt_CTR(string ct)
         {
-            IV = HexToByte(ct.Substring(0, 16));
+            Iv = HexToByte(ct.Substring(0, 16));
             return Encoding.ASCII.GetString(Crypt_CTR(HexToByte(ct.Substring(16)), 2)).Replace("\0", "");
         }
 
         /// <summary>
         /// Initialization vector for CBC mode.
         /// </summary>
-        public byte[] IV
+        public byte[] Iv
         {
-            get { return InitVector; }
+            get { return _initVector; }
             set
             {
                 if (value.Length == 8)
                 {
-                    InitVector = value;
-                    IVSet = true;
+                    _initVector = value;
+                    _ivSet = true;
                 }
                 else
                 {
@@ -241,20 +241,20 @@ namespace Optic_Coma
 
         public bool NonStandard
         {
-            get { return nonStandardMethod; }
-            set { nonStandardMethod = value; }
+            get { return _nonStandardMethod; }
+            set { _nonStandardMethod = value; }
         }
 
         /// <summary>
         /// Creates and sets a random initialization vector.
         /// </summary>
         /// <returns>The random IV</returns>
-        public byte[] SetRandomIV()
+        public byte[] SetRandomIv()
         {
-            InitVector = new byte[8];
-            randomSource.GetBytes(InitVector);
-            IVSet = true;
-            return InitVector;
+            _initVector = new byte[8];
+            _randomSource.GetBytes(_initVector);
+            _ivSet = true;
+            return _initVector;
         }
 
         #endregion
@@ -267,60 +267,60 @@ namespace Optic_Coma
         /// <param name="cipherKey">Block cipher key (1-448 bits)</param>
         private void SetupKey(byte[] cipherKey)
         {
-            bf_P = SetupP();
+            _bfP = SetupP();
             //set up the S blocks
-            bf_s0 = SetupS0();
-            bf_s1 = SetupS1();
-            bf_s2 = SetupS2();
-            bf_s3 = SetupS3();
+            _bfS0 = SetupS0();
+            _bfS1 = SetupS1();
+            _bfS2 = SetupS2();
+            _bfS3 = SetupS3();
 
-            key = new byte[cipherKey.Length]; // 448 bits
+            _key = new byte[cipherKey.Length]; // 448 bits
             if (cipherKey.Length > 56)
             {
                 throw new Exception("Key too long. 56 bytes required.");
             }
 
-            Buffer.BlockCopy(cipherKey, 0, key, 0, cipherKey.Length);
+            Buffer.BlockCopy(cipherKey, 0, _key, 0, cipherKey.Length);
             int j = 0;
             for (int i = 0; i < 18; i++)
             {
-                uint d = (uint)(((key[j % cipherKey.Length] * 256 + key[(j + 1) % cipherKey.Length]) * 256 + key[(j + 2) % cipherKey.Length]) * 256 + key[(j + 3) % cipherKey.Length]);
-                bf_P[i] ^= d;
+                uint d = (uint)(((_key[j % cipherKey.Length] * 256 + _key[(j + 1) % cipherKey.Length]) * 256 + _key[(j + 2) % cipherKey.Length]) * 256 + _key[(j + 3) % cipherKey.Length]);
+                _bfP[i] ^= d;
                 j = (j + 4) % cipherKey.Length;
             }
 
-            xl_par = 0;
-            xr_par = 0;
+            _xlPar = 0;
+            _xrPar = 0;
             for (int i = 0; i < 18; i += 2)
             {
-                encipher();
-                bf_P[i] = xl_par;
-                bf_P[i + 1] = xr_par;
+                Encipher();
+                _bfP[i] = _xlPar;
+                _bfP[i + 1] = _xrPar;
             }
 
             for (int i = 0; i < 256; i += 2)
             {
-                encipher();
-                bf_s0[i] = xl_par;
-                bf_s0[i + 1] = xr_par;
+                Encipher();
+                _bfS0[i] = _xlPar;
+                _bfS0[i + 1] = _xrPar;
             }
             for (int i = 0; i < 256; i += 2)
             {
-                encipher();
-                bf_s1[i] = xl_par;
-                bf_s1[i + 1] = xr_par;
+                Encipher();
+                _bfS1[i] = _xlPar;
+                _bfS1[i + 1] = _xrPar;
             }
             for (int i = 0; i < 256; i += 2)
             {
-                encipher();
-                bf_s2[i] = xl_par;
-                bf_s2[i + 1] = xr_par;
+                Encipher();
+                _bfS2[i] = _xlPar;
+                _bfS2[i + 1] = _xrPar;
             }
             for (int i = 0; i < 256; i += 2)
             {
-                encipher();
-                bf_s3[i] = xl_par;
-                bf_s3[i + 1] = xr_par;
+                Encipher();
+                _bfS3[i] = _xlPar;
+                _bfS3[i + 1] = _xrPar;
             }
         }
 
@@ -354,7 +354,7 @@ namespace Optic_Coma
 
         public byte[] Crypt_CTR(byte[] text, int numThreads)
         {
-            if (!IVSet)
+            if (!_ivSet)
             {
                 throw new Exception("IV not set.");
             }
@@ -368,7 +368,7 @@ namespace Optic_Coma
             {
                 for (int x = 0; x < 8; x++)
                 {
-                    input[x] = (byte)(counter[x] ^ InitVector[x]);
+                    input[x] = (byte)(counter[x] ^ _initVector[x]);
                 }
                 Buffer.BlockCopy(plainText, i, block, 0, 8);
                 BlockEncrypt(ref input);
@@ -386,7 +386,7 @@ namespace Optic_Coma
         /// <returns>(En/De)crypted data</returns>
         private byte[] Crypt_CBC(byte[] text, bool decrypt)
         {
-            if (!IVSet)
+            if (!_ivSet)
             {
                 throw new Exception("IV not set.");
             }
@@ -396,7 +396,7 @@ namespace Optic_Coma
             byte[] block = new byte[8];
             byte[] preblock = new byte[8];
             byte[] iv = new byte[8];
-            Buffer.BlockCopy(InitVector, 0, iv, 0, 8);
+            Buffer.BlockCopy(_initVector, 0, iv, 0, 8);
             if (!decrypt)
             {
                 for (int i = 0; i < plainText.Length; i += 8)
@@ -445,7 +445,7 @@ namespace Optic_Coma
         private void BlockEncrypt(ref byte[] block)
         {
             SetBlock(block);
-            encipher();
+            Encipher();
             GetBlock(ref block);
         }
 
@@ -456,7 +456,7 @@ namespace Optic_Coma
         private void BlockDecrypt(ref byte[] block)
         {
             SetBlock(block);
-            decipher();
+            Decipher();
             GetBlock(ref block);
         }
 
@@ -471,18 +471,18 @@ namespace Optic_Coma
             Buffer.BlockCopy(block, 0, block1, 0, 4);
             Buffer.BlockCopy(block, 4, block2, 0, 4);
             //split the block
-            if (nonStandardMethod)
+            if (_nonStandardMethod)
             {
-                xr_par = BitConverter.ToUInt32(block1, 0);
-                xl_par = BitConverter.ToUInt32(block2, 0);
+                _xrPar = BitConverter.ToUInt32(block1, 0);
+                _xlPar = BitConverter.ToUInt32(block2, 0);
             }
             else
             {
                 //ToUInt32 requires the bytes in reverse order
                 Array.Reverse(block1);
                 Array.Reverse(block2);
-                xl_par = BitConverter.ToUInt32(block1, 0);
-                xr_par = BitConverter.ToUInt32(block2, 0);
+                _xlPar = BitConverter.ToUInt32(block1, 0);
+                _xrPar = BitConverter.ToUInt32(block2, 0);
             }
         }
 
@@ -494,15 +494,15 @@ namespace Optic_Coma
         {
             byte[] block1 = new byte[4];
             byte[] block2 = new byte[4];
-            if (nonStandardMethod)
+            if (_nonStandardMethod)
             {
-                block1 = BitConverter.GetBytes(xr_par);
-                block2 = BitConverter.GetBytes(xl_par);
+                block1 = BitConverter.GetBytes(_xrPar);
+                block2 = BitConverter.GetBytes(_xlPar);
             }
             else
             {
-                block1 = BitConverter.GetBytes(xl_par);
-                block2 = BitConverter.GetBytes(xr_par);
+                block1 = BitConverter.GetBytes(_xlPar);
+                block2 = BitConverter.GetBytes(_xrPar);
 
                 //GetBytes returns the bytes in reverse order
                 Array.Reverse(block1);
@@ -516,39 +516,39 @@ namespace Optic_Coma
         /// <summary>
         /// Runs the blowfish algorithm (standard 16 rounds)
         /// </summary>
-        private void encipher()
+        private void Encipher()
         {
-            xl_par ^= bf_P[0];
-            for (uint i = 0; i < ROUNDS; i += 2)
+            _xlPar ^= _bfP[0];
+            for (uint i = 0; i < Rounds; i += 2)
             {
-                xr_par = round(xr_par, xl_par, i + 1);
-                xl_par = round(xl_par, xr_par, i + 2);
+                _xrPar = Round(_xrPar, _xlPar, i + 1);
+                _xlPar = Round(_xlPar, _xrPar, i + 2);
             }
-            xr_par = xr_par ^ bf_P[17];
+            _xrPar = _xrPar ^ _bfP[17];
 
             //swap the blocks
-            uint swap = xl_par;
-            xl_par = xr_par;
-            xr_par = swap;
+            uint swap = _xlPar;
+            _xlPar = _xrPar;
+            _xrPar = swap;
         }
 
         /// <summary>
         /// Runs the blowfish algorithm in reverse (standard 16 rounds)
         /// </summary>
-        private void decipher()
+        private void Decipher()
         {
-            xl_par ^= bf_P[17];
+            _xlPar ^= _bfP[17];
             for (uint i = 16; i > 0; i -= 2)
             {
-                xr_par = round(xr_par, xl_par, i);
-                xl_par = round(xl_par, xr_par, i - 1);
+                _xrPar = Round(_xrPar, _xlPar, i);
+                _xlPar = Round(_xlPar, _xrPar, i - 1);
             }
-            xr_par = xr_par ^ bf_P[0];
+            _xrPar = _xrPar ^ _bfP[0];
 
             //swap the blocks
-            uint swap = xl_par;
-            xl_par = xr_par;
-            xr_par = swap;
+            uint swap = _xlPar;
+            _xlPar = _xrPar;
+            _xrPar = swap;
         }
 
         /// <summary>
@@ -558,11 +558,11 @@ namespace Optic_Coma
         /// <param name="b">See spec</param>
         /// <param name="n">See spec</param>
         /// <returns></returns>
-        private uint round(uint a, uint b, uint n)
+        private uint Round(uint a, uint b, uint n)
         {
-            uint x1 = (bf_s0[wordByte0(b)] + bf_s1[wordByte1(b)]) ^ bf_s2[wordByte2(b)];
-            uint x2 = x1 + bf_s3[this.wordByte3(b)];
-            uint x3 = x2 ^ bf_P[n];
+            uint x1 = (_bfS0[WordByte0(b)] + _bfS1[WordByte1(b)]) ^ _bfS2[WordByte2(b)];
+            uint x2 = x1 + _bfS3[this.WordByte3(b)];
+            uint x3 = x2 ^ _bfP[n];
             return x3 ^ a;
         }
 
@@ -783,25 +783,25 @@ namespace Optic_Coma
         #region Conversions
 
         //gets the first byte in a uint
-        private byte wordByte0(uint w)
+        private byte WordByte0(uint w)
         {
             return (byte)(w / 256 / 256 / 256 % 256);
         }
 
         //gets the second byte in a uint
-        private byte wordByte1(uint w)
+        private byte WordByte1(uint w)
         {
             return (byte)(w / 256 / 256 % 256);
         }
 
         //gets the third byte in a uint
-        private byte wordByte2(uint w)
+        private byte WordByte2(uint w)
         {
             return (byte)(w / 256 % 256);
         }
 
         //gets the fourth byte in a uint
-        private byte wordByte3(uint w)
+        private byte WordByte3(uint w)
         {
             return (byte)(w % 256);
         }
