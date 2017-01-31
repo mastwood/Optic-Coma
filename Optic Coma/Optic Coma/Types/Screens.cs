@@ -55,7 +55,7 @@ namespace Optic_Coma
                 return new Rectangle(r.X, r.Y, r.Width, r.Height);
             }
         }
-
+        /*
         private static bool IntersectPixels(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB)
         {
             // Find the bounds of the rectangle intersection
@@ -86,6 +86,7 @@ namespace Optic_Coma
             }
             return false;
         }
+        */
     }
 
     internal class LevelScreen : BaseScreen
@@ -95,11 +96,12 @@ namespace Optic_Coma
         private double _lowDist, _curDist;
         public FrameCounter FrameCounter = new FrameCounter();
         public Vector2 LevelSize;
+        public LevelHandler Handler;
 
         public static bool NotOutOfBounds(List<Vector2> walkableTiles, List<Triangle> nonWalkableTriangles, Vector2 location, Rectangle playerHitBox)
         {
             List<Rectangle> levelArea = new List<Rectangle>();
-            bool b = false;
+            bool b = false; //TODO ?
             foreach (Vector2 v in walkableTiles)
             {
                 levelArea.Add(new Rectangle((int)(v.X * 32 + location.X), (int)(v.Y * 32 + location.Y), 32, 32));
@@ -146,9 +148,16 @@ namespace Optic_Coma
             xD = Convert.ToDouble(x);
             return (350 / (1 + Math.Exp(-0.02d*(xD - 200d))));
         }
+        Action<object, DoWorkEventArgs> method;
+        public void SetMethod(Action<object, DoWorkEventArgs> m)
+        {
+            method = m;
+        }
         public override void LoadContent()
         {
             base.LoadContent();
+            Handler = new LevelHandler(method);
+            Handler.BeginLoad();
         }
         public override void UnloadContent()
         {
@@ -263,8 +272,6 @@ namespace Optic_Coma
         private Vector2 _mouseLoc;
 
         public bool IsPaused = false;
-        private bool _notOutOfBounds;
-
         private Texture2D _debugColRect;
 
         private int _screenWidth = (int)ScreenManager.Instance.Dimensions.X;
@@ -330,16 +337,8 @@ namespace Optic_Coma
             return t;
         }
 
-        //this method is called after everything loads
-        protected void Complete(object sender, RunWorkerCompletedEventArgs e)
-        {
-            _loader.DoWork -= LoadAsync;
-            _loader.RunWorkerCompleted -= Complete;
-            _loader = null;
-            _hasLoaded = true;
-        }
         //this method is called by a background thread while the loading screen is displayed
-        protected void LoadAsync(object sender, DoWorkEventArgs e)
+        protected void Loader(object sender, DoWorkEventArgs e)
         {
             IsPaused = false;
 
@@ -413,15 +412,12 @@ namespace Optic_Coma
         
         public override void LoadContent()
         {
+            SetMethod(Loader);
+           
             base.LoadContent();
             _loadingScreen = Content.Load<Texture2D>("loadingScreen");
-            _hasLoaded = false;
 
-            //"loader" is a "BackgroundWorker", meaning it opens up a thread and performs a method while the program can continue running
-            _loader.DoWork += new DoWorkEventHandler(LoadAsync); //makes the action to perform "LoadAsync()"
-            _loader.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Complete); //makes the action to perform when done "Complete()"
-            _loader.RunWorkerAsync(); //runs the worker then continues the game loop (right now just the loading screen until everything is done)
-            
+            _hasLoaded = false;
         }
         public override void UnloadContent()
         {
@@ -431,6 +427,7 @@ namespace Optic_Coma
         private KeyboardState _prevState;
         public override void Update(GameTime gameTime) //gametime is a tick
         {
+            _hasLoaded = Handler.LoadingSuccess();
             if (_hasLoaded)
             {
                 _deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
