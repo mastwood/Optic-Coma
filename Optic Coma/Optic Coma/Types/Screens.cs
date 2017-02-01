@@ -14,7 +14,7 @@ namespace Optic_Coma
 {
     public class BaseScreen
     {
-        protected ContentManager Content;
+        public static ContentManager BaseScreenContent;
         [XmlIgnore]
         public Type Type;
 
@@ -25,11 +25,15 @@ namespace Optic_Coma
 
         public virtual void LoadContent()
         {
-            Content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
+            BaseScreenContent = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
+        }
+        public virtual void LoadContent(LevelHandler l)
+        {
+            BaseScreenContent = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
         }
         public virtual void UnloadContent()
         {
-            Content.Unload();
+            BaseScreenContent.Unload();
         }
         public virtual void Update(GameTime gameTime)
         {
@@ -101,7 +105,7 @@ namespace Optic_Coma
         public static bool NotOutOfBounds(List<Vector2> walkableTiles, List<Triangle> nonWalkableTriangles, Vector2 location, Rectangle playerHitBox)
         {
             List<Rectangle> levelArea = new List<Rectangle>();
-            bool b = false; //TODO ?
+
             foreach (Vector2 v in walkableTiles)
             {
                 levelArea.Add(new Rectangle((int)(v.X * 32 + location.X), (int)(v.Y * 32 + location.Y), 32, 32));
@@ -153,7 +157,7 @@ namespace Optic_Coma
         {
             method = m;
         }
-        public override void LoadContent()
+        public override void LoadContent(LevelHandler l)
         {
             base.LoadContent();
             Handler = new LevelHandler(method);
@@ -184,16 +188,16 @@ namespace Optic_Coma
         public override void LoadContent()
         {
             base.LoadContent();
-            _titleGraphic = Content.Load<Texture2D>("ocbigSheet");
+            _titleGraphic = BaseScreenContent.Load<Texture2D>("ocbigSheet");
 
             _btnEnterGame = new Button();
-            _enterButtonTexture = Content.Load<Texture2D>("buttonSheet");
-            _buttonFont = Content.Load<SpriteFont>("buttonFont");
+            _enterButtonTexture = BaseScreenContent.Load<Texture2D>("buttonSheet");
+            _buttonFont = BaseScreenContent.Load<SpriteFont>("buttonFont");
 
             _enterButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - _enterButtonTexture.Width / 2,
                                          ScreenManager.Instance.Dimensions.Y / 2 - _enterButtonTexture.Height / 8);
 
-            _bg = Content.Load<Texture2D>("starsbg");
+            _bg = BaseScreenContent.Load<Texture2D>("starsbg");
         }
 
         public override void UnloadContent()
@@ -248,7 +252,7 @@ namespace Optic_Coma
         }
     }
 
-    internal class Level1Screen : LevelScreen
+    internal class Level1Screen : LevelScreen , Level
     {
         public bool Equals(Level1Screen level)
         {
@@ -358,23 +362,23 @@ namespace Optic_Coma
 
             LevelSize = new Vector2(ScreenManager.Instance.Dimensions.X * 2, ScreenManager.Instance.Dimensions.Y * 2);
 
-            _debugColRect = Content.Load<Texture2D>("rectbox");
-            _floorTexture = Content.Load<Texture2D>("floorSheet");
+            _debugColRect = BaseScreenContent.Load<Texture2D>("rectbox");
+            _floorTexture = BaseScreenContent.Load<Texture2D>("floorSheet");
             _walkableTileRenderer = new TileSystem(_floorTexture, 4, 4, 1, LevelSize, WalkableTiles);
 
-            _music = Content.Load<SoundEffect>("samplemusic");
+            _music = BaseScreenContent.Load<SoundEffect>("samplemusic");
             _musicInstance = _music.CreateInstance();
             _musicInstance.IsLooped = true;
             _musicInstance.Volume = MusicVolume;
             //musicInstance.Play();
 
-            _bg = Content.Load<Texture2D>("starsbg");
+            _bg = BaseScreenContent.Load<Texture2D>("starsbg");
 
             #region buttons
-            _buttonSheet = Content.Load<Texture2D>("buttonSheet");
+            _buttonSheet = BaseScreenContent.Load<Texture2D>("buttonSheet");
             _pauseButton = new Button();
             _pauseButtonPos = Vector2.Zero;
-            _buttonFont = Content.Load<SpriteFont>("buttonFont");
+            _buttonFont = BaseScreenContent.Load<SpriteFont>("buttonFont");
 
             _btnUnpause = new Button();
             _unpauseButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - _buttonSheet.Width / 2,
@@ -387,10 +391,10 @@ namespace Optic_Coma
                                         ScreenManager.Instance.Dimensions.Y / 2 + 64 - 128);
             #endregion
             #region entities
-            _lightTexture = Content.Load<Texture2D>("light");
-            _flashLightTexture = Content.Load<Texture2D>(_flashPath);
-            _playerTexture = Content.Load<Texture2D>(_playerPath);
-            _enemyTexture = Content.Load<Texture2D>(_enemyPath);
+            _lightTexture = BaseScreenContent.Load<Texture2D>("light");
+            _flashLightTexture = BaseScreenContent.Load<Texture2D>(_flashPath);
+            _playerTexture = BaseScreenContent.Load<Texture2D>(_playerPath);
+            _enemyTexture = BaseScreenContent.Load<Texture2D>(_enemyPath);
 
             _playerPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - _playerTexture.Width / 2,
                                      ScreenManager.Instance.Dimensions.Y / 2 - _playerTexture.Height / 8);
@@ -415,7 +419,7 @@ namespace Optic_Coma
             SetMethod(Loader);
            
             base.LoadContent();
-            _loadingScreen = Content.Load<Texture2D>("loadingScreen");
+            _loadingScreen = BaseScreenContent.Load<Texture2D>("loadingScreen");
 
             _hasLoaded = false;
         }

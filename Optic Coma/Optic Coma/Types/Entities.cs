@@ -175,6 +175,7 @@ namespace Optic_Coma
         private int _dir;
         private float _moveAmp;
         public int Acceleration = 0;
+        public bool Spawned = false;
 
         public Enemy(Texture2D texture, Vector2 initPosition)
         {
@@ -185,52 +186,62 @@ namespace Optic_Coma
             _moveAmp = -1;
             Hull = Hull.CreateRectangle(CurrentPosition, new Vector2(texture.Width, texture.Height), Angle, new Vector2(texture.Width/2, texture.Height/2));
         }
-
+        public void Initialize()
+        {
+            Spawned = true;
+            //other stuff?
+        }
         public override void Update()
         {
-            EnemyAngle = (float)(Math.Atan2(CenterScreen.Y - CurrentPosition.Y,
-                CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
-            //moveAmp += 0.001f;
-            _moveAmp = 4; //We can toy around with this later.
-            _dir = _random.Next(0, 4);
-            Angle = EnemyAngle;
-            Hull.Rotation = Angle;
-            Hull.Origin = new Vector2(CurrentPosition.X / 2, CurrentPosition.Y / 2);
+            if (Spawned)
+            {
+                EnemyAngle = (float)(Math.Atan2(CenterScreen.Y - CurrentPosition.Y,
+                    CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
+                //moveAmp += 0.001f;
+                _moveAmp = 4; //We can toy around with this later.
+                _dir = _random.Next(0, 4);
+                Angle = EnemyAngle;
+                Hull.Rotation = Angle;
+                Hull.Origin = new Vector2(CurrentPosition.X / 2, CurrentPosition.Y / 2);
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            _dir = _random.Next(0, 4);
-            if (_dir == 0)
-                CurrentPosition.Y -= (4 * WalkMult((float)Math.PI / 2, EnemyAngle, _moveAmp, false));
-            else if (_dir == 1)
-                CurrentPosition.X -= (4 * WalkMult(0, EnemyAngle, _moveAmp, false));
-            else if (_dir == 2)
-                CurrentPosition.Y += (4 * WalkMult(3 * (float)Math.PI / 2, EnemyAngle, _moveAmp, false));
-            else
-                CurrentPosition.X += (4 * WalkMult((float)Math.PI, EnemyAngle, _moveAmp, false));
+            if (Spawned)
+            {
+                _dir = _random.Next(0, 4);
+                if (_dir == 0)
+                    CurrentPosition.Y -= (4 * WalkMult((float)Math.PI / 2, EnemyAngle, _moveAmp, false));
+                else if (_dir == 1)
+                    CurrentPosition.X -= (4 * WalkMult(0, EnemyAngle, _moveAmp, false));
+                else if (_dir == 2)
+                    CurrentPosition.Y += (4 * WalkMult(3 * (float)Math.PI / 2, EnemyAngle, _moveAmp, false));
+                else
+                    CurrentPosition.X += (4 * WalkMult((float)Math.PI, EnemyAngle, _moveAmp, false));
 
-            spriteBatch.Draw
-            (
-                Texture,
-                new Rectangle
+                spriteBatch.Draw
                 (
-                    (int)CurrentPosition.X,
-                    (int)CurrentPosition.Y,
-                    Texture.Width,
-                    Texture.Height
-                ),
-                null,
-                Color.White,
-                EnemyAngle,
-                new Vector2
-                (
-                    Texture.Width / 2,
-                    Texture.Height / 2
-                ),
-                SpriteEffects.None,
-                ScreenManager.Instance.EntityLayer
-            );
+                    Texture,
+                    new Rectangle
+                    (
+                        (int)CurrentPosition.X,
+                        (int)CurrentPosition.Y,
+                        Texture.Width,
+                        Texture.Height
+                    ),
+                    null,
+                    Color.White,
+                    EnemyAngle,
+                    new Vector2
+                    (
+                        Texture.Width / 2,
+                        Texture.Height / 2
+                    ),
+                    SpriteEffects.None,
+                    ScreenManager.Instance.EntityLayer
+                );
+            }
         }
     }
 }
