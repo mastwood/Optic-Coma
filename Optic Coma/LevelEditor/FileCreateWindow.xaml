@@ -1,0 +1,24 @@
+﻿<Window x:Name="frmFileCreate" x:Class="LevelEditor.FileCreateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LevelEditor"
+        mc:Ignorable="d"
+        Title="New Level" Height="168.855" Width="300" WindowStartupLocation="CenterOwner" Topmost="True" ResizeMode="NoResize" Closing="frmFileCreate_Closing">
+    <Grid Margin="0,144,0,-2.5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="55*"/>
+            <ColumnDefinition Width="43*"/>
+        </Grid.ColumnDefinitions>
+        <TextBox x:Name="txtNameInput" HorizontalAlignment="Left" Height="23" Margin="121,-117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Cursor="IBeam" Grid.ColumnSpan="2"/>
+        <Label x:Name="lblName" Content="Level Name:" HorizontalAlignment="Left" Margin="46,-120,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblSize" Content="Level Size:" HorizontalAlignment="Left" Margin="46,-89,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtSizeX" HorizontalAlignment="Left" Height="23" Margin="121,-86,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="42" Text="X" Cursor="IBeam" GotFocus="txtSizeX_GotFocus" LostFocus="txtSizeX_LostFocus"/>
+        <TextBox x:Name="txtSizeY" HorizontalAlignment="Left" Height="23" Margin="34,-86,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="42" Text="Y" Cursor="IBeam" GotFocus="txtSizeY_GotFocus" LostFocus="txtSizeY_LostFocus" Grid.Column="1"/>
+        <Label x:Name="lblBy" Content="by" HorizontalAlignment="Left" Margin="3,-89,0,0" VerticalAlignment="Top" Width="26" Grid.Column="1"/>
+        <Button x:Name="btnOk" Content="Ok" HorizontalAlignment="Left" Margin="1,-50,0,0" VerticalAlignment="Top" Width="75" IsDefault="True" Grid.Column="1" Click="btnOk_Click"/>
+        <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Margin="53,-50,0,0" VerticalAlignment="Top" Width="75" IsCancel="True" Click="btnCancel_Click"/>
+
+    </Grid>
+</Window>
