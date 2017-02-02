@@ -35,18 +35,6 @@ namespace Optic_Coma
         {
             BaseScreenContent.Unload();
         }
-        public virtual void Update(GameTime gameTime)
-        {
-
-        }
-        public virtual void Draw(SpriteBatch spriteBatch)
-        {
-
-        }
-        public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-
-        }
         public static Rectangle RectangularHitbox(Orientation o, Rectangle r)
         {
             // rotates hitbox alongside players sprite
@@ -93,11 +81,11 @@ namespace Optic_Coma
         */
     }
 
-    internal class LevelScreen : BaseScreen
+    public class LevelScreen : BaseScreen
     {
         public List<Vector2> WalkableTiles = new List<Vector2>();
 
-        private double _lowDist, _curDist;
+        private double lowDist, curDist;
         public FrameCounter FrameCounter = new FrameCounter();
         public Vector2 LevelSize;
         public LevelHandler Handler;
@@ -131,20 +119,20 @@ namespace Optic_Coma
         
         public float GetDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
         {
-            _lowDist = -1;
+            lowDist = -1;
             foreach (Enemy enemy in enemies)
             {
-                _curDist = Math.Sqrt
+                curDist = Math.Sqrt
                 (
                     Math.Pow((Math.Abs(source.X - enemy.CurrentPosition.X)), 2) +
                     Math.Pow((Math.Abs(source.Y - enemy.CurrentPosition.Y)), 2)
                 );
-                if( _lowDist == -1 || _curDist < _lowDist)
+                if( lowDist == -1 || curDist < lowDist)
                 {
-                    _lowDist = _curDist;
+                    lowDist = curDist;
                 }
             }
-            return (float)_lowDist;
+            return (float)lowDist;
         }
         public double LogisticForLight(float x)
         {
@@ -152,7 +140,26 @@ namespace Optic_Coma
             xD = Convert.ToDouble(x);
             return (350 / (1 + Math.Exp(-0.02d*(xD - 200d))));
         }
+        public Texture2D buttonSheet;
+        public Button pauseButton;
+        public Vector2 pauseButtonPos;
+        public SpriteFont buttonFont;
+
+        public Button btnUnpause;
+        public Vector2 unpauseButtonPos;
+
+        public Button btnExit;
+        public Vector2 exitButtonPos;
+        public Texture2D bg;
+        public Button btnFullscreen;
+        public Vector2 fullButtonPos;
         Action<object, DoWorkEventArgs> method;
+
+        public LevelScreen(Level l)
+        {
+            ;
+        }
+
         public void SetMethod(Action<object, DoWorkEventArgs> m)
         {
             method = m;
@@ -167,37 +174,53 @@ namespace Optic_Coma
         {
             base.UnloadContent();
         }
-        public override void Update(GameTime gameTime) //gametime is a tick
+        public virtual void Update(GameTime gameTime) //gametime is a tick
         {
-            base.Update(gameTime);
         }
-        public override void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            base.Draw(spriteBatch);
+        }
+
+        public void LoadDefaultButtons()
+        {
+            buttonSheet = BaseScreenContent.Load<Texture2D>("buttonSheet");
+            pauseButton = new Button();
+            pauseButtonPos = Vector2.Zero;
+            buttonFont = BaseScreenContent.Load<SpriteFont>("buttonFont");
+
+            btnUnpause = new Button();
+            unpauseButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
+                                           ScreenManager.Instance.Dimensions.Y / 2);
+            btnExit = new Button();
+            exitButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
+                                        ScreenManager.Instance.Dimensions.Y / 2 - 128);
+            btnFullscreen = new Button();
+            fullButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
+                                        ScreenManager.Instance.Dimensions.Y / 2 + 64 - 128);
         }
     }
 
     internal class MenuScreen : BaseScreen
     {
-        private Button _btnEnterGame;
-        private SpriteFont _buttonFont;
-        private Texture2D _enterButtonTexture;
-        private Vector2 _enterButtonPos;
-        private Texture2D _titleGraphic;
-        private Texture2D _bg;
+        private Button btnEnterGame;
+        private SpriteFont buttonFont;
+        private Texture2D enterButtonTexture;
+        private Vector2 enterButtonPos;
+        private Texture2D titleGraphic;
+        private Texture2D bg;
         public override void LoadContent()
         {
             base.LoadContent();
-            _titleGraphic = BaseScreenContent.Load<Texture2D>("ocbigSheet");
+            titleGraphic = BaseScreenContent.Load<Texture2D>("ocbigSheet");
 
-            _btnEnterGame = new Button();
-            _enterButtonTexture = BaseScreenContent.Load<Texture2D>("buttonSheet");
-            _buttonFont = BaseScreenContent.Load<SpriteFont>("buttonFont");
+            btnEnterGame = new Button();
+            enterButtonTexture = BaseScreenContent.Load<Texture2D>("buttonSheet");
+            buttonFont = BaseScreenContent.Load<SpriteFont>("buttonFont");
 
-            _enterButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - _enterButtonTexture.Width / 2,
-                                         ScreenManager.Instance.Dimensions.Y / 2 - _enterButtonTexture.Height / 8);
+            enterButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - enterButtonTexture.Width / 2,
+                                         ScreenManager.Instance.Dimensions.Y / 2 - enterButtonTexture.Height / 8);
 
-            _bg = BaseScreenContent.Load<Texture2D>("starsbg");
+            bg = BaseScreenContent.Load<Texture2D>("starsbg");
         }
 
         public override void UnloadContent()
@@ -205,16 +228,16 @@ namespace Optic_Coma
             base.UnloadContent();
         }
 
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw
             (
-                _bg,
+                bg,
                 null,
                 new Rectangle(0,0,(int)ScreenManager.Instance.Dimensions.X, (int)ScreenManager.Instance.Dimensions.Y),
                 null, 
@@ -227,10 +250,10 @@ namespace Optic_Coma
             );
             spriteBatch.Draw
             (
-                _titleGraphic,
+                titleGraphic,
                 null,
-                new Rectangle((int)Entity.CenterScreen.X - _titleGraphic.Width / 2, 0, _titleGraphic.Width, _titleGraphic.Height/2),
-                new Rectangle(0, 0, _titleGraphic.Width, _titleGraphic.Height/2),
+                new Rectangle((int)Entity.CenterScreen.X - titleGraphic.Width / 2, 0, titleGraphic.Width, titleGraphic.Height/2),
+                new Rectangle(0, 0, titleGraphic.Width, titleGraphic.Height/2),
                 null,
                 0,
                 null,
@@ -239,88 +262,70 @@ namespace Optic_Coma
                 ScreenManager.Instance.BgLayer-0.01f
             );
             //We're making our button! Woo!
-            _btnEnterGame.Draw
+            btnEnterGame.Draw
             (
-                _enterButtonTexture,
+                enterButtonTexture,
                 spriteBatch,
                 ScreenManager.Instance.MenuKey_OnPress,
-                _enterButtonPos,
-                _buttonFont,
+                enterButtonPos,
+                buttonFont,
                 "Enter Game",
                 Color.Black
             );
         }
     }
 
-    internal class Level1Screen : LevelScreen , Level
+    internal class Level1Screen : LevelScreen
     {
         public bool Equals(Level1Screen level)
         {
             return true;
         }
 
-        private Type _type;
-        public Level1Screen()
-        {
-            _type = GetType();
-        }
-
         #region fields
 
-        private Spotlight _testLight;
+        private Spotlight testLight;
 
-        private Texture2D _loadingScreen;
-        private BackgroundWorker _loader = new BackgroundWorker();
-        private volatile bool _hasLoaded; //volatile means that the variable can be used in multiple threads at once
+        private Texture2D loadingScreen;
+        private BackgroundWorker loader = new BackgroundWorker();
+        private volatile bool hasLoaded; //volatile means that the variable can be used in multiple threads at once
 
-        private Vector2 _mouseLoc;
+        private Vector2 mouseLoc;
 
         public bool IsPaused = false;
-        private Texture2D _debugColRect;
+        private Texture2D debugColRect;
 
-        private int _screenWidth = (int)ScreenManager.Instance.Dimensions.X;
-        private int _screenHeight = (int)ScreenManager.Instance.Dimensions.Y;
+        private int screenWidth = (int)ScreenManager.Instance.Dimensions.X;
+        private int screenHeight = (int)ScreenManager.Instance.Dimensions.Y;
 
-        private float _deltaTime;
+        private float deltaTime;
 
-        private Random _random = new Random();
+        private Random random = new Random();
 
-        private Player _player;
+        private Player player;
 
-        private List<Enemy> _enemies = new List<Enemy>();
-        private List<Entity> _nonPlayerEntities = new List<Entity>();
+        private List<Enemy> enemies = new List<Enemy>();
+        private List<Entity> nonPlayerEntities = new List<Entity>();
 
-        private TileSystem _walkableTileRenderer;
+        private TileSystem walkableTileRenderer;
 
-        private Texture2D _lightTexture;
-        private Texture2D _flashLightTexture;
-        private Texture2D _playerTexture;
-        private Texture2D _enemyTexture;
-        private Texture2D _floorTexture;
+        private Texture2D lightTexture;
+        private Texture2D flashLightTexture;
+        private Texture2D playerTexture;
+        private Texture2D enemyTexture;
+        private Texture2D floorTexture;
 
-        private Vector2 _tileOffsetLocation;
-        private Vector2 _playerPos;
-        private Vector2 _enemyPos;
-        private string _playerPath = "player";
-        private string _enemyPath = "enemy";
-        private string _flashPath = "flashlight";
+        private Vector2 tileOffsetLocation;
+        private Vector2 playerPos;
+        private Vector2 enemyPos;
+        private string playerPath = "player";
+        private string enemyPath = "enemy";
+        private string flashPath = "flashlight";
 
-        private Texture2D _buttonSheet;
-        private Button _pauseButton;
-        private Vector2 _pauseButtonPos;
-        private SpriteFont _buttonFont;
 
-        private Button _btnUnpause;
-        private Vector2 _unpauseButtonPos;
 
-        private Button _btnExit;
-        private Vector2 _exitButtonPos;
-        private Texture2D _bg;
-        private Button _btnFullscreen;
-        private Vector2 _fullButtonPos;
-
-        private SoundEffect _music;
-        private SoundEffectInstance _musicInstance;
+        private SoundEffect music;
+        private SoundEffectInstance musicInstance;
         public float MusicVolume = 0.02f;
         #endregion
 
@@ -348,7 +353,7 @@ namespace Optic_Coma
 
             WalkableTiles = TileSetup();
 
-            _testLight = new Spotlight()
+            testLight = new Spotlight()
             {
                 Position = Entity.CenterScreen,
                 Enabled = true,
@@ -358,58 +363,45 @@ namespace Optic_Coma
                 Intensity = 2,
                 ShadowType = ShadowType.Occluded,
             };
-            Foundation.LightingEngine.Lights.Add(_testLight);
+            Foundation.LightingEngine.Lights.Add(testLight);
 
             LevelSize = new Vector2(ScreenManager.Instance.Dimensions.X * 2, ScreenManager.Instance.Dimensions.Y * 2);
 
-            _debugColRect = BaseScreenContent.Load<Texture2D>("rectbox");
-            _floorTexture = BaseScreenContent.Load<Texture2D>("floorSheet");
-            _walkableTileRenderer = new TileSystem(_floorTexture, 4, 4, 1, LevelSize, WalkableTiles);
+            debugColRect = BaseScreenContent.Load<Texture2D>("rectbox");
+            floorTexture = BaseScreenContent.Load<Texture2D>("floorSheet");
+            walkableTileRenderer = new TileSystem(floorTexture, 4, 4, 1, LevelSize, WalkableTiles);
 
-            _music = BaseScreenContent.Load<SoundEffect>("samplemusic");
-            _musicInstance = _music.CreateInstance();
-            _musicInstance.IsLooped = true;
-            _musicInstance.Volume = MusicVolume;
+            music = BaseScreenContent.Load<SoundEffect>("samplemusic");
+            musicInstance = music.CreateInstance();
+            musicInstance.IsLooped = true;
+            musicInstance.Volume = MusicVolume;
             //musicInstance.Play();
 
-            _bg = BaseScreenContent.Load<Texture2D>("starsbg");
+            bg = BaseScreenContent.Load<Texture2D>("starsbg");
 
             #region buttons
-            _buttonSheet = BaseScreenContent.Load<Texture2D>("buttonSheet");
-            _pauseButton = new Button();
-            _pauseButtonPos = Vector2.Zero;
-            _buttonFont = BaseScreenContent.Load<SpriteFont>("buttonFont");
-
-            _btnUnpause = new Button();
-            _unpauseButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - _buttonSheet.Width / 2,
-                                           ScreenManager.Instance.Dimensions.Y / 2);
-            _btnExit = new Button();
-            _exitButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - _buttonSheet.Width / 2,
-                                        ScreenManager.Instance.Dimensions.Y / 2 - 128);
-            _btnFullscreen = new Button();
-            _fullButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - _buttonSheet.Width / 2,
-                                        ScreenManager.Instance.Dimensions.Y / 2 + 64 - 128);
+            base.LoadDefaultButtons();
             #endregion
             #region entities
-            _lightTexture = BaseScreenContent.Load<Texture2D>("light");
-            _flashLightTexture = BaseScreenContent.Load<Texture2D>(_flashPath);
-            _playerTexture = BaseScreenContent.Load<Texture2D>(_playerPath);
-            _enemyTexture = BaseScreenContent.Load<Texture2D>(_enemyPath);
+            lightTexture = BaseScreenContent.Load<Texture2D>("light");
+            flashLightTexture = BaseScreenContent.Load<Texture2D>(flashPath);
+            playerTexture = BaseScreenContent.Load<Texture2D>(playerPath);
+            enemyTexture = BaseScreenContent.Load<Texture2D>(enemyPath);
 
-            _playerPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - _playerTexture.Width / 2,
-                                     ScreenManager.Instance.Dimensions.Y / 2 - _playerTexture.Height / 8);
+            playerPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - playerTexture.Width / 2,
+                                     ScreenManager.Instance.Dimensions.Y / 2 - playerTexture.Height / 8);
 
-            _enemyPos = new Vector2(ScreenManager.Instance.Dimensions.X / 4 - _playerTexture.Width / 2,
-                                     ScreenManager.Instance.Dimensions.Y / 4 - _playerTexture.Height / 8);
+            enemyPos = new Vector2(ScreenManager.Instance.Dimensions.X / 4 - playerTexture.Width / 2,
+                                     ScreenManager.Instance.Dimensions.Y / 4 - playerTexture.Height / 8);
 
-            _player = new Player(_playerTexture, _playerPos, _flashLightTexture, _lightTexture);
+            player = new Player(playerTexture, playerPos, flashLightTexture, lightTexture);
 
-            _enemies.Add(new Enemy(_enemyTexture, _enemyPos));
-            _enemies.Add(new Enemy(_enemyTexture, new Vector2(ScreenManager.Instance.Dimensions.X - _enemyPos.X, ScreenManager.Instance.Dimensions.X - _enemyPos.Y)));
-            foreach (var enemy in _enemies) _nonPlayerEntities.Add(enemy);
+            enemies.Add(new Enemy(enemyTexture, enemyPos));
+            enemies.Add(new Enemy(enemyTexture, new Vector2(ScreenManager.Instance.Dimensions.X - enemyPos.X, ScreenManager.Instance.Dimensions.X - enemyPos.Y)));
+            foreach (var enemy in enemies) nonPlayerEntities.Add(enemy);
             #endregion
 
-            _tileOffsetLocation = new Vector2(SaveData.LocationX, SaveData.LocationY);
+            tileOffsetLocation = new Vector2(SaveData.LocationX, SaveData.LocationY);
 
             return;
         }
@@ -419,144 +411,149 @@ namespace Optic_Coma
             SetMethod(Loader);
            
             base.LoadContent();
-            _loadingScreen = BaseScreenContent.Load<Texture2D>("loadingScreen");
+            loadingScreen = BaseScreenContent.Load<Texture2D>("loadingScreen");
 
-            _hasLoaded = false;
+            hasLoaded = false;
         }
         public override void UnloadContent()
         {
             base.UnloadContent();
         }
 
-        private KeyboardState _prevState;
+        private KeyboardState prevState;
+
+        public Level1Screen(Level l) : base(l)
+        {
+        }
+
         public override void Update(GameTime gameTime) //gametime is a tick
         {
-            _hasLoaded = Handler.LoadingSuccess();
-            if (_hasLoaded)
+            hasLoaded = Handler.LoadingSuccess();
+            if ( hasLoaded)
             {
-                _deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-                FrameCounter.Update(_deltaTime);
+                deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                FrameCounter.Update( deltaTime);
                 #region  not paused
                 if (!IsPaused)
                 {
-                    Rectangle playerArea = new Rectangle((int)_playerPos.X, (int)_playerPos.Y, 48, 48);
+                    Rectangle playerArea = new Rectangle((int) playerPos.X, (int) playerPos.Y, 48, 48);
 
-                    int spawnLocationIndicator = _random.Next(0, 3);
+                    int spawnLocationIndicator = random.Next(0, 3);
 
                     MouseState curMouse = Mouse.GetState();
 
-                    _mouseLoc = new Vector2(curMouse.X, curMouse.Y);
-                    _mouseLoc.X = curMouse.X;
-                    _mouseLoc.Y = curMouse.Y;
+                    mouseLoc = new Vector2(curMouse.X, curMouse.Y);
+                    mouseLoc.X = curMouse.X;
+                    mouseLoc.Y = curMouse.Y;
 
-                    _player.FacingDirection = _mouseLoc - _player.CurrentPosition;
+                    player.FacingDirection = mouseLoc - player.CurrentPosition;
 
                     // using radians
                     // measure clockwise from left
                     #region player rotation
-                    _player.FlashAngle = (float)(Math.Atan2(_player.FacingDirection.Y, _player.FacingDirection.X)) + (float)Math.PI;
+                    player.FlashAngle = (float)(Math.Atan2( player.FacingDirection.Y, player.FacingDirection.X)) + (float)Math.PI;
 
-                    if ((_player.FlashAngle > 0 && _player.FlashAngle <= Math.PI / 4) || (_player.FlashAngle > Math.PI * 7 / 4 && _player.FlashAngle <= 2 * Math.PI))
+                    if (( player.FlashAngle > 0 && player.FlashAngle <= Math.PI / 4) || ( player.FlashAngle > Math.PI * 7 / 4 && player.FlashAngle <= 2 * Math.PI))
                     {
-                        _player.PlayerAngle = (float)Math.PI; //Right
+                        player.PlayerAngle = (float)Math.PI; //Right
                     }
-                    else if (_player.FlashAngle > Math.PI / 4 && _player.FlashAngle <= Math.PI * 3 / 4)
+                    else if ( player.FlashAngle > Math.PI / 4 && player.FlashAngle <= Math.PI * 3 / 4)
                     {
-                        _player.PlayerAngle = -(float)Math.PI / 2; //Down
+                        player.PlayerAngle = -(float)Math.PI / 2; //Down
                     }
-                    else if (_player.FlashAngle > Math.PI * 3 / 4 && _player.FlashAngle <= Math.PI * 5 / 4)
+                    else if ( player.FlashAngle > Math.PI * 3 / 4 && player.FlashAngle <= Math.PI * 5 / 4)
                     {
-                        _player.PlayerAngle = 0f; //Left
+                        player.PlayerAngle = 0f; //Left
                     }
-                    else if (_player.FlashAngle > Math.PI * 5 / 4 && _player.FlashAngle <= Math.PI * 7 / 4)
+                    else if ( player.FlashAngle > Math.PI * 5 / 4 && player.FlashAngle <= Math.PI * 7 / 4)
                     {
-                        _player.PlayerAngle = (float)Math.PI / 2; //Up
+                        player.PlayerAngle = (float)Math.PI / 2; //Up
                     }
                     KeyboardState keyState = Keyboard.GetState();
-                    if (keyState.IsKeyDown(Keys.R) && keyState != _prevState)
+                    if (keyState.IsKeyDown(Keys.R) && keyState != prevState)
                     {
                         Foundation.LightingEngine.Debug = !Foundation.LightingEngine.Debug;
                     }
                     #endregion
-                    _prevState = keyState;
+                    prevState = keyState;
                     #region collision and movement
                     if (keyState.IsKeyDown(Keys.W))
                     {
-                        if (NotOutOfBounds(WalkableTiles, null, new Vector2(_tileOffsetLocation.X, _tileOffsetLocation.Y + (float)(4.25 * Entity.WalkMult((float)Math.PI / 2, _player.FlashAngle, 1, false))), _player.Texture.Bounds))
+                        if (NotOutOfBounds(WalkableTiles, null, new Vector2( tileOffsetLocation.X, tileOffsetLocation.Y + (float)(4.25 * Entity.WalkMult((float)Math.PI / 2, player.FlashAngle, 1, false))), player.Texture.Bounds))
                         {
-                            foreach (var nonPlayer in _nonPlayerEntities)
+                            foreach (var nonPlayer in nonPlayerEntities)
                             {
-                                nonPlayer.CurrentPosition.Y += (float)(4.25 * Entity.WalkMult((float)Math.PI / 2, _player.FlashAngle, 1, false));
+                                nonPlayer.CurrentPosition.Y += (float)(4.25 * Entity.WalkMult((float)Math.PI / 2, player.FlashAngle, 1, false));
                                 nonPlayer.Hull.Position = nonPlayer.CurrentPosition;
                             }
-                            _tileOffsetLocation.Y += (float)(4.25 * Entity.WalkMult((float)Math.PI / 2, _player.FlashAngle, 1, false));
+                            tileOffsetLocation.Y += (float)(4.25 * Entity.WalkMult((float)Math.PI / 2, player.FlashAngle, 1, false));
                         }
                     }
                     if (keyState.IsKeyDown(Keys.A))
                     {
-                        if (NotOutOfBounds(WalkableTiles, null, new Vector2(_tileOffsetLocation.X + (float)(4.25 * Entity.WalkMult(0, _player.FlashAngle, 1, false)), _tileOffsetLocation.Y), _player.Texture.Bounds))
+                        if (NotOutOfBounds(WalkableTiles, null, new Vector2( tileOffsetLocation.X + (float)(4.25 * Entity.WalkMult(0, player.FlashAngle, 1, false)), tileOffsetLocation.Y), player.Texture.Bounds))
                         {
-                            foreach (var nonPlayer in _nonPlayerEntities)
+                            foreach (var nonPlayer in nonPlayerEntities)
                             {
-                                nonPlayer.CurrentPosition.X += (float)(4.25 * Entity.WalkMult(0, _player.FlashAngle, 1, false));
+                                nonPlayer.CurrentPosition.X += (float)(4.25 * Entity.WalkMult(0, player.FlashAngle, 1, false));
                                 nonPlayer.Hull.Position = nonPlayer.CurrentPosition;
                             }
-                            _tileOffsetLocation.X += (float)(4.25 * Entity.WalkMult(0, _player.FlashAngle, 1, false));
+                            tileOffsetLocation.X += (float)(4.25 * Entity.WalkMult(0, player.FlashAngle, 1, false));
                         }
                     }
                     if (keyState.IsKeyDown(Keys.S))
                     {
-                        if (NotOutOfBounds(WalkableTiles, null, new Vector2(_tileOffsetLocation.X, _tileOffsetLocation.Y - (float)(4.25 * Entity.WalkMult(3 * (float)Math.PI / 2, _player.FlashAngle, 1, false))), _player.Texture.Bounds))
+                        if (NotOutOfBounds(WalkableTiles, null, new Vector2( tileOffsetLocation.X, tileOffsetLocation.Y - (float)(4.25 * Entity.WalkMult(3 * (float)Math.PI / 2, player.FlashAngle, 1, false))), player.Texture.Bounds))
                         {
-                            foreach (var nonPlayer in _nonPlayerEntities)
+                            foreach (var nonPlayer in nonPlayerEntities)
                             {
-                                nonPlayer.CurrentPosition.Y -= (float)(4.25 * Entity.WalkMult(3 * (float)Math.PI / 2, _player.FlashAngle, 1, false));
+                                nonPlayer.CurrentPosition.Y -= (float)(4.25 * Entity.WalkMult(3 * (float)Math.PI / 2, player.FlashAngle, 1, false));
                                 nonPlayer.Hull.Position = nonPlayer.CurrentPosition;
                             }
-                            _tileOffsetLocation.Y -= (float)(4.25 * Entity.WalkMult(3 * (float)Math.PI / 2, _player.FlashAngle, 1, false));
+                            tileOffsetLocation.Y -= (float)(4.25 * Entity.WalkMult(3 * (float)Math.PI / 2, player.FlashAngle, 1, false));
                         }
                     }
                     if (keyState.IsKeyDown(Keys.D))
                     {
-                        if (NotOutOfBounds(WalkableTiles, null, new Vector2(_tileOffsetLocation.X - (float)(4.25 * Entity.WalkMult((float)Math.PI, _player.FlashAngle, 1, false)), _tileOffsetLocation.Y), _player.Texture.Bounds))
+                        if (NotOutOfBounds(WalkableTiles, null, new Vector2( tileOffsetLocation.X - (float)(4.25 * Entity.WalkMult((float)Math.PI, player.FlashAngle, 1, false)), tileOffsetLocation.Y), player.Texture.Bounds))
                         {
-                            foreach (var nonPlayer in _nonPlayerEntities)
+                            foreach (var nonPlayer in nonPlayerEntities)
                             {
-                                nonPlayer.CurrentPosition.X -= (float)(4.25 * Entity.WalkMult((float)Math.PI, _player.FlashAngle, 1, false));
+                                nonPlayer.CurrentPosition.X -= (float)(4.25 * Entity.WalkMult((float)Math.PI, player.FlashAngle, 1, false));
                                 nonPlayer.Hull.Position = nonPlayer.CurrentPosition;
                             }
-                            _tileOffsetLocation.X -= (float)(4.25 * Entity.WalkMult((float)Math.PI, _player.FlashAngle, 1, false));
+                            tileOffsetLocation.X -= (float)(4.25 * Entity.WalkMult((float)Math.PI, player.FlashAngle, 1, false));
                         }
                     }
                     #endregion
 
-                    foreach (Enemy enemy in _nonPlayerEntities)
+                    foreach (Enemy enemy in nonPlayerEntities)
                     {
                         enemy.Update();
                     }
-                    float dist = GetDistToClosestEnemy(_enemies, _playerPos);
+                    float dist = GetDistToClosestEnemy( enemies, playerPos);
                     float colorVal;
                     if (dist <= 370f && dist >= 100)
                     {
                         colorVal = (float)LogisticForLight(dist);
-                        _testLight.Color = new Color(1f, colorVal / 350, colorVal / 350, 1f);
+                        testLight.Color = new Color(1f, colorVal / 350, colorVal / 350, 1f);
                     }
                     else if (dist < 100f)
                     {
                         colorVal = (float)LogisticForLight(dist);
-                        _testLight.Color = new Color(1f, colorVal / 350, colorVal / 350, colorVal / 100);
+                        testLight.Color = new Color(1f, colorVal / 350, colorVal / 350, colorVal / 100);
                     }
                     else
                     {
-                        _testLight.Color = Color.White;
+                        testLight.Color = Color.White;
                     }
-                    _testLight.Rotation = (float)Math.PI + _player.FlashAngle;
+                    testLight.Rotation = (float)Math.PI + player.FlashAngle;
                     Foundation.LightingEngine.Hulls.Clear();
-                    foreach(Entity e in _nonPlayerEntities)
+                    foreach(Entity e in nonPlayerEntities)
                     {
                         Foundation.LightingEngine.Hulls.Add(e.Hull);
                     }
-                    DataToSave[0] = _tileOffsetLocation.X; DataToSave[1] = _tileOffsetLocation.Y; DataToSave[2] = 0;
+                    DataToSave[0] = tileOffsetLocation.X; DataToSave[1] = tileOffsetLocation.Y; DataToSave[2] = 0;
                 }
                 #endregion
                 #region paused
@@ -570,9 +567,9 @@ namespace Optic_Coma
             base.Update(gameTime);
         }
   
-        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (_hasLoaded)
+            if ( hasLoaded)
             {
                 var fps = string.Format("FPS: {0}", FrameCounter.AverageFramesPerSecond);
 
@@ -583,29 +580,29 @@ namespace Optic_Coma
 
                     Foundation.LightingEngine.BeginDraw();
                     spriteBatch.Begin(SpriteSortMode.BackToFront);
-                    spriteBatch.Draw(_bg, new Rectangle(0, 0, _screenWidth, _screenHeight), null, Color.White, 0, Vector2.Zero, SpriteEffects.None, ScreenManager.Instance.BgLayer);
-                    foreach (Enemy enemy in _enemies)
+                    spriteBatch.Draw( bg, new Rectangle(0, 0, screenWidth, screenHeight), null, Color.White, 0, Vector2.Zero, SpriteEffects.None, ScreenManager.Instance.BgLayer);
+                    foreach (Enemy enemy in enemies)
                     {
                         enemy.Draw(spriteBatch);
                     }
-                    _player.Draw(spriteBatch, _buttonFont);
-                    _walkableTileRenderer.Draw(spriteBatch, _tileOffsetLocation, LevelSize);
+                    player.Draw(spriteBatch, buttonFont);
+                    walkableTileRenderer.Draw(spriteBatch, tileOffsetLocation, LevelSize);
 
                     spriteBatch.End();
                     Foundation.LightingEngine.Draw(gameTime);
 
                     spriteBatch.Begin(SpriteSortMode.BackToFront);
-                    spriteBatch.DrawString(_buttonFont, "Position: " + _tileOffsetLocation.X + "," + _tileOffsetLocation.Y, new Vector2(1, 84), Color.White);
-                    spriteBatch.DrawString(_buttonFont, fps, new Vector2(1, 65), Color.White);
-                    spriteBatch.DrawString(_buttonFont, "Lighting Debug Enabled?: " + Foundation.LightingEngine.Debug, new Vector2(1, 103), Color.White);
-                    spriteBatch.DrawString(_buttonFont, "Distance to Closest Enemy: " + GetDistToClosestEnemy(_enemies, Entity.CenterScreen), new Vector2(1, 123), Color.White);
-                    _pauseButton.Draw
+                    spriteBatch.DrawString( buttonFont, "Position: " + tileOffsetLocation.X + "," + tileOffsetLocation.Y, new Vector2(1, 84), Color.White);
+                    spriteBatch.DrawString( buttonFont, fps, new Vector2(1, 65), Color.White);
+                    spriteBatch.DrawString( buttonFont, "Lighting Debug Enabled?: " + Foundation.LightingEngine.Debug, new Vector2(1, 103), Color.White);
+                    spriteBatch.DrawString( buttonFont, "Distance to Closest Enemy: " + GetDistToClosestEnemy( enemies, Entity.CenterScreen), new Vector2(1, 123), Color.White);
+                    pauseButton.Draw
                     (
-                        _buttonSheet,
+                        buttonSheet,
                         spriteBatch,
                         ScreenManager.Instance.PauseKey_OnPress,
-                        _pauseButtonPos,
-                        _buttonFont,
+                        pauseButtonPos,
+                        buttonFont,
                         "Pause Game",
                         Color.Black
                     );
@@ -614,33 +611,33 @@ namespace Optic_Coma
                 #region when paused (contains options menu)
                 else
                 {
-                    _btnExit.Draw
+                    btnExit.Draw
                     (
-                        _buttonSheet,
+                        buttonSheet,
                         spriteBatch,
                         ScreenManager.Instance.ExitKey_OnPress,
-                        _exitButtonPos,
-                        _buttonFont,
+                        exitButtonPos,
+                        buttonFont,
                         "Exit Game",
                         Color.Black
                     );
-                    _btnUnpause.Draw
+                    btnUnpause.Draw
                     (
-                        _buttonSheet,
+                        buttonSheet,
                         spriteBatch,
                         ScreenManager.Instance.PauseKey_OnPress,
-                        _unpauseButtonPos,
-                        _buttonFont,
+                        unpauseButtonPos,
+                        buttonFont,
                         "Un-Pause Game",
                         Color.Black
                     );
-                    _btnFullscreen.Draw
+                    btnFullscreen.Draw
                     (
-                        _buttonSheet,
+                        buttonSheet,
                         spriteBatch,
                         ScreenManager.Instance.ChangeScreenMode,
-                        _fullButtonPos,
-                        _buttonFont,
+                        fullButtonPos,
+                        buttonFont,
                         "   Toggle \nFullscreen",
                         Color.Black
                     );
@@ -649,7 +646,7 @@ namespace Optic_Coma
             }
             else
             {
-                spriteBatch.Draw(_loadingScreen, new Rectangle(0, 0, 1024, 800), Color.White);
+                spriteBatch.Draw( loadingScreen, new Rectangle(0, 0, 1024, 800), Color.White);
             }
         }
     }

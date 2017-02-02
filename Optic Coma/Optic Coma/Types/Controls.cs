@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Optic_Coma
 {
-    class Button
+    public class Button
     {        
         int _rows = 4;
         int _columns = 1;

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Xml.Serialization;
 using Penumbra;
+using System.Collections.Generic;
 
 namespace Optic_Coma
 {
@@ -23,6 +24,8 @@ namespace Optic_Coma
 
 
         public BaseScreen CurrentScreen { set; get; }
+
+        public List<LevelScreen> levelScreens;
 
         //Oh boy it's a singleton
         public static ScreenManager Instance
@@ -56,7 +59,20 @@ namespace Optic_Coma
             {
                 CurrentScreen.LoadContent();
             }
+
+            //TODO: implement new level system
+
+
+
+
+
+
+
             //Load whatever content is on the current screen into the window
+        }
+        public void PassLevel(Level l)
+        {
+            levelScreens.Add(new LevelScreen(l));
         }
         public void UnloadContent()
         {

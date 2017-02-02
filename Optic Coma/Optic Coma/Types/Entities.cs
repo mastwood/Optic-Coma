@@ -166,7 +166,7 @@ namespace Optic_Coma
         
     }
 
-    internal class Enemy : Entity
+    public class Enemy : Entity
     {
         public float EnemyAngle = 0f;
         public Texture2D Texture { get; set; }

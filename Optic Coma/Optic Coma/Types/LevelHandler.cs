@@ -33,43 +33,33 @@ namespace Optic_Coma
                     e.Initialize();
             }
         }
-    }
+    } //TODO: Implement this into level editor
     public class TexLoc
     {
         public Vector2 Location;
         public Vector2 TextureMapPos;
-        string TexturePath;
+        public string TexturePath;
         public Texture2D Texture;
-        int mapLoc;
-        public TexLoc(string tex, Vector2 loc, int maploc)
+        Vector2 TexMapLoc;
+        public TexLoc(string tex, Vector2 loc, Vector2 maploc)
         {
             TexturePath = tex;
             Location = loc;
-            mapLoc = maploc;
+            TexMapLoc = maploc;
             Texture = BaseScreen.BaseScreenContent.Load<Texture2D>(TexturePath);
-            ParseMapLoc();
-        }
-        private void ParseMapLoc()
-        {
-            for(int i = 0; i < Texture.Width * Texture.Height; i += 32)
-            {
-                if(i == mapLoc)
-                {
-                    TextureMapPos = new Vector2(i / 32, i - (i * 32));
-                }
-            }
         }
     }
     public class LevelDataHandler
     {
         string[] sToParse;
-        int[] iToParse;
-        bool[] bToParse;
+        float[][][] fToParse;
+        bool[][][] bToParse;
+        bool[][] wToParse;
 
         public string LevelName;
         public string BGImageFilePath;
         public string BGTexMapFilePath, MGTexMapFilePath, FGTexMapFilePath;
-        public string OtherImagesFilePath;
+        public string OtherImagesFilePath, PlayerTexturePath;
 
         public List<Vector2> BGTileCoords;
         public List<Vector2> MGTileCoords;
@@ -79,11 +69,14 @@ namespace Optic_Coma
         public List<TexLoc> MGTexLocList;
         public List<TexLoc> FGTexLocList;
 
-        public LevelDataHandler(string[] strings, int[] ints, bool[] bools)
+        public List<Vector2> walkableTiles;
+
+        public LevelDataHandler(string[] strings, float[][][] floats, bool[][][] textureBools, bool[][] walkBools)
         {
-            bToParse = bools;
-            iToParse = ints;
+            bToParse = textureBools;
+            fToParse = floats;
             sToParse = strings;
+            wToParse = walkBools;
         }
         public void ParseData()
         {
@@ -93,40 +86,43 @@ namespace Optic_Coma
             FGTexMapFilePath = sToParse[3];
             BGImageFilePath = sToParse[4];
             OtherImagesFilePath = sToParse[5];
+            PlayerTexturePath = sToParse[6];
 
-            int row;
-            int column;
-            for(int i = 0; i < 3072; i++)
+            for (int i = 0; i < fToParse.GetUpperBound(0); i++)
             {
-                row = (int)Math.Floor(i / 64f);
-                column = i - row * i;
-                if(i < 1024)
+                for (int j = 0; j < fToParse.GetUpperBound(1); j++)
                 {
-                    if (bToParse[i])
+                    if (bToParse[i][j][0])
                     {
-                        BGTexLocList.Add(new TexLoc(BGTexMapFilePath, new Vector2(row, column), iToParse[i]));
+                        BGTexLocList.Add(new TexLoc(BGTexMapFilePath, new Vector2(i * 32, j * 32), new Vector2(fToParse[i][j][0], fToParse[i][j][1])));
                     }
-                }else if(i > 1023 && i < 2048)
-                {
-                    if (bToParse[i])
+                    if (bToParse[i][j][1])
                     {
-                        MGTexLocList.Add(new TexLoc(MGTexMapFilePath, new Vector2(row, column), iToParse[i]));
+                        MGTexLocList.Add(new TexLoc(MGTexMapFilePath, new Vector2(i * 32, j * 32), new Vector2(fToParse[i][j][0], fToParse[i][j][1])));
                     }
-                }
-                else if(i > 2047)
-                {
-                    if (bToParse[i])
+                    if (bToParse[i][j][2])
                     {
-                        FGTexLocList.Add(new TexLoc(FGTexMapFilePath, new Vector2(row, column), iToParse[i]));
+                        FGTexLocList.Add(new TexLoc(FGTexMapFilePath, new Vector2(i * 32, j * 32), new Vector2(fToParse[i][j][0], fToParse[i][j][1])));
+                    }
+                    if (wToParse[i][j])
+                    {
+                        walkableTiles.Add(new Vector2(i * 32, j * 32));
                     }
                 }
             }
+
+            Level l;
+            LevelHandler.InitializeMethods(out l, this);
+            ScreenManager.Instance.PassLevel(l);
         }
+        
 
         public List<Vector2> WalkTiles;
     }
     public class Level
     {
+        public Player Player;
+
         public LevelHandler Handler;
         public Level()
         {
@@ -143,7 +139,7 @@ namespace Optic_Coma
         public LevelReadWriter()
         {
         }
-        public static LevelDataHandler Load(XmlSerializer[] xml, string strFilePath, string boolFilePath, string intFilePath)
+        public static LevelDataHandler Load(string strFilePath, string boolFilePath, string intFilePath, string boolWFilePath)
         {
             ///Structure:
             ///rS[0] = LevelName
@@ -152,75 +148,66 @@ namespace Optic_Coma
             ///rS[3] FG texturemap filepath (16x16 map)
             ///rS[4] Background pic
             ///rs[5] other textures map
-            ///rB[0 to 1023] background tileindicator
-            ///rB[1024 to 2047] midground tileindicator
-            ///rB[2048 to 3071] foreground tileindicator
-            ///rB[0 to 1023] background tileindicator
-            ///rB[1024 to 2047] midground tileindicator
-            ///rB[2048 to 3071] foreground tileindicator
+            ///rB[x][y][0] = is there a background tile at this x,y coord?
+            ///rB[x][y][1] = is there a midground...?
+            ///rB......[2] = foreground?
+            ///rI[x][y][0 or 1 or 2] = which texture is it?
+            ///rV = playerinitpos
+            ///rVv[x][y] = enemy[wave][initpos]
+            XmlSerializer[] xml = new XmlSerializer[4];
+            xml[0] = new XmlSerializer(typeof(string[]));
+            xml[1] = new XmlSerializer(typeof(bool[][][]));
+            xml[2] = new XmlSerializer(typeof(float[][][]));
+            xml[3] = new XmlSerializer(typeof(bool[][]));
             string[] recievedStrings = { };
-            int[] recievedInts = { };
-            bool[] recievedBools = { };
-            for (int i = 0; i < xml.Length; i++)
+            float[][][] recievedFloats = { };
+            bool[][][] recievedBools = { };
+            bool[][] recievedWBools = { };
+            Vector2 playerInitPos;
+
+            try
             {
-                if (xml.GetType() == typeof(string[]))
-                {
-                    try
-                    {
-                        using (var f = new FileStream(strFilePath, FileMode.Open))
-                            recievedStrings = (string[])xml[i].Deserialize(f);
-                    }
-                    catch (FileNotFoundException ex)
-                    {
-                        return null;
-                    }
-                }
-                if (xml.GetType() == typeof(int[]))
-                {
-                    try
-                    {
-                        using (var f = new FileStream(intFilePath, FileMode.Open))
-                            recievedInts = (int[])xml[i].Deserialize(f);
-                    }
-                    catch (FileNotFoundException ex)
-                    {
-                        return null;
-                    }
-                }
-                if (xml.GetType() == typeof(bool[]))
-                {
-                    try
-                    {
-                        using (var f = new FileStream(boolFilePath, FileMode.Open))
-                            recievedBools = (bool[])xml[i].Deserialize(f);
-                    }
-                    catch (FileNotFoundException ex)
-                    {
-                        return null;
-                    }
-                }
+                using (var f = new FileStream(strFilePath, FileMode.Open))
+                    recievedStrings = (string[])xml[0].Deserialize(f);
             }
-            return new LevelDataHandler(recievedStrings, recievedInts, recievedBools);
-        }
-        public void InitializeMethods(out Level level, LevelDataHandler data)
-        {
-            level = new Level();
-            level.Loader += (object sender, DoWorkEventArgs e) => //lambda operator "=>" lets me add content to methods
+            catch (FileNotFoundException ex)
             {
-                foreach(TexLoc t in data.BGTileSprites)
-                {
-                    BaseScreen.BaseScreenContent.Load<Texture2D>(t.TexturePath);
-                }
-                foreach (TexLoc t in data.MGTileSprites)
-                {
-                    BaseScreen.BaseScreenContent.Load<Texture2D>(t.TexturePath);
-                }
-                foreach (TexLoc t in data.FGTileSprites)
-                {
-                    BaseScreen.BaseScreenContent.Load<Texture2D>(t.TexturePath);
-                }
-            }; //this is why we need async loading
+                return null;
+            }
+              
+            try
+            {
+                using (var f = new FileStream(intFilePath, FileMode.Open))
+                    recievedFloats = (float[][][])xml[2].Deserialize(f);
+            }
+            catch (FileNotFoundException ex)
+            {
+                return null;
+            }
+
+            try
+            {
+                using (var f = new FileStream(boolFilePath, FileMode.Open))
+                    recievedBools = (bool[][][])xml[1].Deserialize(f);
+            }
+            catch (FileNotFoundException ex)
+            {
+                return null;
+            }
+
+            try
+            {
+                using (var f = new FileStream(boolWFilePath, FileMode.Open))
+                    recievedWBools = (bool[][])xml[3].Deserialize(f);
+            }
+            catch (FileNotFoundException ex)
+            {
+                return null;
+            }
+            
+            return new LevelDataHandler(recievedStrings, recievedFloats, recievedBools, recievedWBools);
         }
+        
     }
     public class LevelHandler
     {
@@ -262,6 +249,26 @@ namespace Optic_Coma
             worker.RunWorkerCompleted -= Complete;
             worker = null;
             SuccessCode = 1;
+        }
+        public static void InitializeMethods(out Level level, LevelDataHandler data)
+        {
+            level = new Level();
+            level.Loader += (object sender, DoWorkEventArgs e) => //lambda operator "=>" lets me add content to methods
+            {
+                foreach (TexLoc t in data.BGTexLocList)
+                {
+                    BaseScreen.BaseScreenContent.Load<Texture2D>(t.TexturePath);
+                }
+                foreach (TexLoc t in data.MGTexLocList)
+                {
+                    BaseScreen.BaseScreenContent.Load<Texture2D>(t.TexturePath);
+                }
+                foreach (TexLoc t in data.FGTexLocList)
+                {
+                    BaseScreen.BaseScreenContent.Load<Texture2D>(t.TexturePath);
+                }
+                
+            }; //this is why we need async loading
         }
     }
 }
