@@ -121,6 +121,8 @@ namespace Optic_Coma
     }
     public class Level
     {
+        public Player Player;
+
         public LevelHandler Handler;
         public Level()
         {
@@ -129,8 +131,8 @@ namespace Optic_Coma
         public WorkerAction Loader;
         public Action<LevelHandler> LoadContent;
         public Action UnloadContent;
-        public Action<GameTime> Update;
-        public Action<SpriteBatch, GameTime> Draw;
+        public Action<GameTime, bool> Update;
+        public Action<SpriteBatch, GameTime, bool> Draw;
     }
     public class LevelReadWriter
     {
@@ -215,6 +217,13 @@ namespace Optic_Coma
         public string PercentProgress = "";
         WorkerAction Action;
 
+        public bool LoadingSuccess() //just in case
+        {
+            if (SuccessCode > 0)
+                return true;
+            else
+                return false;
+        }
         public LevelHandler(WorkerAction action, bool checkLoad)
         {
             Action = action;
@@ -257,8 +266,28 @@ namespace Optic_Coma
                 {
                     BaseScreen.BaseScreenContent.Load<Texture2D>(t.TexturePath);
                 }
-                
             }; //this is why we need async loading
+            level.Draw += (SpriteBatch spriteBatch, GameTime gameTime, bool hasLoaded) =>
+            {
+                if (hasLoaded)
+                {
+
+                }else
+                {
+
+                }
+            };
+            level.Update += (GameTime gameTime, bool hasLoaded) =>
+            {
+                if (hasLoaded)
+                {
+
+                }
+                else
+                {
+
+                }
+            };
         }
     }
 }

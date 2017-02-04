@@ -172,14 +172,25 @@ namespace Optic_Coma
         public Texture2D lightTexture;
         public Texture2D flashLightTexture;
         public string flashPath = "flashlight";
-
+        public TileSystem TileRenderer;
         public List<Enemy> enemies = new List<Enemy>();
+        public Texture2D backgroundTexture;
 
         public Action<object, DoWorkEventArgs> LoaderMethod;
 
+        public int screenWidth = (int)ScreenManager.Instance.Dimensions.X;
+        public int screenHeight = (int)ScreenManager.Instance.Dimensions.Y;
+
+        public bool inherited;
+        public Level InheritedLevel;
+
         public LevelScreen()
         {
-            
+            inherited = false;
+        }
+        public LevelScreen(Level l)
+        {
+            inherited = true;
         }
 
         public override void LoadContent()
@@ -191,11 +202,18 @@ namespace Optic_Coma
             lightTexture = BaseScreenContent.Load<Texture2D>("light");
             flashLightTexture = BaseScreenContent.Load<Texture2D>(flashPath);
             player = new Player(playerTexture, playerPos, flashLightTexture, lightTexture);
-            
 
-            Handler = new LevelHandler(LoaderMethod, hasLoaded);
-            Handler.worker.RunWorkerAsync();
-
+            if (inherited == false) //Level1Screen
+            {
+                backgroundTexture = BaseScreenContent.Load<Texture2D>("starsbg");
+                Handler = new LevelHandler(LoaderMethod, hasLoaded);
+                Handler.worker.RunWorkerAsync();
+            }
+            else if (inherited == true) //Level loaded from xml (LevelEditor)
+            {
+                InheritedLevel.LoadContent(Handler);
+                Handler = new LevelHandler(InheritedLevel.Loader, hasLoaded);
+            }
             base.LoadContent();
         }
         public override void UnloadContent()
@@ -204,8 +222,20 @@ namespace Optic_Coma
         }
         public override void Update(GameTime gameTime) //gametime is a tick
         {
-            deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            FrameCounter.Update(deltaTime);
+            if(hasLoaded)
+            { 
+                if (inherited)
+                {
+                    InheritedLevel.Update(gameTime, true);
+                }
+
+                deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                FrameCounter.Update(deltaTime);
+            }
+            else if(inherited && !hasLoaded)
+            {
+                InheritedLevel.Update(gameTime, false);
+            }
             hasLoaded = Handler.loaded;
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -227,6 +257,30 @@ namespace Optic_Coma
                     "Pause Game",
                     Color.Black
                 );
+                spriteBatch.End();
+
+                Foundation.LightingEngine.BeginDraw();
+                spriteBatch.Begin(SpriteSortMode.BackToFront);
+                spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, screenWidth, screenHeight), null, Color.White, 0, Vector2.Zero, SpriteEffects.None, ScreenManager.Instance.BgLayer);
+                foreach (Enemy enemy in enemies)
+                {
+                    enemy.Draw(spriteBatch);
+                }
+                player.Draw(spriteBatch, font);
+                TileRenderer.Draw(spriteBatch, TileOffsetLocation, LevelSize);
+
+                spriteBatch.End();
+                Foundation.LightingEngine.Draw(gameTime);
+
+                spriteBatch.Begin(SpriteSortMode.BackToFront);
+                if (inherited)
+                {
+                    InheritedLevel.Draw(spriteBatch, gameTime, true);
+                }
+            }
+            else if (inherited && !hasLoaded)
+            {
+                InheritedLevel.Draw(spriteBatch, gameTime, false);
             }
         }
 
@@ -339,22 +393,17 @@ namespace Optic_Coma
         
         private Vector2 mouseLoc;
 
-        public Texture2D backgroundTexture;
+
 
         public bool IsPaused = false;
         private Texture2D debugColRect;
-
-        private int screenWidth = (int)ScreenManager.Instance.Dimensions.X;
-        private int screenHeight = (int)ScreenManager.Instance.Dimensions.Y;
-
-
 
         private Random random = new Random();
 
         
         private List<Entity> nonPlayerEntities = new List<Entity>();
 
-        private TileSystem walkableTileRenderer;
+
 
         private Texture2D enemyTexture;
         private Texture2D floorTexture;
@@ -403,9 +452,9 @@ namespace Optic_Coma
 
             debugColRect = BaseScreenContent.Load<Texture2D>("rectbox");
             floorTexture = BaseScreenContent.Load<Texture2D>("floorSheet");
-            walkableTileRenderer = new TileSystem(floorTexture, 4, 4, 1, LevelSize, WalkableTiles);
+            TileRenderer = new TileSystem(floorTexture, 4, 4, 1, LevelSize, WalkableTiles);
 
-            backgroundTexture = BaseScreenContent.Load<Texture2D>("starsbg");
+            
 
             music = BaseScreenContent.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
@@ -592,22 +641,7 @@ namespace Optic_Coma
                 #region when not paused
                 if (!IsPaused)
                 {
-                    spriteBatch.End();
-
-                    Foundation.LightingEngine.BeginDraw();
-                    spriteBatch.Begin(SpriteSortMode.BackToFront);
-                    spriteBatch.Draw( backgroundTexture, new Rectangle(0, 0, screenWidth, screenHeight), null, Color.White, 0, Vector2.Zero, SpriteEffects.None, ScreenManager.Instance.BgLayer);
-                    foreach (Enemy enemy in enemies)
-                    {
-                        enemy.Draw(spriteBatch);
-                    }
-                    player.Draw(spriteBatch, font);
-                    walkableTileRenderer.Draw(spriteBatch, TileOffsetLocation, LevelSize);
-
-                    spriteBatch.End();
-                    Foundation.LightingEngine.Draw(gameTime);
-
-                    spriteBatch.Begin(SpriteSortMode.BackToFront);
+                    
                     
                 }
                 #endregion
