@@ -126,7 +126,7 @@ namespace Optic_Coma
         public LevelHandler Handler;
         public Level()
         {
-            Handler = new LevelHandler(Loader);
+            Handler = new LevelHandler(Loader, false);
         }
         public WorkerAction Loader;
         public Action<LevelHandler> LoadContent;
@@ -211,10 +211,12 @@ namespace Optic_Coma
     }
     public class LevelHandler
     {
-        WorkerAction levelLoadingMethod;
-        BackgroundWorker worker;
-        DoWorkEventHandler handler;
+        public bool loaded;
+        public BackgroundWorker worker = new BackgroundWorker();
         int SuccessCode;
+        public string PercentProgress = "";
+        WorkerAction Action;
+
         public bool LoadingSuccess() //just in case
         {
             if (SuccessCode > 0)
@@ -222,33 +224,30 @@ namespace Optic_Coma
             else
                 return false;
         }
-        public LevelHandler(WorkerAction action)
+        public LevelHandler(WorkerAction action, bool checkLoad)
         {
-            levelLoadingMethod = action;
+            Action = action;
+            loaded = checkLoad;
+            worker.DoWork += new DoWorkEventHandler(action);
+            worker.ProgressChanged += new ProgressChangedEventHandler(ReportProgress);
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Complete);
         }
 
         public void BeginLoad()
         {
-            worker = new BackgroundWorker();
-            handler = new DoWorkEventHandler(levelLoadingMethod);
-            worker.DoWork += handler;
-     
-            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Complete);
-            try
-            {
-                worker.RunWorkerAsync();
-            }
-            catch(Exception ex)
-            {
-                //todo?
-            }
+            worker.RunWorkerAsync();
+        }
+        public void ReportProgress(object sender, ProgressChangedEventArgs e)
+        {
+            PercentProgress = e.ProgressPercentage.ToString() + "%";
         }
         public void Complete(object sender, RunWorkerCompletedEventArgs e)
         {
-            worker.DoWork -= handler;
+            worker.DoWork -= new DoWorkEventHandler(Action);
             worker.RunWorkerCompleted -= Complete;
             worker = null;
             SuccessCode = 1;
+            loaded = true;
         }
         public static void InitializeMethods(out Level level, LevelDataHandler data)
         {

@@ -72,7 +72,7 @@ namespace Optic_Coma
         }
         public void PassLevel(Level l)
         {
-            levelScreens.Add(new LevelScreen(l));
+            levelScreens.Add(new Level1Screen());
         }
         public void UnloadContent()
         {
@@ -102,7 +102,7 @@ namespace Optic_Coma
                 CurrentScreen.Draw(spriteBatch, gT);
             }
             else if (CurrentScreen is MenuScreen)
-                CurrentScreen.Draw(spriteBatch);
+                CurrentScreen.Draw(spriteBatch, gT);
         }
 
         public void MenuKey_OnPress()

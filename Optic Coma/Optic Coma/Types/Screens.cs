@@ -35,6 +35,13 @@ namespace Optic_Coma
         {
             BaseScreenContent.Unload();
         }
+        public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+
+        }public virtual void Update(GameTime gameTime)
+        {
+
+        }
         public static Rectangle RectangularHitbox(Orientation o, Rectangle r)
         {
             // rotates hitbox alongside players sprite
@@ -83,6 +90,9 @@ namespace Optic_Coma
 
     public class LevelScreen : BaseScreen
     {
+
+        public volatile bool hasLoaded = false; //volatile means that the variable can be used in multiple threads at once
+
         public List<Vector2> WalkableTiles = new List<Vector2>();
 
         private double lowDist, curDist;
@@ -143,41 +153,57 @@ namespace Optic_Coma
         public Texture2D buttonSheet;
         public Button pauseButton;
         public Vector2 pauseButtonPos;
-        public SpriteFont buttonFont;
+        public SpriteFont font;
 
         public Button btnUnpause;
         public Vector2 unpauseButtonPos;
 
         public Button btnExit;
         public Vector2 exitButtonPos;
-        public Texture2D bg;
+        
         public Button btnFullscreen;
         public Vector2 fullButtonPos;
-        Action<object, DoWorkEventArgs> method;
 
-        public LevelScreen(Level l)
+        public Player player;
+        public Texture2D playerTexture;
+        public string playerPath = "player";
+        public Vector2 playerPos;
+        public Texture2D lightTexture;
+        public Texture2D flashLightTexture;
+        public string flashPath = "flashlight";
+
+        public Action<object, DoWorkEventArgs> LoaderMethod;
+
+        public LevelScreen()
         {
-            ;
+            
         }
 
-        public void SetMethod(Action<object, DoWorkEventArgs> m)
+        public override void LoadContent()
         {
-            method = m;
-        }
-        public override void LoadContent(LevelHandler l)
-        {
+            font = BaseScreenContent.Load<SpriteFont>("buttonFont");
+            playerTexture = BaseScreenContent.Load<Texture2D>(playerPath);
+            playerPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - playerTexture.Width / 2,
+                                     ScreenManager.Instance.Dimensions.Y / 2 - playerTexture.Height / 8);
+            lightTexture = BaseScreenContent.Load<Texture2D>("light");
+            flashLightTexture = BaseScreenContent.Load<Texture2D>(flashPath);
+            player = new Player(playerTexture, playerPos, flashLightTexture, lightTexture);
+            
+
+            Handler = new LevelHandler(LoaderMethod, hasLoaded);
+            Handler.worker.RunWorkerAsync();
+
             base.LoadContent();
-            Handler = new LevelHandler(method);
-            Handler.BeginLoad();
         }
         public override void UnloadContent()
         {
             base.UnloadContent();
         }
-        public virtual void Update(GameTime gameTime) //gametime is a tick
+        public override void Update(GameTime gameTime) //gametime is a tick
         {
+            hasLoaded = Handler.loaded;
         }
-        public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
         }
 
@@ -186,7 +212,6 @@ namespace Optic_Coma
             buttonSheet = BaseScreenContent.Load<Texture2D>("buttonSheet");
             pauseButton = new Button();
             pauseButtonPos = Vector2.Zero;
-            buttonFont = BaseScreenContent.Load<SpriteFont>("buttonFont");
 
             btnUnpause = new Button();
             unpauseButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
@@ -211,6 +236,9 @@ namespace Optic_Coma
         public override void LoadContent()
         {
             base.LoadContent();
+
+            
+
             titleGraphic = BaseScreenContent.Load<Texture2D>("ocbigSheet");
 
             btnEnterGame = new Button();
@@ -228,12 +256,12 @@ namespace Optic_Coma
             base.UnloadContent();
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
 
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             spriteBatch.Draw
             (
@@ -287,10 +315,10 @@ namespace Optic_Coma
         private Spotlight testLight;
 
         private Texture2D loadingScreen;
-        private BackgroundWorker loader = new BackgroundWorker();
-        private volatile bool hasLoaded; //volatile means that the variable can be used in multiple threads at once
-
+        
         private Vector2 mouseLoc;
+
+        public Texture2D backgroundTexture;
 
         public bool IsPaused = false;
         private Texture2D debugColRect;
@@ -302,27 +330,21 @@ namespace Optic_Coma
 
         private Random random = new Random();
 
-        private Player player;
-
         private List<Enemy> enemies = new List<Enemy>();
         private List<Entity> nonPlayerEntities = new List<Entity>();
 
         private TileSystem walkableTileRenderer;
 
-        private Texture2D lightTexture;
-        private Texture2D flashLightTexture;
-        private Texture2D playerTexture;
+
+
         private Texture2D enemyTexture;
         private Texture2D floorTexture;
 
         private Vector2 tileOffsetLocation;
-        private Vector2 playerPos;
+
         private Vector2 enemyPos;
-        private string playerPath = "player";
+
         private string enemyPath = "enemy";
-        private string flashPath = "flashlight";
-
-
 
         private SoundEffect music;
         private SoundEffectInstance musicInstance;
@@ -345,9 +367,12 @@ namespace Optic_Coma
             }
             return t;
         }
-
+        public Level1Screen()
+        {
+            LoaderMethod = Loader;
+        }
         //this method is called by a background thread while the loading screen is displayed
-        protected void Loader(object sender, DoWorkEventArgs e)
+        public void Loader(object sender, DoWorkEventArgs e)
         {
             IsPaused = false;
 
@@ -371,31 +396,21 @@ namespace Optic_Coma
             floorTexture = BaseScreenContent.Load<Texture2D>("floorSheet");
             walkableTileRenderer = new TileSystem(floorTexture, 4, 4, 1, LevelSize, WalkableTiles);
 
+            backgroundTexture = BaseScreenContent.Load<Texture2D>("starsbg");
+
             music = BaseScreenContent.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
             musicInstance.IsLooped = true;
             musicInstance.Volume = MusicVolume;
             //musicInstance.Play();
 
-            bg = BaseScreenContent.Load<Texture2D>("starsbg");
-
             #region buttons
-            base.LoadDefaultButtons();
+            LoadDefaultButtons();
             #endregion
             #region entities
-            lightTexture = BaseScreenContent.Load<Texture2D>("light");
-            flashLightTexture = BaseScreenContent.Load<Texture2D>(flashPath);
-            playerTexture = BaseScreenContent.Load<Texture2D>(playerPath);
             enemyTexture = BaseScreenContent.Load<Texture2D>(enemyPath);
-
-            playerPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - playerTexture.Width / 2,
-                                     ScreenManager.Instance.Dimensions.Y / 2 - playerTexture.Height / 8);
-
             enemyPos = new Vector2(ScreenManager.Instance.Dimensions.X / 4 - playerTexture.Width / 2,
                                      ScreenManager.Instance.Dimensions.Y / 4 - playerTexture.Height / 8);
-
-            player = new Player(playerTexture, playerPos, flashLightTexture, lightTexture);
-
             enemies.Add(new Enemy(enemyTexture, enemyPos));
             enemies.Add(new Enemy(enemyTexture, new Vector2(ScreenManager.Instance.Dimensions.X - enemyPos.X, ScreenManager.Instance.Dimensions.X - enemyPos.Y)));
             foreach (var enemy in enemies) nonPlayerEntities.Add(enemy);
@@ -403,17 +418,15 @@ namespace Optic_Coma
 
             tileOffsetLocation = new Vector2(SaveData.LocationX, SaveData.LocationY);
 
+            hasLoaded = true;
+
             return;
         }
         
         public override void LoadContent()
         {
-            SetMethod(Loader);
-           
             base.LoadContent();
             loadingScreen = BaseScreenContent.Load<Texture2D>("loadingScreen");
-
-            hasLoaded = false;
         }
         public override void UnloadContent()
         {
@@ -422,14 +435,11 @@ namespace Optic_Coma
 
         private KeyboardState prevState;
 
-        public Level1Screen(Level l) : base(l)
-        {
-        }
-
         public override void Update(GameTime gameTime) //gametime is a tick
         {
-            hasLoaded = Handler.LoadingSuccess();
-            if ( hasLoaded)
+            if(!hasLoaded)
+                base.Update(gameTime);
+            if (hasLoaded)
             {
                 deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 FrameCounter.Update( deltaTime);
@@ -446,7 +456,7 @@ namespace Optic_Coma
                     mouseLoc.X = curMouse.X;
                     mouseLoc.Y = curMouse.Y;
 
-                    player.FacingDirection = mouseLoc - player.CurrentPosition;
+                    base.player.FacingDirection = mouseLoc - base.player.CurrentPosition;
 
                     // using radians
                     // measure clockwise from left
@@ -563,13 +573,12 @@ namespace Optic_Coma
                 }
                 #endregion
             }
-
-            base.Update(gameTime);
         }
   
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if ( hasLoaded)
+            base.Draw(spriteBatch, gameTime);
+            if (hasLoaded)
             {
                 var fps = string.Format("FPS: {0}", FrameCounter.AverageFramesPerSecond);
 
@@ -580,29 +589,29 @@ namespace Optic_Coma
 
                     Foundation.LightingEngine.BeginDraw();
                     spriteBatch.Begin(SpriteSortMode.BackToFront);
-                    spriteBatch.Draw( bg, new Rectangle(0, 0, screenWidth, screenHeight), null, Color.White, 0, Vector2.Zero, SpriteEffects.None, ScreenManager.Instance.BgLayer);
+                    spriteBatch.Draw( backgroundTexture, new Rectangle(0, 0, screenWidth, screenHeight), null, Color.White, 0, Vector2.Zero, SpriteEffects.None, ScreenManager.Instance.BgLayer);
                     foreach (Enemy enemy in enemies)
                     {
                         enemy.Draw(spriteBatch);
                     }
-                    player.Draw(spriteBatch, buttonFont);
+                    player.Draw(spriteBatch, font);
                     walkableTileRenderer.Draw(spriteBatch, tileOffsetLocation, LevelSize);
 
                     spriteBatch.End();
                     Foundation.LightingEngine.Draw(gameTime);
 
                     spriteBatch.Begin(SpriteSortMode.BackToFront);
-                    spriteBatch.DrawString( buttonFont, "Position: " + tileOffsetLocation.X + "," + tileOffsetLocation.Y, new Vector2(1, 84), Color.White);
-                    spriteBatch.DrawString( buttonFont, fps, new Vector2(1, 65), Color.White);
-                    spriteBatch.DrawString( buttonFont, "Lighting Debug Enabled?: " + Foundation.LightingEngine.Debug, new Vector2(1, 103), Color.White);
-                    spriteBatch.DrawString( buttonFont, "Distance to Closest Enemy: " + GetDistToClosestEnemy( enemies, Entity.CenterScreen), new Vector2(1, 123), Color.White);
+                    spriteBatch.DrawString( font, "Position: " + tileOffsetLocation.X + "," + tileOffsetLocation.Y, new Vector2(1, 84), Color.White);
+                    spriteBatch.DrawString( font, fps, new Vector2(1, 65), Color.White);
+                    spriteBatch.DrawString( font, "Lighting Debug Enabled?: " + Foundation.LightingEngine.Debug, new Vector2(1, 103), Color.White);
+                    spriteBatch.DrawString( font, "Distance to Closest Enemy: " + GetDistToClosestEnemy( enemies, Entity.CenterScreen), new Vector2(1, 123), Color.White);
                     pauseButton.Draw
                     (
                         buttonSheet,
                         spriteBatch,
                         ScreenManager.Instance.PauseKey_OnPress,
                         pauseButtonPos,
-                        buttonFont,
+                        font,
                         "Pause Game",
                         Color.Black
                     );
@@ -617,7 +626,7 @@ namespace Optic_Coma
                         spriteBatch,
                         ScreenManager.Instance.ExitKey_OnPress,
                         exitButtonPos,
-                        buttonFont,
+                        font,
                         "Exit Game",
                         Color.Black
                     );
@@ -627,7 +636,7 @@ namespace Optic_Coma
                         spriteBatch,
                         ScreenManager.Instance.PauseKey_OnPress,
                         unpauseButtonPos,
-                        buttonFont,
+                        font,
                         "Un-Pause Game",
                         Color.Black
                     );
@@ -637,7 +646,7 @@ namespace Optic_Coma
                         spriteBatch,
                         ScreenManager.Instance.ChangeScreenMode,
                         fullButtonPos,
-                        buttonFont,
+                        font,
                         "   Toggle \nFullscreen",
                         Color.Black
                     );
@@ -647,6 +656,7 @@ namespace Optic_Coma
             else
             {
                 spriteBatch.Draw( loadingScreen, new Rectangle(0, 0, 1024, 800), Color.White);
+                spriteBatch.DrawString(base.font, "" + Handler.PercentProgress, new Vector2(0, 0), Color.Black);
             }
         }
     }
