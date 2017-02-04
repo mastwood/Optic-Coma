@@ -175,7 +175,7 @@ namespace Optic_Coma
         private int _dir;
         private float _moveAmp;
         public int Acceleration = 0;
-        public bool Spawned = false;
+        public bool Spawned = true;
 
         public Enemy(Texture2D texture, Vector2 initPosition)
         {
@@ -185,6 +185,7 @@ namespace Optic_Coma
             _speed = 4 + Acceleration;
             _moveAmp = -1;
             Hull = Hull.CreateRectangle(CurrentPosition, new Vector2(texture.Width, texture.Height), Angle, new Vector2(texture.Width/2, texture.Height/2));
+            Hull.Enabled = true;
         }
         public void Initialize()
         {
@@ -203,6 +204,7 @@ namespace Optic_Coma
                 Angle = EnemyAngle;
                 Hull.Rotation = Angle;
                 Hull.Origin = new Vector2(CurrentPosition.X / 2, CurrentPosition.Y / 2);
+                Hull.Position = Hull.Origin;
             }
         }
 

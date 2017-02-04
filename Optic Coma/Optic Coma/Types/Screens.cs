@@ -335,8 +335,6 @@ namespace Optic_Coma
 
         private TileSystem walkableTileRenderer;
 
-
-
         private Texture2D enemyTexture;
         private Texture2D floorTexture;
 
@@ -541,7 +539,7 @@ namespace Optic_Coma
                     {
                         enemy.Update();
                     }
-                    float dist = GetDistToClosestEnemy( enemies, playerPos);
+                    float dist = GetDistToClosestEnemy(enemies, playerPos);
                     float colorVal;
                     if (dist <= 370f && dist >= 100)
                     {
