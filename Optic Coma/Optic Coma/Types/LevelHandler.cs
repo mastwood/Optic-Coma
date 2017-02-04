@@ -121,8 +121,6 @@ namespace Optic_Coma
     }
     public class Level
     {
-        public Player Player;
-
         public LevelHandler Handler;
         public Level()
         {
@@ -217,13 +215,6 @@ namespace Optic_Coma
         public string PercentProgress = "";
         WorkerAction Action;
 
-        public bool LoadingSuccess() //just in case
-        {
-            if (SuccessCode > 0)
-                return true;
-            else
-                return false;
-        }
         public LevelHandler(WorkerAction action, bool checkLoad)
         {
             Action = action;

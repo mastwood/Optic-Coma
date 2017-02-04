@@ -90,10 +90,11 @@ namespace Optic_Coma
 
     public class LevelScreen : BaseScreen
     {
-
+        private float deltaTime;
         public volatile bool hasLoaded = false; //volatile means that the variable can be used in multiple threads at once
 
         public List<Vector2> WalkableTiles = new List<Vector2>();
+        public Vector2 TileOffsetLocation;
 
         private double lowDist, curDist;
         public FrameCounter FrameCounter = new FrameCounter();
@@ -172,6 +173,8 @@ namespace Optic_Coma
         public Texture2D flashLightTexture;
         public string flashPath = "flashlight";
 
+        public List<Enemy> enemies = new List<Enemy>();
+
         public Action<object, DoWorkEventArgs> LoaderMethod;
 
         public LevelScreen()
@@ -201,10 +204,30 @@ namespace Optic_Coma
         }
         public override void Update(GameTime gameTime) //gametime is a tick
         {
+            deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            FrameCounter.Update(deltaTime);
             hasLoaded = Handler.loaded;
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            if (hasLoaded)
+            {
+                var fps = string.Format("FPS: {0}", FrameCounter.AverageFramesPerSecond);
+                spriteBatch.DrawString(font, "Position: " + TileOffsetLocation.X + "," + TileOffsetLocation.Y, new Vector2(1, 84), Color.White);
+                spriteBatch.DrawString(font, fps, new Vector2(1, 65), Color.White);
+                spriteBatch.DrawString(font, "Lighting Debug Enabled?: " + Foundation.LightingEngine.Debug, new Vector2(1, 103), Color.White);
+                spriteBatch.DrawString(font, "Distance to Closest Enemy: " + GetDistToClosestEnemy(enemies, Entity.CenterScreen), new Vector2(1, 123), Color.White);
+                pauseButton.Draw
+                (
+                    buttonSheet,
+                    spriteBatch,
+                    ScreenManager.Instance.PauseKey_OnPress,
+                    pauseButtonPos,
+                    font,
+                    "Pause Game",
+                    Color.Black
+                );
+            }
         }
 
         public void LoadDefaultButtons()
@@ -312,8 +335,6 @@ namespace Optic_Coma
 
         #region fields
 
-        private Spotlight testLight;
-
         private Texture2D loadingScreen;
         
         private Vector2 mouseLoc;
@@ -326,11 +347,11 @@ namespace Optic_Coma
         private int screenWidth = (int)ScreenManager.Instance.Dimensions.X;
         private int screenHeight = (int)ScreenManager.Instance.Dimensions.Y;
 
-        private float deltaTime;
+
 
         private Random random = new Random();
 
-        private List<Enemy> enemies = new List<Enemy>();
+        
         private List<Entity> nonPlayerEntities = new List<Entity>();
 
         private TileSystem walkableTileRenderer;
@@ -338,7 +359,7 @@ namespace Optic_Coma
         private Texture2D enemyTexture;
         private Texture2D floorTexture;
 
-        private Vector2 tileOffsetLocation;
+        
 
         private Vector2 enemyPos;
 
@@ -376,17 +397,7 @@ namespace Optic_Coma
 
             WalkableTiles = TileSetup();
 
-            testLight = new Spotlight()
-            {
-                Position = Entity.CenterScreen,
-                Enabled = true,
-                CastsShadows = true,
-                Scale = new Vector2(900, 900),
-                Color = Color.White,
-                Intensity = 2,
-                ShadowType = ShadowType.Occluded,
-            };
-            Foundation.LightingEngine.Lights.Add(testLight);
+            
 
             LevelSize = new Vector2(ScreenManager.Instance.Dimensions.X * 2, ScreenManager.Instance.Dimensions.Y * 2);
 
@@ -414,7 +425,7 @@ namespace Optic_Coma
             foreach (var enemy in enemies) nonPlayerEntities.Add(enemy);
             #endregion
 
-            tileOffsetLocation = new Vector2(SaveData.LocationX, SaveData.LocationY);
+            TileOffsetLocation = new Vector2(SaveData.LocationX, SaveData.LocationY);
 
             hasLoaded = true;
 
@@ -439,14 +450,11 @@ namespace Optic_Coma
                 base.Update(gameTime);
             if (hasLoaded)
             {
-                deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-                FrameCounter.Update( deltaTime);
+                
                 #region  not paused
                 if (!IsPaused)
                 {
                     Rectangle playerArea = new Rectangle((int) playerPos.X, (int) playerPos.Y, 48, 48);
-
-                    int spawnLocationIndicator = random.Next(0, 3);
 
                     MouseState curMouse = Mouse.GetState();
 
@@ -454,7 +462,7 @@ namespace Optic_Coma
                     mouseLoc.X = curMouse.X;
                     mouseLoc.Y = curMouse.Y;
 
-                    base.player.FacingDirection = mouseLoc - base.player.CurrentPosition;
+                    player.FacingDirection = mouseLoc - player.CurrentPosition;
 
                     // using radians
                     // measure clockwise from left
@@ -487,54 +495,54 @@ namespace Optic_Coma
                     #region collision and movement
                     if (keyState.IsKeyDown(Keys.W))
                     {
-                        if (NotOutOfBounds(WalkableTiles, null, new Vector2( tileOffsetLocation.X, tileOffsetLocation.Y + (float)(4.25 * Entity.WalkMult((float)Math.PI / 2, player.FlashAngle, 1, false))), player.Texture.Bounds))
+                        if (NotOutOfBounds(WalkableTiles, null, new Vector2( TileOffsetLocation.X, TileOffsetLocation.Y + (float)(4.25 * Entity.WalkMult((float)Math.PI / 2, player.FlashAngle, 1, false))), player.Texture.Bounds))
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
                                 nonPlayer.CurrentPosition.Y += (float)(4.25 * Entity.WalkMult((float)Math.PI / 2, player.FlashAngle, 1, false));
                                 nonPlayer.Hull.Position = nonPlayer.CurrentPosition;
                             }
-                            tileOffsetLocation.Y += (float)(4.25 * Entity.WalkMult((float)Math.PI / 2, player.FlashAngle, 1, false));
+                            TileOffsetLocation.Y += (float)(4.25 * Entity.WalkMult((float)Math.PI / 2, player.FlashAngle, 1, false));
                         }
                     }
                     if (keyState.IsKeyDown(Keys.A))
                     {
-                        if (NotOutOfBounds(WalkableTiles, null, new Vector2( tileOffsetLocation.X + (float)(4.25 * Entity.WalkMult(0, player.FlashAngle, 1, false)), tileOffsetLocation.Y), player.Texture.Bounds))
+                        if (NotOutOfBounds(WalkableTiles, null, new Vector2( TileOffsetLocation.X + (float)(4.25 * Entity.WalkMult(0, player.FlashAngle, 1, false)), TileOffsetLocation.Y), player.Texture.Bounds))
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
                                 nonPlayer.CurrentPosition.X += (float)(4.25 * Entity.WalkMult(0, player.FlashAngle, 1, false));
                                 nonPlayer.Hull.Position = nonPlayer.CurrentPosition;
                             }
-                            tileOffsetLocation.X += (float)(4.25 * Entity.WalkMult(0, player.FlashAngle, 1, false));
+                            TileOffsetLocation.X += (float)(4.25 * Entity.WalkMult(0, player.FlashAngle, 1, false));
                         }
                     }
                     if (keyState.IsKeyDown(Keys.S))
                     {
-                        if (NotOutOfBounds(WalkableTiles, null, new Vector2( tileOffsetLocation.X, tileOffsetLocation.Y - (float)(4.25 * Entity.WalkMult(3 * (float)Math.PI / 2, player.FlashAngle, 1, false))), player.Texture.Bounds))
+                        if (NotOutOfBounds(WalkableTiles, null, new Vector2( TileOffsetLocation.X, TileOffsetLocation.Y - (float)(4.25 * Entity.WalkMult(3 * (float)Math.PI / 2, player.FlashAngle, 1, false))), player.Texture.Bounds))
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
                                 nonPlayer.CurrentPosition.Y -= (float)(4.25 * Entity.WalkMult(3 * (float)Math.PI / 2, player.FlashAngle, 1, false));
                                 nonPlayer.Hull.Position = nonPlayer.CurrentPosition;
                             }
-                            tileOffsetLocation.Y -= (float)(4.25 * Entity.WalkMult(3 * (float)Math.PI / 2, player.FlashAngle, 1, false));
+                            TileOffsetLocation.Y -= (float)(4.25 * Entity.WalkMult(3 * (float)Math.PI / 2, player.FlashAngle, 1, false));
                         }
                     }
                     if (keyState.IsKeyDown(Keys.D))
                     {
-                        if (NotOutOfBounds(WalkableTiles, null, new Vector2( tileOffsetLocation.X - (float)(4.25 * Entity.WalkMult((float)Math.PI, player.FlashAngle, 1, false)), tileOffsetLocation.Y), player.Texture.Bounds))
+                        if (NotOutOfBounds(WalkableTiles, null, new Vector2( TileOffsetLocation.X - (float)(4.25 * Entity.WalkMult((float)Math.PI, player.FlashAngle, 1, false)), TileOffsetLocation.Y), player.Texture.Bounds))
                         {
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
                                 nonPlayer.CurrentPosition.X -= (float)(4.25 * Entity.WalkMult((float)Math.PI, player.FlashAngle, 1, false));
                                 nonPlayer.Hull.Position = nonPlayer.CurrentPosition;
                             }
-                            tileOffsetLocation.X -= (float)(4.25 * Entity.WalkMult((float)Math.PI, player.FlashAngle, 1, false));
+                            TileOffsetLocation.X -= (float)(4.25 * Entity.WalkMult((float)Math.PI, player.FlashAngle, 1, false));
                         }
                     }
                     #endregion
-
+                    
                     foreach (Enemy enemy in nonPlayerEntities)
                     {
                         enemy.Update();
@@ -544,24 +552,25 @@ namespace Optic_Coma
                     if (dist <= 370f && dist >= 100)
                     {
                         colorVal = (float)LogisticForLight(dist);
-                        testLight.Color = new Color(1f, colorVal / 350, colorVal / 350, 1f);
+                        player.FlashLight.Color = new Color(1f, colorVal / 350, colorVal / 350, 1f);
                     }
                     else if (dist < 100f)
                     {
                         colorVal = (float)LogisticForLight(dist);
-                        testLight.Color = new Color(1f, colorVal / 350, colorVal / 350, colorVal / 100);
+                        player.FlashLight.Color = new Color(1f, colorVal / 350, colorVal / 350, colorVal / 100);
                     }
                     else
                     {
-                        testLight.Color = Color.White;
+                        player.FlashLight.Color = Color.White;
                     }
-                    testLight.Rotation = (float)Math.PI + player.FlashAngle;
+                    player.FlashLight.Rotation = (float)Math.PI + player.FlashAngle;
                     Foundation.LightingEngine.Hulls.Clear();
-                    foreach(Entity e in nonPlayerEntities)
+                    foreach(Enemy enemy in nonPlayerEntities)
                     {
-                        Foundation.LightingEngine.Hulls.Add(e.Hull);
+                        enemy.UpdateHull();
                     }
-                    DataToSave[0] = tileOffsetLocation.X; DataToSave[1] = tileOffsetLocation.Y; DataToSave[2] = 0;
+
+                    DataToSave[0] = TileOffsetLocation.X; DataToSave[1] = TileOffsetLocation.Y; DataToSave[2] = 0;
                 }
                 #endregion
                 #region paused
@@ -578,7 +587,7 @@ namespace Optic_Coma
             base.Draw(spriteBatch, gameTime);
             if (hasLoaded)
             {
-                var fps = string.Format("FPS: {0}", FrameCounter.AverageFramesPerSecond);
+                
 
                 #region when not paused
                 if (!IsPaused)
@@ -593,26 +602,13 @@ namespace Optic_Coma
                         enemy.Draw(spriteBatch);
                     }
                     player.Draw(spriteBatch, font);
-                    walkableTileRenderer.Draw(spriteBatch, tileOffsetLocation, LevelSize);
+                    walkableTileRenderer.Draw(spriteBatch, TileOffsetLocation, LevelSize);
 
                     spriteBatch.End();
                     Foundation.LightingEngine.Draw(gameTime);
 
                     spriteBatch.Begin(SpriteSortMode.BackToFront);
-                    spriteBatch.DrawString( font, "Position: " + tileOffsetLocation.X + "," + tileOffsetLocation.Y, new Vector2(1, 84), Color.White);
-                    spriteBatch.DrawString( font, fps, new Vector2(1, 65), Color.White);
-                    spriteBatch.DrawString( font, "Lighting Debug Enabled?: " + Foundation.LightingEngine.Debug, new Vector2(1, 103), Color.White);
-                    spriteBatch.DrawString( font, "Distance to Closest Enemy: " + GetDistToClosestEnemy( enemies, Entity.CenterScreen), new Vector2(1, 123), Color.White);
-                    pauseButton.Draw
-                    (
-                        buttonSheet,
-                        spriteBatch,
-                        ScreenManager.Instance.PauseKey_OnPress,
-                        pauseButtonPos,
-                        font,
-                        "Pause Game",
-                        Color.Black
-                    );
+                    
                 }
                 #endregion
                 #region when paused (contains options menu)

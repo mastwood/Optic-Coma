@@ -75,7 +75,6 @@
   <ItemGroup>
     <Compile Include="Gearbox\Blowfish Algorithm.cs" />
     <Compile Include="Gearbox\Save.cs" />
-    <Compile Include="Gearbox\Lighting Engine.cs" />
     <Compile Include="Types\LevelHandler.cs" />
     <Compile Include="Types\Shapes.cs" />
     <Compile Include="Types\Sprite.cs" />

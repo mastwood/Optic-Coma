@@ -78,7 +78,7 @@ namespace Optic_Coma
         public Texture2D Texture { get; set; }
         
         public Texture2D LightTexture;
-
+        public Spotlight FlashLight;
         private Texture2D _flashLightTexture;
 
         public Player(Texture2D texture, Vector2 initPos, Texture2D flashlightTexture, Texture2D lightTexture)
@@ -87,6 +87,17 @@ namespace Optic_Coma
             CurrentPosition = initPos;
             Texture = texture;
             _flashLightTexture = flashlightTexture;
+            FlashLight = new Spotlight()
+            {
+                Position = CenterScreen,
+                Enabled = true,
+                CastsShadows = true,
+                Scale = new Vector2(900, 900),
+                Color = Color.White,
+                Intensity = 2,
+                ShadowType = ShadowType.Occluded,
+            };
+            Foundation.LightingEngine.Lights.Add(FlashLight);
         }
 
         public override void Update()
@@ -185,6 +196,8 @@ namespace Optic_Coma
             _speed = 4 + Acceleration;
             _moveAmp = -1;
             Hull = Hull.CreateRectangle(CurrentPosition, new Vector2(texture.Width, texture.Height), Angle, new Vector2(texture.Width/2, texture.Height/2));
+            Hull.Origin = new Vector2(CurrentPosition.X / 2, CurrentPosition.Y / 2);
+            
             Hull.Enabled = true;
         }
         public void Initialize()
@@ -202,12 +215,17 @@ namespace Optic_Coma
                 _moveAmp = 4; //We can toy around with this later.
                 _dir = _random.Next(0, 4);
                 Angle = EnemyAngle;
-                Hull.Rotation = Angle;
-                Hull.Origin = new Vector2(CurrentPosition.X / 2, CurrentPosition.Y / 2);
-                Hull.Position = Hull.Origin;
             }
         }
-
+        public void UpdateHull()
+        {
+            if (Spawned)
+            {
+                Hull.Rotation = Angle;
+                Hull.Position = Hull.Origin;
+                Foundation.LightingEngine.Hulls.Add(Hull);
+            }
+        }
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (Spawned)
