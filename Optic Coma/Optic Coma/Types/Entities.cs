@@ -182,7 +182,6 @@ namespace Optic_Coma
         Wavey
     }
 
-
     public class Enemy : Entity
     {
         public EnemyType EnemyMode;
