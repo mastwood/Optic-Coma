@@ -147,13 +147,16 @@ namespace Optic_Coma
             ///rS[2] MG texturemap filepath (16x16 map)
             ///rS[3] FG texturemap filepath (16x16 map)
             ///rS[4] Background pic
-            ///rs[5] other textures map
+            ///rs[5] other textures map (player image etc)
+            ///
             ///rB[x][y][0] = is there a background tile at this x,y coord?
             ///rB[x][y][1] = is there a midground...?
             ///rB......[2] = foreground?
-            ///rI[x][y][0 or 1 or 2] = which texture is it?
-            ///rV = playerinitpos
-            ///rVv[x][y] = enemy[wave][initpos]
+            ///
+            ///rF[x][y][0 or 1 or 2] = which texture is it?
+            ///
+
+
             XmlSerializer[] xml = new XmlSerializer[4];
             xml[0] = new XmlSerializer(typeof(string[]));
             xml[1] = new XmlSerializer(typeof(bool[][][]));
@@ -163,7 +166,6 @@ namespace Optic_Coma
             float[][][] recievedFloats = { };
             bool[][][] recievedBools = { };
             bool[][] recievedWBools = { };
-            Vector2 playerInitPos;
 
             try
             {
