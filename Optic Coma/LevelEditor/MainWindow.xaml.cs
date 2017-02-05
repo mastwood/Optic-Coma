@@ -46,6 +46,12 @@ namespace LevelEditor
             InitializeComponent();
         }
 
+        private void frmMain_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            rectTopBarDeco.Width = frmMain.Width;
+            rectToolBarBackgroundDeco.Width = frmMain.Width; 
+        }
+
         #region File, Edit, View, etc. Toolbar
 
         #region File
@@ -347,6 +353,7 @@ namespace LevelEditor
             State = UserWindowState.InViewMenu;
         }
         #endregion
+
         #endregion
     }
     struct ToolBarStyleColors

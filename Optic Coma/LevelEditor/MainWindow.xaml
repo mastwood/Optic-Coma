@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LevelEditor"
         mc:Ignorable="d"
-        Title="Optic Coma Level Editor" Height="600" Width="800" ResizeMode="NoResize" Topmost="True" WindowStartupLocation="CenterScreen">
+        Title="Optic Coma Level Editor" Height="600" Width="800" Topmost="True" WindowStartupLocation="CenterScreen" SizeChanged="frmMain_SizeChanged">
     <Grid Margin="0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50*"/>
@@ -15,8 +15,8 @@
             <ColumnDefinition Width="127*"/>
         </Grid.ColumnDefinitions>
 
-        <Rectangle Fill="#FF464646" HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="794" Margin="0,31,0,0" Grid.ColumnSpan="5"/>
-        <Rectangle Fill="#FF747474" Height="34" VerticalAlignment="Top" Grid.ColumnSpan="5"/>
+        <Rectangle x:Name="rectToolBarBackgroundDeco" Fill="#FF464646" HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="794" Margin="0,31,0,0" Grid.ColumnSpan="5"/>
+        <Rectangle x:Name="rectTopBarDeco" Fill="#FF747474" Height="34" VerticalAlignment="Top" Grid.ColumnSpan="5"/>
         <!--File button/-->
         <Button x:Name="btnFile" HorizontalAlignment ="Left" Height ="25" VerticalAlignment ="Top" Width ="80" Margin="10,4,0,0"
                 BorderBrush="{x:Null}" Click="btnFile_Click" Content="File" Foreground="Black"/>
