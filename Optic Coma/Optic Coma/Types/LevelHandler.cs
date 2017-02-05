@@ -54,8 +54,8 @@ namespace Optic_Coma
     public class LevelDataHandler
     {
         string[] texturePaths;
-        float[][][] whereInTheSpritesheet;
-        bool[][][] isTilePresent;
+        float[][][] whereInTheSpritesheet; //x, y, which spritesheet
+        bool[][][] isTilePresent;//x, y(in level), layer
         bool[][] isTileWalkable;
 
         public string LevelName;
@@ -92,9 +92,9 @@ namespace Optic_Coma
             OtherImagesFilePath = texturePaths[5];
             PlayerTexturePath = texturePaths[6];
 
-            for (int i = 0; i <= whereInTheSpritesheet.GetUpperBound(0); i++)
+            for (int i = 0; i < whereInTheSpritesheet.GetUpperBound(0); i++)
             {
-                for (int j = 0; j <= whereInTheSpritesheet.GetUpperBound(1); j++)
+                for (int j = 0; j < whereInTheSpritesheet.GetUpperBound(1); j++)
                 {
                     if (isTilePresent[i][j][0])
                     {
@@ -114,13 +114,15 @@ namespace Optic_Coma
                     }
                 }
             }
+
             Level l;
             LevelHandler.InitializeMethods(out l, this);
             ScreenManager.Instance.PassLevel(l);
         }
+        
+
         public List<Vector2> WalkTiles;
     }
-
     public class Level
     {
         public Player Player;
@@ -136,7 +138,6 @@ namespace Optic_Coma
         public Action<GameTime, bool> Update;
         public Action<SpriteBatch, GameTime, bool> Draw;
     }
-
     public class LevelReadWriter
     {
         public LevelReadWriter()
