@@ -232,7 +232,7 @@ namespace Optic_Coma
                 deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 FrameCounter.Update(deltaTime);
             }
-            else if(inherited && !hasLoaded)
+            else if(inherited && !hasLoaded) //FOR LEVEL EDITOR
             {
                 InheritedLevel.Update(gameTime, false);
             }
@@ -388,27 +388,19 @@ namespace Optic_Coma
         }
 
         #region fields
-
         private Texture2D loadingScreen;
         
         private Vector2 mouseLoc;
-
-
 
         public bool IsPaused = false;
         private Texture2D debugColRect;
 
         private Random random = new Random();
 
-        
         private List<Entity> nonPlayerEntities = new List<Entity>();
-
-
 
         private Texture2D enemyTexture;
         private Texture2D floorTexture;
-
-        
 
         private Vector2 enemyPos;
 
@@ -641,8 +633,6 @@ namespace Optic_Coma
                 #region when not paused
                 if (!IsPaused)
                 {
-                    
-                    
                 }
                 #endregion
                 #region when paused (contains options menu)
