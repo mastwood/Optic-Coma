@@ -223,11 +223,12 @@ namespace Optic_Coma
         {
             if (Spawned)
             {
-                EnemyAngle = (float)(Math.Atan2(CenterScreen.Y - CurrentPosition.Y,
-                             CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
+                
                 Angle = EnemyAngle;
                 if (EnemyMode == EnemyType.Jiggler)
                 {
+                    EnemyAngle = (float)(Math.Atan2(CenterScreen.Y - CurrentPosition.Y,
+                             CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
                     //moveAmp += 0.001f;
                     moveAmp = 4; //We can toy around with this later.
                     dir = random.Next(0, 4);
@@ -235,6 +236,11 @@ namespace Optic_Coma
                 else if (EnemyMode == EnemyType.Wavey)
                 {
                     moveAmp += 0.01f;
+                    if (Math.Sin(moveAmp) < 0)
+                    {
+                        EnemyAngle = (float)(Math.Atan2(CenterScreen.Y - CurrentPosition.Y,
+                             CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
+                    }
                 }
             }
         }
@@ -265,7 +271,8 @@ namespace Optic_Coma
                 }
                 else if (EnemyMode == EnemyType.Wavey)
                 {
-                    CurrentPosition.Y += 4 * ((float)Math.Sin(moveAmp) + 1);
+                    CurrentPosition.X -= (float)Math.Cos(EnemyAngle) * ((float)Math.Sin(moveAmp) + 1);
+                    CurrentPosition.Y -= (float)Math.Sin(EnemyAngle) * ((float)Math.Sin(moveAmp) + 1);
                 }
                 spriteBatch.Draw
                 (

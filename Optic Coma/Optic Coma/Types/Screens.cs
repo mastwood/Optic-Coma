@@ -455,7 +455,7 @@ namespace Optic_Coma
             enemyPos = new Vector2(ScreenManager.Instance.Dimensions.X / 4 - playerTexture.Width / 2,
                                      ScreenManager.Instance.Dimensions.Y / 4 - playerTexture.Height / 8);
             enemies.Add(new Enemy(enemyTexture, enemyPos, EnemyType.Jiggler));
-            enemies.Add(new Enemy(enemyTexture, new Vector2(ScreenManager.Instance.Dimensions.X - enemyPos.X, ScreenManager.Instance.Dimensions.X - enemyPos.Y), EnemyType.Jiggler));
+            enemies.Add(new Enemy(enemyTexture, new Vector2(ScreenManager.Instance.Dimensions.X - enemyPos.X, ScreenManager.Instance.Dimensions.X - enemyPos.Y), EnemyType.Wavey));
             foreach (var enemy in enemies)
             {
                 nonPlayerEntities.Add(enemy);               
