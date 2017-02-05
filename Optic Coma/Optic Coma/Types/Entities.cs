@@ -173,12 +173,25 @@ namespace Optic_Coma
                 SpriteEffects.None,
                 ScreenManager.Instance.FlashlightLayer
             );
-        }
-        
+        }  
     }
+
+    public enum EnemyType
+    {
+        Jiggler,
+        Wavey
+    }
+
 
     public class Enemy : Entity
     {
+        public EnemyType EnemyMode;
+        ///     Example use:
+        ///     if(EnemyMode == EnemyType.Wavey)
+        ///     {
+        ///          DOSTUFF()
+        ///     }
+
         public float EnemyAngle = 0f;
         public Texture2D Texture { get; set; }
         private static Random _random;
@@ -263,5 +276,6 @@ namespace Optic_Coma
                 );
             }
         }
+
     }
 }

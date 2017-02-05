@@ -437,17 +437,10 @@ namespace Optic_Coma
             IsPaused = false;
 
             WalkableTiles = TileSetup();
-
-            
-
             LevelSize = new Vector2(ScreenManager.Instance.Dimensions.X * 2, ScreenManager.Instance.Dimensions.Y * 2);
-
             debugColRect = BaseScreenContent.Load<Texture2D>("rectbox");
             floorTexture = BaseScreenContent.Load<Texture2D>("floorSheet");
             TileRenderer = new TileSystem(floorTexture, 4, 4, 1, LevelSize, WalkableTiles);
-
-            
-
             music = BaseScreenContent.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
             musicInstance.IsLooped = true;
@@ -628,8 +621,6 @@ namespace Optic_Coma
             base.Draw(spriteBatch, gameTime);
             if (hasLoaded)
             {
-                
-
                 #region when not paused
                 if (!IsPaused)
                 {
