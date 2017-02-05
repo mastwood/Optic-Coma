@@ -34,7 +34,8 @@ namespace Optic_Coma
             }
         }
     } //TODO: Implement this into level editor
-    public class TexLoc
+
+    public class TexLoc //for easy compilation of this data
     {
         public Vector2 Location;
         public Vector2 TextureMapPos;
@@ -49,12 +50,13 @@ namespace Optic_Coma
             Texture = BaseScreen.BaseScreenContent.Load<Texture2D>(TexturePath);
         }
     }
+
     public class LevelDataHandler
     {
-        string[] sToParse;
-        float[][][] fToParse;
-        bool[][][] bToParse;
-        bool[][] wToParse;
+        string[] texturePaths;
+        float[][][] whereInTheSpritesheet;
+        bool[][][] isTilePresent;
+        bool[][] isTileWalkable;
 
         public string LevelName;
         public string BGImageFilePath;
@@ -73,38 +75,40 @@ namespace Optic_Coma
 
         public LevelDataHandler(string[] strings, float[][][] floats, bool[][][] textureBools, bool[][] walkBools)
         {
-            bToParse = textureBools;
-            fToParse = floats;
-            sToParse = strings;
-            wToParse = walkBools;
+            isTilePresent = textureBools;
+            whereInTheSpritesheet = floats;
+            texturePaths = strings;
+            isTileWalkable = walkBools;
         }
+
         public void ParseData()
         {
-            LevelName = sToParse[0];
-            BGTexMapFilePath = sToParse[1];
-            MGTexMapFilePath = sToParse[2];
-            FGTexMapFilePath = sToParse[3];
-            BGImageFilePath = sToParse[4];
-            OtherImagesFilePath = sToParse[5];
-            PlayerTexturePath = sToParse[6];
+            LevelName = texturePaths[0]; //for convenience
 
-            for (int i = 0; i < fToParse.GetUpperBound(0); i++)
+            BGTexMapFilePath = texturePaths[1];
+            MGTexMapFilePath = texturePaths[2];
+            FGTexMapFilePath = texturePaths[3];
+            BGImageFilePath = texturePaths[4];
+            OtherImagesFilePath = texturePaths[5];
+            PlayerTexturePath = texturePaths[6];
+
+            for (int i = 0; i < whereInTheSpritesheet.GetUpperBound(0); i++)
             {
-                for (int j = 0; j < fToParse.GetUpperBound(1); j++)
+                for (int j = 0; j < whereInTheSpritesheet.GetUpperBound(1); j++)
                 {
-                    if (bToParse[i][j][0])
+                    if (isTilePresent[i][j][0])
                     {
-                        BGTexLocList.Add(new TexLoc(BGTexMapFilePath, new Vector2(i * 32, j * 32), new Vector2(fToParse[i][j][0], fToParse[i][j][1])));
+                        BGTexLocList.Add(new TexLoc(BGTexMapFilePath, new Vector2(i * 32, j * 32), new Vector2(whereInTheSpritesheet[i][j][0], whereInTheSpritesheet[i][j][1])));
                     }
-                    if (bToParse[i][j][1])
+                    if (isTilePresent[i][j][1])
                     {
-                        MGTexLocList.Add(new TexLoc(MGTexMapFilePath, new Vector2(i * 32, j * 32), new Vector2(fToParse[i][j][0], fToParse[i][j][1])));
+                        MGTexLocList.Add(new TexLoc(MGTexMapFilePath, new Vector2(i * 32, j * 32), new Vector2(whereInTheSpritesheet[i][j][0], whereInTheSpritesheet[i][j][1])));
                     }
-                    if (bToParse[i][j][2])
+                    if (isTilePresent[i][j][2])
                     {
-                        FGTexLocList.Add(new TexLoc(FGTexMapFilePath, new Vector2(i * 32, j * 32), new Vector2(fToParse[i][j][0], fToParse[i][j][1])));
+                        FGTexLocList.Add(new TexLoc(FGTexMapFilePath, new Vector2(i * 32, j * 32), new Vector2(whereInTheSpritesheet[i][j][0], whereInTheSpritesheet[i][j][1])));
                     }
-                    if (wToParse[i][j])
+                    if (isTileWalkable[i][j])
                     {
                         walkableTiles.Add(new Vector2(i * 32, j * 32));
                     }
