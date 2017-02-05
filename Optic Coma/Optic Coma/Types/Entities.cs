@@ -79,14 +79,14 @@ namespace Optic_Coma
         
         public Texture2D LightTexture;
         public Spotlight FlashLight;
-        private Texture2D _flashLightTexture;
+        private Texture2D flashLightTexture;
 
         public Player(Texture2D texture, Vector2 initPos, Texture2D flashlightTexture, Texture2D lightTexture)
         {
             LightTexture = lightTexture;
             CurrentPosition = initPos;
             Texture = texture;
-            _flashLightTexture = flashlightTexture;
+            flashLightTexture = flashlightTexture;
             FlashLight = new Spotlight()
             {
                 Position = CenterScreen,
@@ -154,21 +154,21 @@ namespace Optic_Coma
             */
             spriteBatch.Draw
             (
-                _flashLightTexture,
+                flashLightTexture,
                 new Rectangle
                 (
                     (int)CenterScreen.X,
                     (int)CenterScreen.Y,
-                    _flashLightTexture.Width,
-                    _flashLightTexture.Height
+                    flashLightTexture.Width,
+                    flashLightTexture.Height
                 ),
                 null,
                 Color.White,
                 (float)Math.PI + FlashAngle,
                 new Vector2
                 (
-                    _flashLightTexture.Width / 2,
-                    _flashLightTexture.Height / 2
+                    flashLightTexture.Width / 2,
+                    flashLightTexture.Height / 2
                 ),
                 SpriteEffects.None,
                 ScreenManager.Instance.FlashlightLayer
@@ -194,20 +194,21 @@ namespace Optic_Coma
 
         public float EnemyAngle = 0f;
         public Texture2D Texture { get; set; }
-        private static Random _random;
-        private int _speed;
-        private int _dir;
-        private float _moveAmp;
+        private static Random random;
+        private int speed;
+        private int dir;
+        private float moveAmp;
         public int Acceleration = 0;
         public bool Spawned = true;
 
-        public Enemy(Texture2D texture, Vector2 initPosition)
+        public Enemy(Texture2D texture, Vector2 initPosition, EnemyType eType)
         {
-            _random = new Random();
+            random = new Random();
             Texture = texture;
+            EnemyMode = eType;
             CurrentPosition = initPosition;
-            _speed = 4 + Acceleration;
-            _moveAmp = -1;
+            speed = 4 + Acceleration;
+            moveAmp = 0;
             Hull = Hull.CreateRectangle(CurrentPosition, new Vector2(texture.Width, texture.Height), Angle, new Vector2(texture.Width/2, texture.Height/2));
             Hull.Origin = new Vector2(CurrentPosition.X / 2, CurrentPosition.Y / 2);
             
@@ -223,11 +224,18 @@ namespace Optic_Coma
             if (Spawned)
             {
                 EnemyAngle = (float)(Math.Atan2(CenterScreen.Y - CurrentPosition.Y,
-                    CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
-                //moveAmp += 0.001f;
-                _moveAmp = 4; //We can toy around with this later.
-                _dir = _random.Next(0, 4);
+                             CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
                 Angle = EnemyAngle;
+                if (EnemyMode == EnemyType.Jiggler)
+                {
+                    //moveAmp += 0.001f;
+                    moveAmp = 4; //We can toy around with this later.
+                    dir = random.Next(0, 4);
+                }
+                else if (EnemyMode == EnemyType.Wavey)
+                {
+                    moveAmp += 0.01f;
+                }
             }
         }
         public void UpdateHull()
@@ -243,16 +251,22 @@ namespace Optic_Coma
         {
             if (Spawned)
             {
-                _dir = _random.Next(0, 4);
-                if (_dir == 0)
-                    CurrentPosition.Y -= (4 * WalkMult((float)Math.PI / 2, EnemyAngle, _moveAmp, false));
-                else if (_dir == 1)
-                    CurrentPosition.X -= (4 * WalkMult(0, EnemyAngle, _moveAmp, false));
-                else if (_dir == 2)
-                    CurrentPosition.Y += (4 * WalkMult(3 * (float)Math.PI / 2, EnemyAngle, _moveAmp, false));
-                else
-                    CurrentPosition.X += (4 * WalkMult((float)Math.PI, EnemyAngle, _moveAmp, false));
-
+                if (EnemyMode == EnemyType.Jiggler)
+                {
+                    dir = random.Next(0, 4);
+                    if (dir == 0)
+                        CurrentPosition.Y -= (4 * WalkMult((float)Math.PI / 2, EnemyAngle, moveAmp, false));
+                    else if (dir == 1)
+                        CurrentPosition.X -= (4 * WalkMult(0, EnemyAngle, moveAmp, false));
+                    else if (dir == 2)
+                        CurrentPosition.Y += (4 * WalkMult(3 * (float)Math.PI / 2, EnemyAngle, moveAmp, false));
+                    else
+                        CurrentPosition.X += (4 * WalkMult((float)Math.PI, EnemyAngle, moveAmp, false));
+                }
+                else if (EnemyMode == EnemyType.Wavey)
+                {
+                    CurrentPosition.Y += 4 * ((float)Math.Sin(moveAmp) + 1);
+                }
                 spriteBatch.Draw
                 (
                     Texture,

@@ -19,7 +19,7 @@ namespace Optic_Coma
         {
             _tiles = gT;
             _texture = t;
-            _rows = numRows;           
+            _rows = numRows;
             _columns = numColumns;
             _chosenRow = new int[(int)levelSize.X, (int)levelSize.Y];
             _chosenColumn = new int[(int)levelSize.X, (int)levelSize.Y];

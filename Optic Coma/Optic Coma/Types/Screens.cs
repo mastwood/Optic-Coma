@@ -454,9 +454,12 @@ namespace Optic_Coma
             enemyTexture = BaseScreenContent.Load<Texture2D>(enemyPath);
             enemyPos = new Vector2(ScreenManager.Instance.Dimensions.X / 4 - playerTexture.Width / 2,
                                      ScreenManager.Instance.Dimensions.Y / 4 - playerTexture.Height / 8);
-            enemies.Add(new Enemy(enemyTexture, enemyPos));
-            enemies.Add(new Enemy(enemyTexture, new Vector2(ScreenManager.Instance.Dimensions.X - enemyPos.X, ScreenManager.Instance.Dimensions.X - enemyPos.Y)));
-            foreach (var enemy in enemies) nonPlayerEntities.Add(enemy);
+            enemies.Add(new Enemy(enemyTexture, enemyPos, EnemyType.Jiggler));
+            enemies.Add(new Enemy(enemyTexture, new Vector2(ScreenManager.Instance.Dimensions.X - enemyPos.X, ScreenManager.Instance.Dimensions.X - enemyPos.Y), EnemyType.Jiggler));
+            foreach (var enemy in enemies)
+            {
+                nonPlayerEntities.Add(enemy);               
+            }
             #endregion
 
             TileOffsetLocation = new Vector2(SaveData.LocationX, SaveData.LocationY);
