@@ -6,6 +6,46 @@ namespace Optic_Coma
 {
     public class TileSystem
     {
+        Vector2 Size;
+        Texture2D SpriteSheet;
+        List<Vector2> Walkables;
+        bool[][][] TilePresent;
+        Vector2[][] WhichTexture;
+        int sizeOfTex;
+        public TileSystem(Texture2D t, Vector2 s, List<Vector2> w, bool[][][] b, Vector2[][] f, int texsize)
+        {
+            SpriteSheet = t; Size = s;
+        }
+        public void Draw(SpriteBatch spriteBatch, Vector2 locationOffset)
+        {
+            for (int i = 0; i <= TilePresent.GetUpperBound(0); i++)
+            {
+                for (int j = 0; j <= TilePresent.GetUpperBound(1); j++)
+                {
+                    if (TilePresent[i][j][0])
+                    {
+                        Rectangle rect = new Rectangle((int)WhichTexture[i][j].X, (int)WhichTexture[i][j].Y, sizeOfTex, sizeOfTex);
+
+                        spriteBatch.Draw
+                        (
+                            SpriteSheet,
+                            new Vector2(i + locationOffset.X, j + locationOffset.Y),
+                            rect,
+                            Color.White,
+                            0f,
+                            Vector2.Zero,
+                            1f,
+                            SpriteEffects.None,
+                            ScreenManager.Instance.TileLayer
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    public class OldTileSystem
+    {
         private int _width, _height;
         private int _rows, _columns;
         private int[,] _chosenRow, _chosenColumn;
@@ -15,7 +55,7 @@ namespace Optic_Coma
         private Texture2D _texture;
 
         //This method is called when you make a new TileSystem.
-        public TileSystem(Texture2D t, int numRows, int numColumns, int level, Vector2 levelSize, List<Vector2> gT)
+        public OldTileSystem(Texture2D t, int numRows, int numColumns, int level, Vector2 levelSize, List<Vector2> gT)
         {
             _tiles = gT;
             _texture = t;

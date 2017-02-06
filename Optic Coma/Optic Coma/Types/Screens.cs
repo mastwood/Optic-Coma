@@ -172,7 +172,7 @@ namespace Optic_Coma
         public Texture2D lightTexture;
         public Texture2D flashLightTexture;
         public string flashPath = "flashlight";
-        public TileSystem TileRenderer;
+        public OldTileSystem TileRenderer;
         public List<Enemy> enemies = new List<Enemy>();
         public Texture2D backgroundTexture;
 
@@ -201,7 +201,7 @@ namespace Optic_Coma
                                      ScreenManager.Instance.Dimensions.Y / 2 - playerTexture.Height / 8);
             lightTexture = BaseScreenContent.Load<Texture2D>("light");
             flashLightTexture = BaseScreenContent.Load<Texture2D>(flashPath);
-            player = new Player(playerTexture, playerPos, flashLightTexture, lightTexture);
+            player = new Player(playerTexture, playerPos, flashLightTexture);
 
             if (inherited == false) //Level1Screen
             {
@@ -211,8 +211,8 @@ namespace Optic_Coma
             }
             else if (inherited == true) //Level loaded from xml (LevelEditor)
             {
-                InheritedLevel.LoadContent(Handler);
-                Handler = new LevelHandler(InheritedLevel.Loader, hasLoaded);
+                InheritedLevel.LoadContent();
+                Handler = new LevelHandler(InheritedLevel.ALoader, hasLoaded);
             }
             base.LoadContent();
         }
@@ -226,7 +226,7 @@ namespace Optic_Coma
             { 
                 if (inherited)
                 {
-                    InheritedLevel.Update(gameTime, true);
+                    InheritedLevel.Update(gameTime);
                 }
 
                 deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -234,7 +234,7 @@ namespace Optic_Coma
             }
             else if(inherited && !hasLoaded) //FOR LEVEL EDITOR
             {
-                InheritedLevel.Update(gameTime, false);
+                InheritedLevel.Update(gameTime);
             }
             hasLoaded = Handler.loaded;
         }
@@ -266,7 +266,7 @@ namespace Optic_Coma
                 {
                     enemy.Draw(spriteBatch);
                 }
-                player.Draw(spriteBatch, font);
+                player.Draw(spriteBatch);
                 TileRenderer.Draw(spriteBatch, TileOffsetLocation, LevelSize);
 
                 spriteBatch.End();
@@ -275,12 +275,12 @@ namespace Optic_Coma
                 spriteBatch.Begin(SpriteSortMode.BackToFront);
                 if (inherited)
                 {
-                    InheritedLevel.Draw(spriteBatch, gameTime, true);
+                    InheritedLevel.Draw(spriteBatch, gameTime);
                 }
             }
             else if (inherited && !hasLoaded)
             {
-                InheritedLevel.Draw(spriteBatch, gameTime, false);
+                InheritedLevel.Draw(spriteBatch, gameTime);
             }
         }
 
@@ -440,7 +440,7 @@ namespace Optic_Coma
             LevelSize = new Vector2(ScreenManager.Instance.Dimensions.X * 2, ScreenManager.Instance.Dimensions.Y * 2);
             debugColRect = BaseScreenContent.Load<Texture2D>("rectbox");
             floorTexture = BaseScreenContent.Load<Texture2D>("floorSheet");
-            TileRenderer = new TileSystem(floorTexture, 4, 4, 1, LevelSize, WalkableTiles);
+            TileRenderer = new OldTileSystem(floorTexture, 4, 4, 1, LevelSize, WalkableTiles);
             music = BaseScreenContent.Load<SoundEffect>("samplemusic");
             musicInstance = music.CreateInstance();
             musicInstance.IsLooped = true;

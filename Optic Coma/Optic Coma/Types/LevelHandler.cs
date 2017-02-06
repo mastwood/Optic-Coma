@@ -51,167 +51,95 @@ namespace Optic_Coma
         }
     }
 
-    public class LevelDataHandler
-    {
-        string[] texturePaths;
-        float[][][] whereInTheSpritesheet; //x, y, which spritesheet
-        bool[][][] isTilePresent;//x, y(in level), layer
-        bool[][] isTileWalkable;
-
-        public string LevelName;
-        public string BGImageFilePath;
-        public string BGTexMapFilePath, MGTexMapFilePath, FGTexMapFilePath;
-        public string OtherImagesFilePath, PlayerTexturePath;
-
-        public List<Vector2> BGTileCoords;
-        public List<Vector2> MGTileCoords;
-        public List<Vector2> FGTileCoords;
-        public List<Vector2> OtherImageCoords;
-        public List<TexLoc> BGTexLocList;
-        public List<TexLoc> MGTexLocList;
-        public List<TexLoc> FGTexLocList;
-
-        public List<Vector2> walkableTiles;
-
-        public LevelDataHandler(string[] strings, float[][][] floats, bool[][][] textureBools, bool[][] walkBools)
-        {
-            isTilePresent = textureBools;
-            whereInTheSpritesheet = floats;
-            texturePaths = strings;
-            isTileWalkable = walkBools;
-        }
-
-        public void ParseData()
-        {
-            LevelName = texturePaths[0]; //for convenience
-
-            BGTexMapFilePath = texturePaths[1];
-            MGTexMapFilePath = texturePaths[2];
-            FGTexMapFilePath = texturePaths[3];
-            BGImageFilePath = texturePaths[4];
-            OtherImagesFilePath = texturePaths[5];
-            PlayerTexturePath = texturePaths[6];
-
-            for (int i = 0; i < whereInTheSpritesheet.GetUpperBound(0); i++)
-            {
-                for (int j = 0; j < whereInTheSpritesheet.GetUpperBound(1); j++)
-                {
-                    if (isTilePresent[i][j][0])
-                    {
-                        BGTexLocList.Add(new TexLoc(BGTexMapFilePath, new Vector2(i * 32, j * 32), new Vector2(whereInTheSpritesheet[i][j][0], whereInTheSpritesheet[i][j][1])));
-                    }
-                    if (isTilePresent[i][j][1])
-                    {
-                        MGTexLocList.Add(new TexLoc(MGTexMapFilePath, new Vector2(i * 32, j * 32), new Vector2(whereInTheSpritesheet[i][j][0], whereInTheSpritesheet[i][j][1])));
-                    }
-                    if (isTilePresent[i][j][2])
-                    {
-                        FGTexLocList.Add(new TexLoc(FGTexMapFilePath, new Vector2(i * 32, j * 32), new Vector2(whereInTheSpritesheet[i][j][0], whereInTheSpritesheet[i][j][1])));
-                    }
-                    if (isTileWalkable[i][j])
-                    {
-                        walkableTiles.Add(new Vector2(i * 32, j * 32));
-                    }
-                }
-            }
-
-            Level l;
-            LevelHandler.InitializeMethods(out l, this);
-            ScreenManager.Instance.PassLevel(l);
-        }
-        
-
-        public List<Vector2> WalkTiles;
-    }
+    
     public class Level
     {
-        public Player Player;
+        string Name;
+        int Index;
 
-        public LevelHandler Handler;
-        public Level()
+        public Player Player;
+        public WorkerAction ALoader;
+        public TileSystem tileSystem;
+        public Texture2D spriteSheet;
+        public Texture2D backgroundImage;
+
+        public List<PointLight> ambientLights; //deal with lighting later
+
+        public bool HasLoaded;
+        LevelHandler Handler;
+        public Level(LevelSerializable LS)
         {
-            Handler = new LevelHandler(Loader, false);
+            Name = LS.LevelName; Index = LS.LevelIndex;
+            ALoader += (object sender, DoWorkEventArgs e) =>
+            {
+                spriteSheet = BaseScreen.BaseScreenContent.Load<Texture2D>(LS.spriteSheetTexturePath);
+                backgroundImage = BaseScreen.BaseScreenContent.Load<Texture2D>(LS.backgroundImageTexturePath);
+            };
+            Player = new Player(spriteSheet, new Vector2(LS.playerInitPosition_X, LS.playerInitPosition_Y), null);
+            tileSystem = new TileSystem(spriteSheet, new Vector2(LS.levelSize_X,LS.levelSize_Y), LS.walkableTiles, LS.tilePresent, LS.whichTextureInSheet, 32);
         }
-        public WorkerAction Loader;
-        public Action<LevelHandler> LoadContent;
-        public Action UnloadContent;
-        public Action<GameTime, bool> Update;
-        public Action<SpriteBatch, GameTime, bool> Draw;
+        public void LoadContent()
+        {
+            Handler = new LevelHandler(ALoader, HasLoaded);
+            Handler.BeginLoad();
+        }
+        public void UnloadContent()
+        {
+
+        }
+        public void Update(GameTime gameTime)
+        {
+            HasLoaded = Handler.loaded;   
+            if (HasLoaded) 
+                Player.Update();
+        }
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            if(HasLoaded)
+                Player.Draw(spriteBatch);
+        }
     }
+
+    [Serializable] public class LevelSerializable
+    {
+        public string LevelName;
+        
+        public float playerInitPosition_X, playerInitPosition_Y;
+        public float levelSize_X, levelSize_Y;
+        
+        public List<Vector2> walkableTiles;
+        public bool[][][] tilePresent; //[x][y][l]
+        public Vector2[][] whichTextureInSheet; //[x][y]
+
+        public string spriteSheetTexturePath;
+        public string backgroundImageTexturePath;
+        public int LevelIndex; //which level is it in our order of levels
+    }
+
     public class LevelReadWriter
     {
         public LevelReadWriter()
         {
         }
-        public static LevelDataHandler Load(string strFilePath, string boolFilePath, string intFilePath, string boolWFilePath)
+        public static List<Level> Read(string[] path)
         {
-            ///Structure:
-            ///rS[0] = LevelName
-            ///rS[1] BG texturemap filepath (16x16 map)
-            ///rS[2] MG texturemap filepath (16x16 map)
-            ///rS[3] FG texturemap filepath (16x16 map)
-            ///rS[4] Background pic
-            ///rs[5] other textures map (player image etc)
-            ///
-            ///rB[x][y][0] = is there a background tile at this x,y coord?
-            ///rB[x][y][1] = is there a midground...?
-            ///rB......[2] = foreground?
-            ///
-            ///rF[x][y][0 or 1 or 2] = which texture is it?
-            ///
-
-
-            XmlSerializer[] xml = new XmlSerializer[4];
-            xml[0] = new XmlSerializer(typeof(string[]));
-            xml[1] = new XmlSerializer(typeof(bool[][][]));
-            xml[2] = new XmlSerializer(typeof(float[][][]));
-            xml[3] = new XmlSerializer(typeof(bool[][]));
-            string[] recievedStrings = { };
-            float[][][] recievedFloats = { };
-            bool[][][] recievedBools = { };
-            bool[][] recievedWBools = { };
-
+            XmlSerializer x = new XmlSerializer(typeof(LevelSerializable));
+            List<Level> l = new List<Level>();
             try
             {
-                using (var f = new FileStream(strFilePath, FileMode.Open))
-                    recievedStrings = (string[])xml[0].Deserialize(f);
+                foreach(string s in path) { 
+                    using (var f = new FileStream(s, FileMode.Open))
+                    {
+                        Level level = new Level((LevelSerializable)x.Deserialize(f));
+                        l.Add(level);
+                    }
+                }
+                return l;
             }
-            catch (FileNotFoundException ex)
+            catch(FileNotFoundException ex)
             {
                 return null;
             }
-              
-            try
-            {
-                using (var f = new FileStream(intFilePath, FileMode.Open))
-                    recievedFloats = (float[][][])xml[2].Deserialize(f);
-            }
-            catch (FileNotFoundException ex)
-            {
-                return null;
-            }
-
-            try
-            {
-                using (var f = new FileStream(boolFilePath, FileMode.Open))
-                    recievedBools = (bool[][][])xml[1].Deserialize(f);
-            }
-            catch (FileNotFoundException ex)
-            {
-                return null;
-            }
-
-            try
-            {
-                using (var f = new FileStream(boolWFilePath, FileMode.Open))
-                    recievedWBools = (bool[][])xml[3].Deserialize(f);
-            }
-            catch (FileNotFoundException ex)
-            {
-                return null;
-            }
-            
-            return new LevelDataHandler(recievedStrings, recievedFloats, recievedBools, recievedWBools);
         }
         
     }
@@ -254,46 +182,6 @@ namespace Optic_Coma
             worker = null;
             SuccessCode = 1;
             loaded = true;
-        }
-        public static void InitializeMethods(out Level level, LevelDataHandler data)
-        {
-            level = new Level();
-            level.Loader += (object sender, DoWorkEventArgs e) => //lambda operator "=>" lets me add content to methods
-            {
-                foreach (TexLoc t in data.BGTexLocList)
-                {
-                    BaseScreen.BaseScreenContent.Load<Texture2D>(t.TexturePath);
-                }
-                foreach (TexLoc t in data.MGTexLocList)
-                {
-                    BaseScreen.BaseScreenContent.Load<Texture2D>(t.TexturePath);
-                }
-                foreach (TexLoc t in data.FGTexLocList)
-                {
-                    BaseScreen.BaseScreenContent.Load<Texture2D>(t.TexturePath);
-                }
-            }; //this is why we need async loading
-            level.Draw += (SpriteBatch spriteBatch, GameTime gameTime, bool hasLoaded) =>
-            {
-                if (hasLoaded)
-                {
-
-                }else
-                {
-
-                }
-            };
-            level.Update += (GameTime gameTime, bool hasLoaded) =>
-            {
-                if (hasLoaded)
-                {
-
-                }
-                else
-                {
-
-                }
-            };
         }
     }
 }

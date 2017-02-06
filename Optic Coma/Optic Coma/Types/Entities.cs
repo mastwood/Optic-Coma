@@ -77,34 +77,51 @@ namespace Optic_Coma
         public Vector2 FacingDirection;
         public Texture2D Texture { get; set; }
         
-        public Texture2D LightTexture;
         public Spotlight FlashLight;
         private Texture2D flashLightTexture;
 
-        public Player(Texture2D texture, Vector2 initPos, Texture2D flashlightTexture, Texture2D lightTexture)
+        public Player(Texture2D texture, Vector2 initPos, Texture2D flashlightTexture)
         {
-            LightTexture = lightTexture;
-            CurrentPosition = initPos;
-            Texture = texture;
-            flashLightTexture = flashlightTexture;
-            FlashLight = new Spotlight()
+            if (flashLightTexture != null)
             {
-                Position = CenterScreen,
-                Enabled = true,
-                CastsShadows = true,
-                Scale = new Vector2(900, 900),
-                Color = Color.White,
-                Intensity = 2,
-                ShadowType = ShadowType.Occluded,
-            };
-            Foundation.LightingEngine.Lights.Add(FlashLight);
+                CurrentPosition = initPos;
+                Texture = texture;
+                flashLightTexture = flashlightTexture;
+                FlashLight = new Spotlight()
+                {
+                    Position = CenterScreen,
+                    Enabled = true,
+                    CastsShadows = true,
+                    Scale = new Vector2(900, 900),
+                    Color = Color.White,
+                    Intensity = 2,
+                    ShadowType = ShadowType.Occluded,
+                };
+                Foundation.LightingEngine.Lights.Add(FlashLight);
+            }
+            else if(flashLightTexture == null)
+            {
+                CurrentPosition = initPos;
+                Texture = TextureCutter.Cut(texture, new Vector2(0, 0), 32);
+                flashLightTexture = TextureCutter.Cut(texture, new Vector2(1, 0), 32);
+                FlashLight = new Spotlight()
+                {
+                    Position = CenterScreen,
+                    Enabled = true,
+                    CastsShadows = true,
+                    Scale = new Vector2(900, 900),
+                    Color = Color.White,
+                    Intensity = 2,
+                    ShadowType = ShadowType.Occluded,
+                };
+                Foundation.LightingEngine.Lights.Add(FlashLight);
+            }
         }
-
         public override void Update()
         {
         }
 
-        public override void Draw(SpriteBatch spriteBatch, SpriteFont font)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             
             //spriteBatch.DrawString(font, "enemyAngle: " + Enemy.enemyAngle, new Vector2(700, 100), Color.White);
@@ -130,28 +147,6 @@ namespace Optic_Coma
                 SpriteEffects.None,
                 ScreenManager.Instance.EntityLayer
             );
-            /*
-            spriteBatch.Draw(
-                LightTexture,
-                new Rectangle
-                (
-                    (int)centerScreen.X,
-                    (int)centerScreen.Y ,
-                    LightTexture.Width,
-                    LightTexture.Height
-                ),
-                null,
-                Color.White,
-                (float)Math.PI + flashAngle,
-                new Vector2
-                (
-                    0,
-                    LightTexture.Height / 2
-                ),
-                SpriteEffects.None,
-                ScreenManager.Instance.FlashlightLayer
-            );
-            */
             spriteBatch.Draw
             (
                 flashLightTexture,

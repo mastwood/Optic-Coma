@@ -25,7 +25,7 @@ namespace Optic_Coma
 
         public BaseScreen CurrentScreen { set; get; }
 
-        public List<LevelScreen> levelScreens;
+        public List<Level> LevelsLoaded;
 
         //Oh boy it's a singleton
         public static ScreenManager Instance
@@ -46,12 +46,13 @@ namespace Optic_Coma
 
             //Changes the screen to the splash screen upon start up
             CurrentScreen = new MenuScreen();
-
         }
         public void LoadContent(ContentManager content, PenumbraComponent lightingEngine)
         {
             this.Content = new ContentManager(content.ServiceProvider, "Content");
             //instantiate content, then tell it where the content is stored as the 2nd parameter, as well as the pipeline to load the content, called "ServiceProvider"
+
+            LevelsLoaded = LevelReadWriter.Read(new string[] { "level1.xml" });
 
             if (CurrentScreen is MenuScreen)
                 CurrentScreen.LoadContent();
@@ -59,21 +60,9 @@ namespace Optic_Coma
             {
                 CurrentScreen.LoadContent();
             }
-
-            //TODO: implement new level system
-
-
-
-
-
-
-
             //Load whatever content is on the current screen into the window
         }
-        public void PassLevel(Level l)
-        {
-            levelScreens.Add(new Level1Screen());
-        }
+
         public void UnloadContent()
         {
             CurrentScreen.UnloadContent();

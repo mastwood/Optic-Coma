@@ -170,4 +170,25 @@ namespace Optic_Coma
             return true;
         }
     }  
+    public class TextureCutter
+    {
+        public static Texture2D Cut(Texture2D image, Vector2 sourceLocation, int individualSize)
+        {
+            Color[] imageData = new Color[image.Width * image.Height];
+            image.GetData<Color>(imageData);
+            Rectangle sourceRectangle = new Rectangle((int)(sourceLocation.X * individualSize), (int)(sourceLocation.Y * individualSize), individualSize, individualSize);
+            Color[] imagePiece = GetImageData(imageData, image.Width, sourceRectangle);
+            Texture2D returnable = new Texture2D(Foundation.Graphics.GraphicsDevice, individualSize, individualSize);
+            returnable.SetData<Color>(imagePiece);
+            return returnable;
+        }
+        private static Color[] GetImageData(Color[] colorData, int width, Rectangle rectangle)
+        {
+            Color[] color = new Color[rectangle.Width * rectangle.Height];
+            for (int x = 0; x < rectangle.Width; x++)
+                for (int y = 0; y < rectangle.Height; y++)
+                    color[x + y * rectangle.Width] = colorData[x + rectangle.X + (y + rectangle.Y) * width];
+            return color;
+        }
+    }
 }
