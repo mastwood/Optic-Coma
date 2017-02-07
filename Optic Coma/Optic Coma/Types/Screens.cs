@@ -242,21 +242,7 @@ namespace Optic_Coma
         {
             if (hasLoaded)
             {
-                var fps = string.Format("FPS: {0}", FrameCounter.AverageFramesPerSecond);
-                spriteBatch.DrawString(font, "Position: " + TileOffsetLocation.X + "," + TileOffsetLocation.Y, new Vector2(1, 84), Color.White);
-                spriteBatch.DrawString(font, fps, new Vector2(1, 65), Color.White);
-                spriteBatch.DrawString(font, "Lighting Debug Enabled?: " + Foundation.LightingEngine.Debug, new Vector2(1, 103), Color.White);
-                spriteBatch.DrawString(font, "Distance to Closest Enemy: " + GetDistToClosestEnemy(enemies, Entity.CenterScreen), new Vector2(1, 123), Color.White);
-                pauseButton.Draw
-                (
-                    buttonSheet,
-                    spriteBatch,
-                    ScreenManager.Instance.PauseKey_OnPress,
-                    pauseButtonPos,
-                    font,
-                    "Pause Game",
-                    Color.Black
-                );
+                
                 spriteBatch.End();
 
                 Foundation.LightingEngine.BeginDraw();
@@ -277,6 +263,21 @@ namespace Optic_Coma
                 {
                     InheritedLevel.Draw(spriteBatch, gameTime);
                 }
+                var fps = string.Format("FPS: {0}", FrameCounter.AverageFramesPerSecond);
+                spriteBatch.DrawString(font, "Position: " + TileOffsetLocation.X + "," + TileOffsetLocation.Y, new Vector2(1, 84), Color.White);
+                spriteBatch.DrawString(font, fps, new Vector2(1, 65), Color.White);
+                spriteBatch.DrawString(font, "Lighting Debug Enabled?: " + Foundation.LightingEngine.Debug, new Vector2(1, 103), Color.White);
+                spriteBatch.DrawString(font, "Distance to Closest Enemy: " + GetDistToClosestEnemy(enemies, Entity.CenterScreen), new Vector2(1, 123), Color.White);
+                pauseButton.Draw
+                (
+                    buttonSheet,
+                    spriteBatch,
+                    ScreenManager.Instance.PauseKey_OnPress,
+                    pauseButtonPos,
+                    font,
+                    "Pause Game",
+                    Color.Black
+                );
             }
             else if (inherited && !hasLoaded)
             {
