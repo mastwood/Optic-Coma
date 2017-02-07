@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LevelEditor"
         mc:Ignorable="d"
-        Title="Optic Coma Level Editor" Height="600" Width="800" Topmost="True" WindowStartupLocation="CenterScreen" SizeChanged="frmMain_SizeChanged">
-    <Grid Margin="0">
+        Title="Optic Coma Level Editor" Height="600" Width="800" Topmost="True" WindowStartupLocation="CenterScreen" SizeChanged="frmMain_SizeChanged" Loaded="frmMain_Loaded">
+    <Grid x:Name="gridMain" Margin="0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50*"/>
             <ColumnDefinition Width="50*"/>
@@ -15,7 +15,7 @@
             <ColumnDefinition Width="127*"/>
         </Grid.ColumnDefinitions>
 
-        <Rectangle x:Name="rectToolBarBackgroundDeco" Fill="#FF464646" HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="794" Margin="0,31,0,0" Grid.ColumnSpan="5"/>
+        <Rectangle x:Name="rectToolBarBackgroundDeco" Fill="#FF464646" HorizontalAlignment="Left" Height="29" VerticalAlignment="Top" Width="794" Margin="0,34,0,0" Grid.ColumnSpan="5"/>
         <Rectangle x:Name="rectTopBarDeco" Fill="#FF747474" Height="34" VerticalAlignment="Top" Grid.ColumnSpan="5"/>
         <!--File button/-->
         <Button x:Name="btnFile" HorizontalAlignment ="Left" Height ="25" VerticalAlignment ="Top" Width ="80" Margin="10,4,0,0"
@@ -60,6 +60,14 @@
         <Rectangle x:Name="rectViewMenuLeft" Fill="#FF747474" HorizontalAlignment="Left" Height="290" Margin="0,34,0,0" VerticalAlignment="Top" Width="23" Visibility="Collapsed" Grid.Column="2"/>
         <Button x:Name="btnView_ShowGridlines" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="0,33,0,0"
             BorderBrush="{x:Null}" HorizontalContentAlignment="Left" Click="btnView_ShowGridlines_Click" Background="#FF747474" Content="        Show Gridlines" Foreground="White" Grid.ColumnSpan="2" Visibility="Collapsed" Grid.Column="2"/>
+        <Grid x:Name="gridLevelDisplay" Grid.ColumnSpan="5" HorizontalAlignment="Left" Height="483" Margin="0,63,0,0" VerticalAlignment="Top" Width="771">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="218*"/>
+                <ColumnDefinition Width="553*"/>
+            </Grid.ColumnDefinitions>
+        </Grid>
+        <ScrollBar x:Name="scrllLevelHoriz" HorizontalAlignment="Left" Margin="0,0,0,0.5" VerticalAlignment="Bottom" Grid.ColumnSpan="5" Height="25" Width="771" Orientation="Horizontal" Panel.ZIndex="1"/>
+        <ScrollBar x:Name="scrllLevelVert" HorizontalAlignment="Right" Margin="230.5,63,0,0" VerticalAlignment="Top" Height="484" Width="25" Grid.Column="4" Panel.ZIndex="1"/>
 
     </Grid>
 </Window>

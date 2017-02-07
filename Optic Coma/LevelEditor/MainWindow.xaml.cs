@@ -14,6 +14,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
 using Microsoft.Win32;
+using Optic_Coma;
+using Microsoft.Xna.Framework;
+using ColorMS = System.Windows.Media.Color;
+using ColorMG = Microsoft.Xna.Framework.Color;
 
 namespace LevelEditor
 {
@@ -27,20 +31,35 @@ namespace LevelEditor
         InEditMenu,
         InViewMenu
     }
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        
+
         public static MainWindow Instance { get; private set; }
 
         public UserWindowState State = UserWindowState.JustStarted;
+
+        public LevelDisplayable CurrentLevel;
+        public Size LevelSize;
+
         static MainWindow()
         {
             Instance = new MainWindow();
         }
-
+        private void frmMain_Loaded(object sender, RoutedEventArgs e)
+        {
+         /*   CurrentLevel = new LevelDisplayable(LevelSize);
+            for(int i = 0; i <= CurrentLevel.TilesToDisplay.GetUpperBound(0); i++)
+            {
+                for(int j = 0; j <= CurrentLevel.TilesToDisplay.GetUpperBound(1); j++)
+                {
+                    gridLevelDisplay.Children.Add(CurrentLevel.TilesToDisplay[i][j]);
+                }
+            }*/
+        }
         private MainWindow()
         {
             InitializeComponent();
@@ -49,7 +68,14 @@ namespace LevelEditor
         private void frmMain_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             rectTopBarDeco.Width = frmMain.Width;
-            rectToolBarBackgroundDeco.Width = frmMain.Width; 
+            rectToolBarBackgroundDeco.Width = frmMain.Width;
+            
+            gridLevelDisplay.Width = frmMain.Width - scrllLevelVert.Width > 0 ? frmMain.Width - scrllLevelVert.Width  : 0;
+            gridLevelDisplay.Height = frmMain.Height - scrllLevelHoriz.Height - rectToolBarBackgroundDeco.Height - rectTopBarDeco.Height > 0 ?
+                frmMain.Height - scrllLevelHoriz.Height - rectToolBarBackgroundDeco.Height - rectTopBarDeco.Height : 0;
+            scrllLevelHoriz.Width = gridLevelDisplay.Width;
+            scrllLevelVert.Height = gridLevelDisplay.Height;
+
         }
 
         #region File, Edit, View, etc. Toolbar
@@ -98,7 +124,7 @@ namespace LevelEditor
         #endregion
         #region New
         private void btnFile_NewLevel_Click(object sender, RoutedEventArgs e)
-        { 
+        {
             CollapseFileMenu();
             State = UserWindowState.InFileCreateDialog;
             Window newWindow = new FileCreateWindow();
@@ -358,9 +384,41 @@ namespace LevelEditor
     }
     struct ToolBarStyleColors
     {
-        public static SolidColorBrush ButtonIdle = new SolidColorBrush(new Color());
-        public static SolidColorBrush ButtonHover = new SolidColorBrush(new Color());
-        public static SolidColorBrush ButtonClickHold = new SolidColorBrush(new Color());
+        public static SolidColorBrush ButtonIdle = new SolidColorBrush(new ColorMS());
+        public static SolidColorBrush ButtonHover = new SolidColorBrush(new ColorMS());
+        public static SolidColorBrush ButtonClickHold = new SolidColorBrush(new ColorMS());
+    }
+    public class LevelDisplayable
+    {
+        public Image[][] Tiles;
+        public Image[][] TilesToDisplay;
+
+        public LevelDisplayable(Size gridSize)
+        {
+            for(int i = 0; i <= Tiles.GetUpperBound(0); i++)
+            {
+                for(int j = 0; j <= Tiles.GetUpperBound(1); j++)
+                {
+                    Tiles[i][j] = new Image()
+                    {
+                        Width = 32, Height = 32
+                    };
+                    
+                    if(gridSize.Height / (32*j) >= 1)
+                    {
+                        MainWindow.Instance.scrllLevelVert.IsEnabled = true;
+                    }if(gridSize.Width / (32*i) >= 1)
+                    {
+                        MainWindow.Instance.scrllLevelHoriz.IsEnabled = true;
+                        
+                    }
+                }
+            }
+        }
+        public void Update(Vector gridSize)
+        {
+           
+        }
     }
     public class LevelFileReader
     {
