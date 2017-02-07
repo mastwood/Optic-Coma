@@ -230,6 +230,8 @@ namespace Optic_Coma
                 else if (EnemyMode == EnemyType.Wavey)
                 {
                     moveAmp += 0.01f;
+                    if (moveAmp >= Math.PI * 4)
+                        moveAmp = 0;
                     if (Math.Sin(moveAmp) < 0)
                     {
                         EnemyAngle = (float)(Math.Atan2(CenterScreen.Y - CurrentPosition.Y,

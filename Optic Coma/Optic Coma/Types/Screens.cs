@@ -418,9 +418,9 @@ namespace Optic_Coma
         public List<Vector2> TileSetup()
         {
             List<Vector2> t = new List<Vector2>();
-            for(int x = 11; x <= 20; x++)
+            for(int x = 1; x <= 40; x++)
             {
-                for(int y = 8; y <= 16; y++)
+                for(int y = 8; y <= 40; y++)
                 {
                     t.Add(new Vector2(x, y));
                 }
