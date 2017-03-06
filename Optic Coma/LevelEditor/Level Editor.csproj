@@ -108,9 +108,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Optic Coma\Optic Coma.csproj">
+    <ProjectReference Include="..\Optic Coma\Optic Coma Prototype.csproj">
       <Project>{53783764-a9fc-471a-953f-d37744a5dda6}</Project>
-      <Name>Optic Coma</Name>
+      <Name>Optic Coma Prototype</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
