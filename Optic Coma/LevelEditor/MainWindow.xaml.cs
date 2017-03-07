@@ -67,20 +67,12 @@ namespace LevelEditor
 
         private void frmMain_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            rectTopBarDeco.Width = frmMain.Width;
-            rectToolBarBackgroundDeco.Width = frmMain.Width;
-            
-            gridLevelDisplay.Width = frmMain.Width - scrllLevelVert.Width > 0 ? frmMain.Width - scrllLevelVert.Width  : 0;
-            gridLevelDisplay.Height = frmMain.Height - scrllLevelHoriz.Height - rectToolBarBackgroundDeco.Height - rectTopBarDeco.Height > 0 ?
-                frmMain.Height - scrllLevelHoriz.Height - rectToolBarBackgroundDeco.Height - rectTopBarDeco.Height : 0;
-            scrllLevelHoriz.Width = gridLevelDisplay.Width;
-            scrllLevelVert.Height = gridLevelDisplay.Height;
 
         }
 
         #region File, Edit, View, etc. Toolbar
 
-        #region File
+        #region File menu (New, Open, Save)
 
         #region File Itself
         //File Button Mouseover Start
@@ -228,9 +220,44 @@ namespace LevelEditor
             btnFile_Open.Visibility = Visibility.Visible;
             State = UserWindowState.InFileMenu;
         }
+        private void btnFile_IsMouseDirectlyOverChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((btnFile.IsMouseOver || rectFileMenuBox.IsMouseOver) && rectFileMenuBox.Visibility == Visibility.Collapsed)
+            {
+                ExpandFileMenu();
+                State = UserWindowState.InFileMenu;
+            }
+            else if (!(btnFile.IsMouseOver || rectFileMenuBox.IsMouseOver) && rectFileMenuBox.Visibility != Visibility.Collapsed)
+            {
+                CollapseFileMenu();
+                State = UserWindowState.Idle;
+            }
+        }
 
+        private void rectFileMenuBox_IsMouseDirectlyOverChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            btnFile_IsMouseDirectlyOverChanged(sender, e);
+        }
         #endregion
         #region Edit menu (undo, redo, etc)
+        private void btnEdit_IsMouseDirectlyOverChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((btnEdit.IsMouseOver || rectEditMenuBox.IsMouseOver) && rectEditMenuBox.Visibility == Visibility.Collapsed)
+            {
+                ExpandEditMenu();
+                State = UserWindowState.InEditMenu;
+            }
+            else if (!(btnEdit.IsMouseOver || rectEditMenuBox.IsMouseOver) && rectEditMenuBox.Visibility != Visibility.Collapsed)
+            {
+                CollapseEditMenu();
+                State = UserWindowState.Idle;
+            }
+        }
+
+        private void rectEditMenuBox_IsMouseDirectlyOverChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            btnEdit_IsMouseDirectlyOverChanged(sender, e);
+        }
         private void btnEdit_Click(object sender, RoutedEventArgs e)
         {
             switch (State)
@@ -330,6 +357,24 @@ namespace LevelEditor
         }
         #endregion
         #region View menu (show gridlines, etc)
+        private void btnView_IsMouseDirectlyOverChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((btnView.IsMouseOver || rectViewMenuBox.IsMouseOver) && rectViewMenuBox.Visibility == Visibility.Collapsed)
+            {
+                ExpandViewMenu();
+                State = UserWindowState.InViewMenu;
+            }
+            else if (!(btnView.IsMouseOver || rectViewMenuBox.IsMouseOver) && rectViewMenuBox.Visibility != Visibility.Collapsed)
+            {
+                CollapseViewMenu();
+                State = UserWindowState.Idle;
+            }
+        }
+
+        private void rectViewMenuBox_IsMouseDirectlyOverChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            btnView_IsMouseDirectlyOverChanged(sender, e);
+        }
         private void btnView_Click(object sender, RoutedEventArgs e)
         {
             switch (State)
@@ -378,6 +423,9 @@ namespace LevelEditor
 
             State = UserWindowState.InViewMenu;
         }
+
+
+
         #endregion
 
         #endregion
@@ -404,14 +452,6 @@ namespace LevelEditor
                         Width = 32, Height = 32
                     };
                     
-                    if(gridSize.Height / (32*j) >= 1)
-                    {
-                        MainWindow.Instance.scrllLevelVert.IsEnabled = true;
-                    }if(gridSize.Width / (32*i) >= 1)
-                    {
-                        MainWindow.Instance.scrllLevelHoriz.IsEnabled = true;
-                        
-                    }
                 }
             }
         }

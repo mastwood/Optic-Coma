@@ -5,9 +5,9 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optic Coma Prototype", "Optic Coma\Optic Coma Prototype.csproj", "{53783764-A9FC-471A-953F-D37744A5DDA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Level Editor", "LevelEditor\Level Editor.csproj", "{319A8D68-44D9-4E87-983A-36DFB638CCAC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optic Coma", "Optic Coma Revised\Optic Coma\Optic Coma.csproj", "{10BD73F7-A8C8-45A9-8A80-9F66E00CE951}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Level Editor", "Level Editor\Level Editor.csproj", "{1E382F86-ACDD-400A-9104-10C5D7E774DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,20 +23,20 @@ Global
 		{53783764-A9FC-471A-953F-D37744A5DDA6}.Release|Any CPU.ActiveCfg = Release|x86
 		{53783764-A9FC-471A-953F-D37744A5DDA6}.Release|x86.ActiveCfg = Release|x86
 		{53783764-A9FC-471A-953F-D37744A5DDA6}.Release|x86.Build.0 = Release|x86
-		{319A8D68-44D9-4E87-983A-36DFB638CCAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{319A8D68-44D9-4E87-983A-36DFB638CCAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{319A8D68-44D9-4E87-983A-36DFB638CCAC}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{319A8D68-44D9-4E87-983A-36DFB638CCAC}.Debug|x86.Build.0 = Debug|Any CPU
-		{319A8D68-44D9-4E87-983A-36DFB638CCAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{319A8D68-44D9-4E87-983A-36DFB638CCAC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{319A8D68-44D9-4E87-983A-36DFB638CCAC}.Release|x86.ActiveCfg = Release|Any CPU
-		{319A8D68-44D9-4E87-983A-36DFB638CCAC}.Release|x86.Build.0 = Release|Any CPU
 		{10BD73F7-A8C8-45A9-8A80-9F66E00CE951}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{10BD73F7-A8C8-45A9-8A80-9F66E00CE951}.Debug|x86.ActiveCfg = Debug|x86
 		{10BD73F7-A8C8-45A9-8A80-9F66E00CE951}.Debug|x86.Build.0 = Debug|x86
 		{10BD73F7-A8C8-45A9-8A80-9F66E00CE951}.Release|Any CPU.ActiveCfg = Release|x86
 		{10BD73F7-A8C8-45A9-8A80-9F66E00CE951}.Release|x86.ActiveCfg = Release|x86
 		{10BD73F7-A8C8-45A9-8A80-9F66E00CE951}.Release|x86.Build.0 = Release|x86
+		{1E382F86-ACDD-400A-9104-10C5D7E774DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E382F86-ACDD-400A-9104-10C5D7E774DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E382F86-ACDD-400A-9104-10C5D7E774DA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1E382F86-ACDD-400A-9104-10C5D7E774DA}.Debug|x86.Build.0 = Debug|Any CPU
+		{1E382F86-ACDD-400A-9104-10C5D7E774DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E382F86-ACDD-400A-9104-10C5D7E774DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E382F86-ACDD-400A-9104-10C5D7E774DA}.Release|x86.ActiveCfg = Release|Any CPU
+		{1E382F86-ACDD-400A-9104-10C5D7E774DA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

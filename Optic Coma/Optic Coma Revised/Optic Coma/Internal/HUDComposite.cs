@@ -202,7 +202,7 @@ namespace Optic_Coma
                 string line;
 
                 StreamReader file = new StreamReader("mod_overloads.txt");
-                while ((line = file.ReadLineAsync().Result) != null)
+                while ((line = file.ReadLine()) != null)
                 {
                     if (line == "pauseButtonTexture")
                     {
@@ -221,6 +221,7 @@ namespace Optic_Coma
                             _properties
                         );
                         _font = Foundation.StaticContent.Load<SpriteFont>("Modded\\Fonts\\buttonFont");
+                        _sheet.SetState("Idle");
                         return;
                     }
                     else if (n == true && m == false)
@@ -232,6 +233,7 @@ namespace Optic_Coma
                             _properties
                         );
                         _font = Foundation.StaticContent.Load<SpriteFont>("Fonts\\buttonFont");
+                        _sheet.SetState("Idle");
                         return;
                     }
                     else if (n == false && m == true)
@@ -243,6 +245,7 @@ namespace Optic_Coma
                                 _properties
                             );
                         _font = Foundation.StaticContent.Load<SpriteFont>("Modded\\Fonts\\buttonFont");
+                        _sheet.SetState("Idle");
                         return;
                     }
                     else if (m == false && n == false)
@@ -254,6 +257,7 @@ namespace Optic_Coma
                                 _properties
                             );
                         _font = Foundation.StaticContent.Load<SpriteFont>("Fonts\\buttonFont");
+                        _sheet.SetState("Idle");
                         return;
                     }
                 }
@@ -267,9 +271,10 @@ namespace Optic_Coma
                     _properties
                 );
                 _font = Foundation.StaticContent.Load<SpriteFont>("Fonts\\buttonFont");
+                _sheet.SetState("Idle");
                 return;
             }
-            _sheet.SetState("Idle");
+            
         }
     }
 }

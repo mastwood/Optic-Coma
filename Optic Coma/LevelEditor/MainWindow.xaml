@@ -5,69 +5,55 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LevelEditor"
         mc:Ignorable="d"
-        Title="Optic Coma Level Editor" Height="600" Width="800" Topmost="True" WindowStartupLocation="CenterScreen" SizeChanged="frmMain_SizeChanged" Loaded="frmMain_Loaded">
-    <Grid x:Name="gridMain" Margin="0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50*"/>
-            <ColumnDefinition Width="50*"/>
-            <ColumnDefinition Width="40*"/>
-            <ColumnDefinition Width="130*"/>
-            <ColumnDefinition Width="127*"/>
-        </Grid.ColumnDefinitions>
+        Title="Optic Coma Level Editor" Height="1171.167" Width="1926.5" Topmost="True" WindowStartupLocation="CenterScreen" SizeChanged="frmMain_SizeChanged" Loaded="frmMain_Loaded" WindowState="Maximized" ResizeMode="CanMinimize">
 
-        <Rectangle x:Name="rectToolBarBackgroundDeco" Fill="#FF464646" HorizontalAlignment="Left" Height="29" VerticalAlignment="Top" Width="794" Margin="0,34,0,0" Grid.ColumnSpan="5"/>
-        <Rectangle x:Name="rectTopBarDeco" Fill="#FF747474" Height="34" VerticalAlignment="Top" Grid.ColumnSpan="5"/>
+    <Grid>
+        <Rectangle Fill="#FF381313" HorizontalAlignment="Left" Margin="0,62,0,0" VerticalAlignment="Top" Width="{DynamicResource {x:Static SystemParameters.VirtualScreenWidthKey}}" Height="{DynamicResource {x:Static SystemParameters.VirtualScreenHeightKey}}"/>
+        <Rectangle x:Name="rectToolBarBackgroundDeco" Fill="#FF464646" HorizontalAlignment="Left" Height="29" VerticalAlignment="Top" Width="{DynamicResource {x:Static SystemParameters.VirtualScreenWidthKey}}" Margin="0,33,0,0" />
+        <Rectangle x:Name="rectViewMenuBox" Fill="#FFAFAFAF" HorizontalAlignment="Left" Height="302" Margin="371,22,0,0" VerticalAlignment="Top" Width="180" Visibility="Visible" IsEnabled="False" IsMouseCaptureWithinChanged="rectViewMenuBox_IsMouseDirectlyOverChanged" />
+        <Rectangle x:Name="rectEditMenuBox" Fill="#FFAFAFAF" HorizontalAlignment="Left" Height="302" Margin="186,22,0,0" VerticalAlignment="Top" Width="180" Visibility="Visible" IsEnabled="False" IsMouseCaptureWithinChanged="rectEditMenuBox_IsMouseDirectlyOverChanged" />
+        <Rectangle x:Name="rectFileMenuBox" Fill="#FFAFAFAF" HorizontalAlignment="Left" Height="302" Margin="1,22,0,0" VerticalAlignment="Top" Width="180" Visibility="Visible" IsEnabled="False" IsMouseCaptureWithinChanged="rectFileMenuBox_IsMouseDirectlyOverChanged" />
+        <Rectangle x:Name="rectTopBarDeco" Fill="#FF747474" Height="34" VerticalAlignment="Top" Width="{DynamicResource {x:Static SystemParameters.VirtualScreenWidthKey}}" />
         <!--File button/-->
         <Button x:Name="btnFile" HorizontalAlignment ="Left" Height ="25" VerticalAlignment ="Top" Width ="80" Margin="10,4,0,0"
-                BorderBrush="{x:Null}" Click="btnFile_Click" Content="File" Foreground="Black"/>
-        <Rectangle x:Name="rectFileMenuBox" Fill="#FFAFAFAF" HorizontalAlignment="Left" Height="290" Margin="0,34,0,0" VerticalAlignment="Top" Width="180" Visibility="Collapsed" IsEnabled="False" Grid.ColumnSpan="2"/>
-        <Rectangle x:Name="rectFileMenuLeft" Fill="#FF747474" HorizontalAlignment="Left" Height="290" Margin="0,34,0,0" VerticalAlignment="Top" Width="23" Visibility="Collapsed"/>
+                BorderBrush="{x:Null}" Click="btnFile_Click" Content="File" Foreground="Black" IsMouseCaptureWithinChanged="btnFile_IsMouseDirectlyOverChanged"/>
+        <Rectangle x:Name="rectFileMenuLeft" Fill="#FF747474" HorizontalAlignment="Left" Height="290" Margin="0,34,0,0" VerticalAlignment="Top" Width="23" Visibility="Visible"/>
         <!--New button/-->
         <Button x:Name="btnFile_NewLevel" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="0,33,0,0"
-                BorderBrush="{x:Null}" HorizontalContentAlignment="Left" MouseEnter="btnFile_NewLevel_MouseEnter" MouseLeave="btnFile_NewLevel_MouseLeave" MouseDown="btnFile_NewLevel_MouseDown" Click="btnFile_NewLevel_Click" Background="#FF747474" Content="        New" Foreground="White" Grid.ColumnSpan="2" Visibility="Collapsed"></Button>
+                BorderBrush="{x:Null}" HorizontalContentAlignment="Left" MouseEnter="btnFile_NewLevel_MouseEnter" MouseLeave="btnFile_NewLevel_MouseLeave" MouseDown="btnFile_NewLevel_MouseDown" Click="btnFile_NewLevel_Click" Background="#FF747474" Content="        New" Foreground="White" Grid.ColumnSpan="2" Visibility="Visible"/>
         <!--Exit button/-->
         <Button x:Name="btnFile_Exit" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="0,299,0,0"
-            BorderBrush="{x:Null}" HorizontalContentAlignment="Left" MouseEnter="btnFile_Exit_MouseEnter" MouseLeave="btnFile_Exit_MouseLeave" MouseDown="btnFile_Exit_MouseDown" Click="btnFile_Exit_Click" Background="#FF747474" Content="        Exit" Foreground="White" Grid.ColumnSpan="2" Visibility="Collapsed"/>
+            BorderBrush="{x:Null}" HorizontalContentAlignment="Left" MouseEnter="btnFile_Exit_MouseEnter" MouseLeave="btnFile_Exit_MouseLeave" MouseDown="btnFile_Exit_MouseDown" Click="btnFile_Exit_Click" Background="#FF747474" Content="        Exit" Foreground="White" Grid.ColumnSpan="2" Visibility="Visible"/>
         <!--Open button/-->
         <Button x:Name="btnFile_Open" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="0,59,0,0"
-            BorderBrush="{x:Null}" HorizontalContentAlignment="Left" MouseEnter="btnFile_Open_MouseEnter" MouseLeave="btnFile_Open_MouseLeave" MouseDown="btnFile_Open_MouseDown" Click="btnFile_Open_Click" Background="#FF747474" Content="        Open" Foreground="White" Grid.ColumnSpan="2" Visibility="Collapsed"/>
+            BorderBrush="{x:Null}" HorizontalContentAlignment="Left" MouseEnter="btnFile_Open_MouseEnter" MouseLeave="btnFile_Open_MouseLeave" MouseDown="btnFile_Open_MouseDown" Click="btnFile_Open_Click" Background="#FF747474" Content="        Open" Foreground="White" Grid.ColumnSpan="2" Visibility="Visible"/>
 
         <!--Edit button/-->
-        <Button x:Name="btnEdit" HorizontalAlignment ="Left" Height ="25" VerticalAlignment ="Top" Width ="80" Margin="10,4,0,0"
-            BorderBrush="{x:Null}" Click="btnEdit_Click" Content="Edit" Foreground="Black" Grid.Column="1"/>
-        <Rectangle x:Name="rectEditMenuBox" Fill="#FFAFAFAF" HorizontalAlignment="Left" Height="290" Margin="100,34,0,0" VerticalAlignment="Top" Width="180" Visibility="Collapsed" IsEnabled="False" Grid.ColumnSpan="3"/>
-        <Rectangle x:Name="rectEditMenuLeft" Fill="#FF747474" HorizontalAlignment="Left" Height="290" Margin="100,34,0,0" VerticalAlignment="Top" Width="23" Visibility="Collapsed" Grid.ColumnSpan="2"/>
+        <Button x:Name="btnEdit" HorizontalAlignment ="Left" Height ="25" VerticalAlignment ="Top" Width ="80" Margin="186,4,0,0"
+            BorderBrush="{x:Null}" Click="btnEdit_Click" Content="Edit" Foreground="Black" IsMouseCaptureWithinChanged="btnEdit_IsMouseDirectlyOverChanged"/>
+        <Rectangle x:Name="rectEditMenuLeft" Fill="#FF747474" HorizontalAlignment="Left" Height="290" Margin="186,34,0,0" VerticalAlignment="Top" Width="23" Visibility="Visible" />
         <!--Undo button-->
-        <Button x:Name="btnEdit_Undo" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="100,33,0,0"
-                BorderBrush="{x:Null}" HorizontalContentAlignment="Left" Click="btnEdit_Undo_Click" Background="#FF747474" Content="        Undo" Foreground="White" Grid.ColumnSpan="3" Visibility="Collapsed"/>
+        <Button x:Name="btnEdit_Undo" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="186,33,0,0"
+                BorderBrush="{x:Null}" HorizontalContentAlignment="Left" Click="btnEdit_Undo_Click" Background="#FF747474" Content="        Undo" Foreground="White" Visibility="Visible"/>
+
         <!--Redo button-->
-        <Button x:Name="btnEdit_Redo" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="0,58,0,0"
-            BorderBrush="{x:Null}" HorizontalContentAlignment="Left" Click="btnEdit_Redo_Click" Background="#FF747474" Content="        Redo" Foreground="White" Grid.ColumnSpan="3" Visibility="Collapsed" Grid.Column="1"/>
+        <Button x:Name="btnEdit_Redo" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="186,59,0,0"
+            BorderBrush="{x:Null}" HorizontalContentAlignment="Left" Click="btnEdit_Redo_Click" Background="#FF747474" Content="        Redo" Foreground="White" Visibility="Visible" />
         <!--Cut button-->
-        <Button x:Name="btnEdit_Cut" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="0,83,0,0"
-            BorderBrush="{x:Null}" HorizontalContentAlignment="Left" Click="btnEdit_Cut_Click" Background="#FF747474" Content="        Cut" Foreground="White" Grid.ColumnSpan="3" Visibility="Collapsed" Grid.Column="1"/>
+        <Button x:Name="btnEdit_Cut" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="186,85,0,0"
+            BorderBrush="{x:Null}" HorizontalContentAlignment="Left" Click="btnEdit_Cut_Click" Background="#FF747474" Content="        Cut" Foreground="White" Visibility="Visible"/>
         <!--Copy button-->
-        <Button x:Name="btnEdit_Copy" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="0,108,0,0"
-            BorderBrush="{x:Null}" HorizontalContentAlignment="Left" Click="btnEdit_Copy_Click" Background="#FF747474" Content="        Copy" Foreground="White" Grid.ColumnSpan="3" Visibility="Collapsed" Grid.Column="1"/>
+        <Button x:Name="btnEdit_Copy" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="186,111,0,0"
+            BorderBrush="{x:Null}" HorizontalContentAlignment="Left" Click="btnEdit_Copy_Click" Background="#FF747474" Content="        Copy" Foreground="White" Visibility="Visible" />
         <!--Paste button-->
-        <Button x:Name="btnEdit_Paste" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="0,133,0,0"
-            BorderBrush="{x:Null}" HorizontalContentAlignment="Left" Click="btnEdit_Paste_Click" Background="#FF747474" Content="        Paste" Foreground="White" Grid.ColumnSpan="3" Visibility="Collapsed" Grid.Column="1"/>
+        <Button x:Name="btnEdit_Paste" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="186,137,0,0"
+            BorderBrush="{x:Null}" HorizontalContentAlignment="Left" Click="btnEdit_Paste_Click" Background="#FF747474" Content="        Paste" Foreground="White" Visibility="Visible" />
 
         <!--View button-->
-        <Button x:Name="btnView" HorizontalAlignment ="Left" Height ="25" VerticalAlignment ="Top" Width ="80" Margin="10,4,0,0"
-            BorderBrush="{x:Null}" Click="btnView_Click" Content="View" Foreground="Black" Grid.Column="2" Grid.ColumnSpan="2"/>
-        <Rectangle x:Name="rectViewMenuBox" Fill="#FFAFAFAF" HorizontalAlignment="Left" Height="290" Margin="0,34,0,0" VerticalAlignment="Top" Width="180" Visibility="Collapsed" IsEnabled="False" Grid.ColumnSpan="2" Grid.Column="2"/>
-        <Rectangle x:Name="rectViewMenuLeft" Fill="#FF747474" HorizontalAlignment="Left" Height="290" Margin="0,34,0,0" VerticalAlignment="Top" Width="23" Visibility="Collapsed" Grid.Column="2"/>
-        <Button x:Name="btnView_ShowGridlines" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="0,33,0,0"
-            BorderBrush="{x:Null}" HorizontalContentAlignment="Left" Click="btnView_ShowGridlines_Click" Background="#FF747474" Content="        Show Gridlines" Foreground="White" Grid.ColumnSpan="2" Visibility="Collapsed" Grid.Column="2"/>
-        <Grid x:Name="gridLevelDisplay" Grid.ColumnSpan="5" HorizontalAlignment="Left" Height="483" Margin="0,63,0,0" VerticalAlignment="Top" Width="771">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="218*"/>
-                <ColumnDefinition Width="553*"/>
-            </Grid.ColumnDefinitions>
-        </Grid>
-        <ScrollBar x:Name="scrllLevelHoriz" HorizontalAlignment="Left" Margin="0,0,0,0.5" VerticalAlignment="Bottom" Grid.ColumnSpan="5" Height="25" Width="771" Orientation="Horizontal" Panel.ZIndex="1"/>
-        <ScrollBar x:Name="scrllLevelVert" HorizontalAlignment="Right" Margin="230.5,63,0,0" VerticalAlignment="Top" Height="484" Width="25" Grid.Column="4" Panel.ZIndex="1"/>
-
+        <Button x:Name="btnView" HorizontalAlignment ="Left" Height ="25" VerticalAlignment ="Top" Width ="80" Margin="371,4,0,0"
+            BorderBrush="{x:Null}" Click="btnView_Click" Content="View" Foreground="Black" IsMouseCaptureWithinChanged="btnView_IsMouseDirectlyOverChanged"/>
+        <Rectangle x:Name="rectViewMenuLeft" Fill="#FF747474" HorizontalAlignment="Left" Height="290" Margin="372,33,0,0" VerticalAlignment="Top" Width="23" Visibility="Visible" />
+        <Button x:Name="btnView_ShowGridlines" HorizontalAlignment ="Left" Height ="26" VerticalAlignment ="Top" Width ="181" Margin="370,33,0,0"
+            BorderBrush="{x:Null}" HorizontalContentAlignment="Left" Click="btnView_ShowGridlines_Click" Background="#FF747474" Content="        Show Gridlines" Foreground="White" Visibility="Visible" />
     </Grid>
 </Window>

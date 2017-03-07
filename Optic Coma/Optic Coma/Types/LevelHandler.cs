@@ -153,10 +153,7 @@ namespace Optic_Coma
 
         public bool LoadingSuccess() //just in case
         {
-            if (SuccessCode > 0)
-                return true;
-            else
-                return false;
+            return (SuccessCode > 0);
         }
         public LevelHandler(WorkerAction action, bool checkLoad)
         {

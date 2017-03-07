@@ -31,7 +31,7 @@ namespace Optic_Coma
         {
             StaticContent = Content;
             HUD = new HUDComposite();
-            HUD.AddChild(new HUDPauseButton());
+            
             base.Initialize();
         }
 
@@ -42,6 +42,7 @@ namespace Optic_Coma
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            HUD.AddChild(new HUDPauseButton());
             HUD.LoadContent();
         }
 
@@ -78,7 +79,6 @@ namespace Optic_Coma
             spriteBatch.Begin();
             HUD.Draw(spriteBatch);
             spriteBatch.End();
-            base.Draw(gameTime);
         }
     }
 }

@@ -54,40 +54,84 @@ namespace Optic_Coma
                 return new Rectangle(r.X, r.Y, r.Width, r.Height);
             }
         }
-        /*
-        private static bool IntersectPixels(Rectangle rectangleA, Color[] dataA, Rectangle rectangleB, Color[] dataB)
-        {
-            // Find the bounds of the rectangle intersection
-            int top = Math.Max(rectangleA.Top, rectangleB.Top);
-            int bottom = Math.Min(rectangleA.Bottom, rectangleB.Bottom);
-            int left = Math.Max(rectangleA.Left, rectangleB.Left);
-            int right = Math.Min(rectangleA.Right, rectangleB.Right);
-
-            // Check every point within the intersection bounds
-            for (int y = top; y < bottom; y++)
-            {
-                for (int x = left; x < right; x++)
-                {
-                    // Get the color of both pixels at this point
-                    Color colorA = dataA[(x - rectangleA.Left) +
-                                         (y - rectangleA.Top) * rectangleA.Width];
-                    Color colorB = dataB[(x - rectangleB.Left) +
-                                         (y - rectangleB.Top) * rectangleB.Width];
-
-                    // If both pixels are not completely transparent,
-                    if (colorA.A != 0 && colorB.A != 0)
-                    {
-                        // then an intersection has been found
-                        return true;
-                    }
-
-                }
-            }
-            return false;
-        }
-        */
     }
+    internal class MenuScreen : BaseScreen
+    {
+        private Button btnEnterGame;
+        private SpriteFont buttonFont;
+        private Texture2D enterButtonTexture;
+        private Vector2 enterButtonPos;
+        private Texture2D titleGraphic;
+        private Texture2D bg;
+        public override void LoadContent()
+        {
+            base.LoadContent();
 
+
+
+            titleGraphic = BaseScreenContent.Load<Texture2D>("ocbigSheet");
+
+            btnEnterGame = new Button();
+            enterButtonTexture = BaseScreenContent.Load<Texture2D>("buttonSheet");
+            buttonFont = BaseScreenContent.Load<SpriteFont>("buttonFont");
+
+            enterButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - enterButtonTexture.Width / 2,
+                                         ScreenManager.Instance.Dimensions.Y / 2 - enterButtonTexture.Height / 8);
+
+            bg = BaseScreenContent.Load<Texture2D>("starsbg");
+        }
+
+        public override void UnloadContent()
+        {
+            base.UnloadContent();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+
+        }
+
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            spriteBatch.Draw
+            (
+                bg,
+                null,
+                new Rectangle(0, 0, (int)ScreenManager.Instance.Dimensions.X, (int)ScreenManager.Instance.Dimensions.Y),
+                null,
+                null,
+                0,
+                null,
+                Color.White,
+                SpriteEffects.None,
+                ScreenManager.Instance.BgLayer
+            );
+            spriteBatch.Draw
+            (
+                titleGraphic,
+                null,
+                new Rectangle((int)Entity.CenterScreen.X - titleGraphic.Width / 2, 0, titleGraphic.Width, titleGraphic.Height / 2),
+                new Rectangle(0, 0, titleGraphic.Width, titleGraphic.Height / 2),
+                null,
+                0,
+                null,
+                Color.White,
+                SpriteEffects.None,
+                ScreenManager.Instance.BgLayer - 0.01f
+            );
+            //We're making our button! Woo!
+            btnEnterGame.Draw
+            (
+                enterButtonTexture,
+                spriteBatch,
+                ScreenManager.Instance.MenuKey_OnPress,
+                enterButtonPos,
+                buttonFont,
+                "Enter Game",
+                Color.Black
+            );
+        }
+    }
     public class LevelScreen : BaseScreen
     {
         private float deltaTime;
@@ -100,6 +144,39 @@ namespace Optic_Coma
         public FrameCounter FrameCounter = new FrameCounter();
         public Vector2 LevelSize;
         public LevelHandler Handler;
+
+        public Texture2D buttonSheet;
+        public Button pauseButton;
+        public Vector2 pauseButtonPos;
+        public SpriteFont font;
+
+        public Button btnUnpause;
+        public Vector2 unpauseButtonPos;
+
+        public Button btnExit;
+        public Vector2 exitButtonPos;
+
+        public Button btnFullscreen;
+        public Vector2 fullButtonPos;
+
+        public Player player;
+        public Texture2D playerTexture;
+        public string playerPath = "player";
+        public Vector2 playerPos;
+        public Texture2D lightTexture;
+        public Texture2D flashLightTexture;
+        public string flashPath = "flashlight";
+        public OldTileSystem TileRenderer;
+        public List<Enemy> enemies = new List<Enemy>();
+        public Texture2D backgroundTexture;
+
+        public Action<object, DoWorkEventArgs> LoaderMethod;
+
+        public int screenWidth = (int)ScreenManager.Instance.Dimensions.X;
+        public int screenHeight = (int)ScreenManager.Instance.Dimensions.Y;
+
+        public bool inherited;
+        public Level InheritedLevel;
 
         public static bool NotOutOfBounds(List<Vector2> walkableTiles, List<Triangle> nonWalkableTriangles, Vector2 location, Rectangle playerHitBox)
         {
@@ -145,45 +222,14 @@ namespace Optic_Coma
             }
             return (float)lowDist;
         }
+
         public double LogisticForLight(float x)
         {
             double xD;
             xD = Convert.ToDouble(x);
             return (350 / (1 + Math.Exp(-0.02d*(xD - 200d))));
         }
-        public Texture2D buttonSheet;
-        public Button pauseButton;
-        public Vector2 pauseButtonPos;
-        public SpriteFont font;
-
-        public Button btnUnpause;
-        public Vector2 unpauseButtonPos;
-
-        public Button btnExit;
-        public Vector2 exitButtonPos;
         
-        public Button btnFullscreen;
-        public Vector2 fullButtonPos;
-
-        public Player player;
-        public Texture2D playerTexture;
-        public string playerPath = "player";
-        public Vector2 playerPos;
-        public Texture2D lightTexture;
-        public Texture2D flashLightTexture;
-        public string flashPath = "flashlight";
-        public OldTileSystem TileRenderer;
-        public List<Enemy> enemies = new List<Enemy>();
-        public Texture2D backgroundTexture;
-
-        public Action<object, DoWorkEventArgs> LoaderMethod;
-
-        public int screenWidth = (int)ScreenManager.Instance.Dimensions.X;
-        public int screenHeight = (int)ScreenManager.Instance.Dimensions.Y;
-
-        public bool inherited;
-        public Level InheritedLevel;
-
         public LevelScreen()
         {
             inherited = false;
@@ -302,85 +348,6 @@ namespace Optic_Coma
                                         ScreenManager.Instance.Dimensions.Y / 2 + 64 - 128);
         }
     }
-
-    internal class MenuScreen : BaseScreen
-    {
-        private Button btnEnterGame;
-        private SpriteFont buttonFont;
-        private Texture2D enterButtonTexture;
-        private Vector2 enterButtonPos;
-        private Texture2D titleGraphic;
-        private Texture2D bg;
-        public override void LoadContent()
-        {
-            base.LoadContent();
-
-            
-
-            titleGraphic = BaseScreenContent.Load<Texture2D>("ocbigSheet");
-
-            btnEnterGame = new Button();
-            enterButtonTexture = BaseScreenContent.Load<Texture2D>("buttonSheet");
-            buttonFont = BaseScreenContent.Load<SpriteFont>("buttonFont");
-
-            enterButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - enterButtonTexture.Width / 2,
-                                         ScreenManager.Instance.Dimensions.Y / 2 - enterButtonTexture.Height / 8);
-
-            bg = BaseScreenContent.Load<Texture2D>("starsbg");
-        }
-
-        public override void UnloadContent()
-        {
-            base.UnloadContent();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-
-        }
-
-        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-            spriteBatch.Draw
-            (
-                bg,
-                null,
-                new Rectangle(0,0,(int)ScreenManager.Instance.Dimensions.X, (int)ScreenManager.Instance.Dimensions.Y),
-                null, 
-                null,
-                0,
-                null,
-                Color.White,
-                SpriteEffects.None,
-                ScreenManager.Instance.BgLayer
-            );
-            spriteBatch.Draw
-            (
-                titleGraphic,
-                null,
-                new Rectangle((int)Entity.CenterScreen.X - titleGraphic.Width / 2, 0, titleGraphic.Width, titleGraphic.Height/2),
-                new Rectangle(0, 0, titleGraphic.Width, titleGraphic.Height/2),
-                null,
-                0,
-                null,
-                Color.White,
-                SpriteEffects.None,
-                ScreenManager.Instance.BgLayer-0.01f
-            );
-            //We're making our button! Woo!
-            btnEnterGame.Draw
-            (
-                enterButtonTexture,
-                spriteBatch,
-                ScreenManager.Instance.MenuKey_OnPress,
-                enterButtonPos,
-                buttonFont,
-                "Enter Game",
-                Color.Black
-            );
-        }
-    }
-
     internal class Level1Screen : LevelScreen
     {
         public bool Equals(Level1Screen level)

@@ -73,7 +73,6 @@
     <StartupObject>Optic_Coma.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Gearbox\Blowfish Algorithm.cs" />
     <Compile Include="Gearbox\Save.cs" />
     <Compile Include="Types\LevelHandler.cs" />
     <Compile Include="Types\Shapes.cs" />
