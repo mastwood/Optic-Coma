@@ -67,10 +67,22 @@ namespace Level_Editor
                 {
                     TileGrid[] a = LoadAsync(ref worker);
                     DefaultLevel = new Level(new Size(320 * 4, 320 * 4), 0, a[0], a[1], a[2]);
-
+                    
+                    using (var f = new FileStream("recentpaths", FileMode.Open))
+                    {
+                        try
+                        {
+                            xml = new XmlSerializer(typeof(string));
+                            openRecentToolStripMenuItem.DropDownItems.Add((string)xml.Deserialize(f));
+                        }
+                        catch (Exception ex)
+                        {
+                        }
+                    }
                 }
             }
         }
+          
         private void bW_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             levelLoadProgress.Value = levelLoadProgress.Maximum * (e.ProgressPercentage / 100);
@@ -130,7 +142,7 @@ namespace Level_Editor
         private void vScrollBarLevel_Scroll(object sender, ScrollEventArgs e)
         {
             ScrollEventArgs s = e as ScrollEventArgs;
-            PanOffset.Y = s.NewValue;
+            PanOffset.Y = -s.NewValue;
             lblScrollDebug.Text = string.Format("X: {0}, Y: {1} ", PanOffset.X, PanOffset.Y);
             CurrentLevel.Display(ref TilePanel, CurrentLayer, ShowGridLines, PanOffset);
             TilePanel.Update();
@@ -139,7 +151,7 @@ namespace Level_Editor
         private void hScrollBarLevel_Scroll(object sender, ScrollEventArgs e)
         {
             ScrollEventArgs s = e as ScrollEventArgs;
-            PanOffset.X = s.NewValue;
+            PanOffset.X = -s.NewValue;
             lblScrollDebug.Text = string.Format("X: {0}, Y: {1} ", PanOffset.X, PanOffset.Y);
             CurrentLevel.Display(ref TilePanel, CurrentLayer, ShowGridLines, PanOffset);
             TilePanel.Update();
@@ -158,7 +170,11 @@ namespace Level_Editor
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-
+            DialogResult r = MessageBox.Show("Save?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+            if(r == DialogResult.Yes)
+            {
+                Save("saveFile");
+            }
         }
 
         public void Save(string path)
@@ -166,11 +182,15 @@ namespace Level_Editor
             using (var f = new FileStream(path, FileMode.Create))
             {
                 xml = new XmlSerializer(typeof(string));
-                xml.Serialize(f, ImageResourcesPaths);
-                xml = new XmlSerializer(typeof(Image));
-                xml.Serialize(f, CurrentLevel.fTileGrid.GetComposedImage());
-                xml.Serialize(f, CurrentLevel.mTileGrid.GetComposedImage());
-                xml.Serialize(f, CurrentLevel.bTileGrid.GetComposedImage());
+                if(ImageResourcesPaths.Count > 0)
+                    xml.Serialize(f, ImageResourcesPaths);
+                xml = new XmlSerializer(typeof(Bitmap));
+                if(CurrentLevel.fTileGrid.GetComposedImage() != null)
+                    xml.Serialize(f, CurrentLevel.fTileGrid.GetComposedImage());
+                if (CurrentLevel.mTileGrid.GetComposedImage() != null)
+                    xml.Serialize(f, CurrentLevel.mTileGrid.GetComposedImage());
+                if (CurrentLevel.bTileGrid.GetComposedImage() != null)
+                    xml.Serialize(f, CurrentLevel.bTileGrid.GetComposedImage());
                 //TODO: Enemy spawners, npc, etc
             }
         }
@@ -178,6 +198,11 @@ namespace Level_Editor
         private void openFileDialogLevels_FileOk(object sender, CancelEventArgs e)
         {
 
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
     public class Tile
@@ -304,9 +329,6 @@ namespace Level_Editor
         {
             f.CreateGraphics().Clear(Color.White);
 
-            TileGridDimensions.Width += panOffset.X;
-            TileGridDimensions.Height -= panOffset.Y;
-
             if (layer == LayerMode.Foreground)
             {
                 currentTileGrid = fTileGrid;
@@ -332,8 +354,6 @@ namespace Level_Editor
             {
                 //TODO: Combine all layers
             }
-            TileGridDimensions.Width -= panOffset.X;
-            TileGridDimensions.Height += panOffset.Y;
         }
     }
     public class BufferedPanel : Panel

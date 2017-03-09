@@ -63,16 +63,17 @@
             this.openFileDialogImages = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.newLevel = new System.Windows.Forms.TabPage();
+            this.hScrollBarLevel = new System.Windows.Forms.HScrollBar();
+            this.vScrollBarLevel = new System.Windows.Forms.VScrollBar();
             this.tilePanel = new System.Windows.Forms.Panel();
             this.levelTabControl = new System.Windows.Forms.TabControl();
             this.grpTools = new System.Windows.Forms.GroupBox();
-            this.vScrollBarLevel = new System.Windows.Forms.VScrollBar();
-            this.hScrollBarLevel = new System.Windows.Forms.HScrollBar();
             this.lblScrollDebug = new System.Windows.Forms.Label();
             this.levelLoadProgress = new System.Windows.Forms.ProgressBar();
             this.grpResources = new System.Windows.Forms.GroupBox();
             this.panelResources = new System.Windows.Forms.FlowLayoutPanel();
             this.openFileDialogLevels = new System.Windows.Forms.OpenFileDialog();
+            this.openRecentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.newLevel.SuspendLayout();
             this.levelTabControl.SuspendLayout();
@@ -81,6 +82,7 @@
             // 
             // menuStrip
             // 
+            this.menuStrip.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
@@ -93,6 +95,7 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripMenuItem,
             this.openToolStripMenuItem,
+            this.openRecentToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.addToolStripMenuItem,
             this.toolStripSeparator1,
@@ -143,6 +146,7 @@
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             resources.ApplyResources(this.exitToolStripMenuItem, "exitToolStripMenuItem");
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
@@ -281,10 +285,24 @@
             // newLevel
             // 
             this.newLevel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.newLevel.Controls.Add(this.hScrollBarLevel);
+            this.newLevel.Controls.Add(this.vScrollBarLevel);
             this.newLevel.Controls.Add(this.tilePanel);
             resources.ApplyResources(this.newLevel, "newLevel");
             this.newLevel.Name = "newLevel";
             this.newLevel.UseVisualStyleBackColor = true;
+            // 
+            // hScrollBarLevel
+            // 
+            resources.ApplyResources(this.hScrollBarLevel, "hScrollBarLevel");
+            this.hScrollBarLevel.Name = "hScrollBarLevel";
+            this.hScrollBarLevel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBarLevel_Scroll);
+            // 
+            // vScrollBarLevel
+            // 
+            resources.ApplyResources(this.vScrollBarLevel, "vScrollBarLevel");
+            this.vScrollBarLevel.Name = "vScrollBarLevel";
+            this.vScrollBarLevel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBarLevel_Scroll);
             // 
             // tilePanel
             // 
@@ -305,18 +323,6 @@
             resources.ApplyResources(this.grpTools, "grpTools");
             this.grpTools.Name = "grpTools";
             this.grpTools.TabStop = false;
-            // 
-            // vScrollBarLevel
-            // 
-            resources.ApplyResources(this.vScrollBarLevel, "vScrollBarLevel");
-            this.vScrollBarLevel.Name = "vScrollBarLevel";
-            this.vScrollBarLevel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBarLevel_Scroll);
-            // 
-            // hScrollBarLevel
-            // 
-            resources.ApplyResources(this.hScrollBarLevel, "hScrollBarLevel");
-            this.hScrollBarLevel.Name = "hScrollBarLevel";
-            this.hScrollBarLevel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBarLevel_Scroll);
             // 
             // lblScrollDebug
             // 
@@ -345,6 +351,11 @@
             this.openFileDialogLevels.FileName = "openFileDialog1";
             this.openFileDialogLevels.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialogLevels_FileOk);
             // 
+            // openRecentToolStripMenuItem
+            // 
+            this.openRecentToolStripMenuItem.Name = "openRecentToolStripMenuItem";
+            resources.ApplyResources(this.openRecentToolStripMenuItem, "openRecentToolStripMenuItem");
+            // 
             // frmMain
             // 
             resources.ApplyResources(this, "$this");
@@ -352,8 +363,6 @@
             this.Controls.Add(this.grpResources);
             this.Controls.Add(this.levelLoadProgress);
             this.Controls.Add(this.lblScrollDebug);
-            this.Controls.Add(this.hScrollBarLevel);
-            this.Controls.Add(this.vScrollBarLevel);
             this.Controls.Add(this.grpTools);
             this.Controls.Add(this.levelTabControl);
             this.Controls.Add(this.menuStrip);
@@ -409,14 +418,15 @@
         private System.Windows.Forms.TabPage newLevel;
         private System.Windows.Forms.TabControl levelTabControl;
         private System.Windows.Forms.GroupBox grpTools;
-        private System.Windows.Forms.VScrollBar vScrollBarLevel;
-        private System.Windows.Forms.HScrollBar hScrollBarLevel;
         public System.Windows.Forms.Panel tilePanel;
         private System.Windows.Forms.Label lblScrollDebug;
         private System.Windows.Forms.ProgressBar levelLoadProgress;
         private System.Windows.Forms.GroupBox grpResources;
         private System.Windows.Forms.FlowLayoutPanel panelResources;
         private System.Windows.Forms.OpenFileDialog openFileDialogLevels;
+        private System.Windows.Forms.VScrollBar vScrollBarLevel;
+        private System.Windows.Forms.HScrollBar hScrollBarLevel;
+        private System.Windows.Forms.ToolStripMenuItem openRecentToolStripMenuItem;
     }
 }
 
