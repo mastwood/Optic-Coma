@@ -144,7 +144,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;menuStrip.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="fileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>37, 20</value>
@@ -514,7 +514,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;levelTabControl.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="grpTools.Location" type="System.Drawing.Point, System.Drawing">
     <value>13, 28</value>
@@ -538,10 +538,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;grpTools.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="vScrollBarLevel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
+  </data>
+  <data name="vScrollBarLevel.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="vScrollBarLevel.Location" type="System.Drawing.Point, System.Drawing">
     <value>1391, 50</value>
@@ -562,10 +565,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;vScrollBarLevel.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="hScrollBarLevel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
+  </data>
+  <data name="hScrollBarLevel.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="hScrollBarLevel.Location" type="System.Drawing.Point, System.Drawing">
     <value>257, 739</value>
@@ -586,22 +592,22 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;hScrollBarLevel.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="lblScrollDebug.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="lblScrollDebug.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1337, 11</value>
+    <value>1301, 12</value>
   </data>
   <data name="lblScrollDebug.Size" type="System.Drawing.Size, System.Drawing">
-    <value>30, 13</value>
+    <value>87, 13</value>
   </data>
   <data name="lblScrollDebug.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
   <data name="lblScrollDebug.Text" xml:space="preserve">
-    <value>X: Y:</value>
+    <value>X: 0000, Y: 0000</value>
   </data>
   <data name="&gt;&gt;lblScrollDebug.Name" xml:space="preserve">
     <value>lblScrollDebug</value>
@@ -613,6 +619,27 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;lblScrollDebug.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="levelLoadProgress.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 739</value>
+  </data>
+  <data name="levelLoadProgress.Size" type="System.Drawing.Size, System.Drawing">
+    <value>235, 23</value>
+  </data>
+  <data name="levelLoadProgress.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;levelLoadProgress.Name" xml:space="preserve">
+    <value>levelLoadProgress</value>
+  </data>
+  <data name="&gt;&gt;levelLoadProgress.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ProgressBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;levelLoadProgress.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;levelLoadProgress.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

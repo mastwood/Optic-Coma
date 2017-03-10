@@ -72,6 +72,7 @@
             this.vScrollBarLevel = new System.Windows.Forms.VScrollBar();
             this.hScrollBarLevel = new System.Windows.Forms.HScrollBar();
             this.lblScrollDebug = new System.Windows.Forms.Label();
+            this.levelLoadProgress = new System.Windows.Forms.ProgressBar();
             this.menuStrip.SuspendLayout();
             this.newLevel.SuspendLayout();
             this.levelTabControl.SuspendLayout();
@@ -340,10 +341,16 @@
             resources.ApplyResources(this.lblScrollDebug, "lblScrollDebug");
             this.lblScrollDebug.Name = "lblScrollDebug";
             // 
+            // levelLoadProgress
+            // 
+            resources.ApplyResources(this.levelLoadProgress, "levelLoadProgress");
+            this.levelLoadProgress.Name = "levelLoadProgress";
+            // 
             // frmMain
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.levelLoadProgress);
             this.Controls.Add(this.lblScrollDebug);
             this.Controls.Add(this.hScrollBarLevel);
             this.Controls.Add(this.vScrollBarLevel);
@@ -408,6 +415,7 @@
         private System.Windows.Forms.HScrollBar hScrollBarLevel;
         public System.Windows.Forms.Panel tilePanel;
         private System.Windows.Forms.Label lblScrollDebug;
+        private System.Windows.Forms.ProgressBar levelLoadProgress;
     }
 }
 

@@ -19,40 +19,79 @@ namespace Level_Editor
         public LayerMode CurrentLayer = LayerMode.Midground;
         public Tool CurrentTool = Tool.Pan;
         public Point PanOffset;
+        BackgroundWorker bW;
 
         public frmMain()
         {
             InitializeComponent();
         }
-        private void frmMain_Load(object sender, EventArgs e)
+        private TileGrid[] LoadAsync(ref BackgroundWorker w)
         {
-            ActiveForm.StartPosition = FormStartPosition.CenterScreen;
+            List<Tile>
+                f = new List<Tile>(),
+                m = new List<Tile>(),
+                b = new List<Tile>();
 
-            List<DisplayablePicBox> 
-                f = new List<DisplayablePicBox>(), 
-                m = new List<DisplayablePicBox>(), 
-                b = new List<DisplayablePicBox>();
-            int i = 0;
-            int j = 0;
-            while (i < 100)
+            for (int j = 0; j < 40; j++)
             {
-                while (j < 100)
+                for (int i = 0; i < 40; i++)
                 {
-                    m.Add(new DisplayablePicBox(new PictureBox() { Location = new Point(i * 32, j * 32) }));
-                    f.Add(new DisplayablePicBox(new PictureBox() { Location = new Point(i * 32, j * 32) }));
-                    b.Add(new DisplayablePicBox(new PictureBox() { Location = new Point(i * 32, j * 32) }));
-                    j++;
+                    Tile p = new Tile(new Point(i * 32, j * 32), Properties.Resources.defaultTileImage);
+
+                    m.Add(p);
+                    f.Add(p);
+                    b.Add(p);
                 }
-                i++;
+                w.ReportProgress((j * 2));
             }
-            DefaultLevel = new Level(new Size(3200, 3200), 0, f ,m ,b);
+            TileGrid[] r = { new TileGrid(f), new TileGrid(m), new TileGrid(b) };
+            return r;
+        }
+        private void bW_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
 
+            for (int i = 1; i <= 10; i++)
+            {
+                if ((worker.CancellationPending == true))
+                {
+                    e.Cancel = true;
+                    break;
+                }
+                else
+                {
+                    TileGrid[] a = LoadAsync(ref worker);
+                    DefaultLevel = new Level(new Size(320 * 4, 320 * 4), 0, a[0], a[1], a[2]);
+
+                }
+            }
+        }
+        private void bW_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            levelLoadProgress.Value = levelLoadProgress.Maximum * (e.ProgressPercentage / 100);
+        }
+        private void bW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
             CurrentLevel = DefaultLevel;
-
+            levelLoadProgress.Value = 0;
             CurrentLevel.Display(ref tilePanel, LayerMode.Midground, ShowGridLines, PanOffset);
             tilePanel.Update();
             hScrollBarLevel.Maximum = (CurrentLevel.TileGridDimensions.Width) - tilePanel.Width;
             vScrollBarLevel.Maximum = (CurrentLevel.TileGridDimensions.Height) - tilePanel.Height;
+            hScrollBarLevel.Enabled = true;
+            vScrollBarLevel.Enabled = true;
+        }
+        private void frmMain_Load(object sender, EventArgs e)
+        {
+            ActiveForm.StartPosition = FormStartPosition.CenterScreen;
+
+            bW = new BackgroundWorker();
+            bW.WorkerReportsProgress = true;
+            bW.WorkerSupportsCancellation = true;
+            bW.DoWork += new DoWorkEventHandler(bW_DoWork);
+            bW.ProgressChanged += new ProgressChangedEventHandler(bW_ProgressChanged);
+            bW.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bW_RunWorkerCompleted);
+            bW.RunWorkerAsync();
         }
         private void frmMain_Resize(object sender, EventArgs e)
         {
@@ -79,6 +118,7 @@ namespace Level_Editor
         {
             ScrollEventArgs s = e as ScrollEventArgs;
             PanOffset.Y = s.NewValue;
+            lblScrollDebug.Text = string.Format("X: {0}, Y: {1} ", PanOffset.X, PanOffset.Y);
             CurrentLevel.Display(ref tilePanel, CurrentLayer, ShowGridLines, PanOffset);
             tilePanel.Update();
         }
@@ -87,9 +127,77 @@ namespace Level_Editor
         {
             ScrollEventArgs s = e as ScrollEventArgs;
             PanOffset.X = s.NewValue;
-            lblScrollDebug.Text = string.Format("X: {0}, Y: {1}", PanOffset.X, PanOffset.Y);
+            lblScrollDebug.Text = string.Format("X: {0}, Y: {1} ", PanOffset.X, PanOffset.Y);
             CurrentLevel.Display(ref tilePanel, CurrentLayer, ShowGridLines, PanOffset);
             tilePanel.Update();
+        }
+    }
+    public class Tile
+    {
+        public Point Location;
+        public Image Texture;
+        public bool ShowGridLines;
+        public Tile(Point l, Image i)
+        {
+            Location = l;
+            Texture = i;
+        }
+        public void SetLocation(Point l)
+        {
+            Location = l;
+        }
+        public void SetTexture(Image i)
+        {
+            Texture = i;
+        }
+        public void Draw(Graphics g)
+        {
+            g.DrawImage(Texture, Location);
+            if (ShowGridLines)
+            {
+                GraphicsUnit f = GraphicsUnit.Pixel;
+                PointF[] points = {
+                    new PointF(Texture.GetBounds(ref f).Top, Texture.GetBounds(ref f).Left),
+                    new PointF(Texture.GetBounds(ref f).Top, Texture.GetBounds(ref f).Right),
+                    new PointF(Texture.GetBounds(ref f).Bottom, Texture.GetBounds(ref f).Right),
+                    new PointF(Texture.GetBounds(ref f).Bottom, Texture.GetBounds(ref f).Left)
+                    };
+                g.DrawLines(Pens.Black, points);
+            }
+        }
+    }
+    public class TileGrid
+    {
+        public List<Tile> Tiles;
+        Bitmap ComposedImage;
+        public TileGrid(List<Tile> t)
+        {
+            Tiles = t;
+        }
+        public void Composite()
+        {
+            int Width = 0, Height = 0;
+            foreach (Tile t in Tiles)
+            {
+                if (t.Location.X > Width) Width = t.Location.X;
+                if (t.Location.Y > Height) Height = t.Location.Y;
+            }
+            Bitmap b = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            using (Graphics canvas = Graphics.FromImage(b))
+            {
+                canvas.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+
+                foreach(Tile j in Tiles)
+                {
+                    canvas.DrawImage(j.Texture, j.Location);
+                }
+            }
+            ComposedImage = b;
+        }
+        public void Draw(Graphics g, Point PanOffset)
+        {
+            g.DrawImage(ComposedImage, PanOffset);
         }
     }
     public enum LayerMode
@@ -108,16 +216,16 @@ namespace Level_Editor
         SelectBox,
         SelectIndividual
     }
+
     public class Level
     {
         public List<string> DependantTextures; //load textures from this list of strings
-        public List<DisplayablePicBox> fTileGrid = new List<DisplayablePicBox>();
-        public List<DisplayablePicBox> mTileGrid = new List<DisplayablePicBox>();
-        public List<DisplayablePicBox> bTileGrid = new List<DisplayablePicBox>();
-        public List<DisplayablePicBox> currentTileGrid;
+        public TileGrid fTileGrid;
+        public TileGrid mTileGrid;
+        public TileGrid bTileGrid;
+        public TileGrid currentTileGrid;
         public Size TileGridDimensions;
         public int LevelNumber; //which level is it
-        public Point PanOffset = new Point(0,0);
 
         /// <summary>
         /// Constructor for a level
@@ -128,7 +236,7 @@ namespace Level_Editor
         /// <param name="Midground Tiles"></param>
         /// <param name="Background Tiles"></param>
         public Level(Size gridSize, int place, 
-            List<DisplayablePicBox> f, List<DisplayablePicBox> m, List<DisplayablePicBox> b)
+            TileGrid f, TileGrid m, TileGrid b)
         {
             fTileGrid = f;
             mTileGrid = m;
@@ -136,41 +244,15 @@ namespace Level_Editor
             
             TileGridDimensions = gridSize;
             LevelNumber = place;
-            foreach (DisplayablePicBox d in fTileGrid)
-            {
-                d.Box.
-                    Size = new Size(32, 32);
-                d.Box.
-                    Margin = new Padding(0, 0, 0, 0);
-                d.Box.
-                    BorderStyle = BorderStyle.None;
-            }
-            foreach (DisplayablePicBox d in mTileGrid)
-            {
-                d.Box.
-                    Size = new Size(32, 32);
-                d.Box.
-                    Margin = new Padding(0, 0, 0, 0);
-                d.Box.
-                    BorderStyle = BorderStyle.None;
-            }
-            foreach (DisplayablePicBox d in bTileGrid)
-            {
-                d.Box.
-                    Size = new Size(32, 32);
-                d.Box.
-                    Margin = new Padding(0, 0, 0, 0);
-                d.Box.
-                    BorderStyle = BorderStyle.None;
-            }
+            
             currentTileGrid = mTileGrid;
         }
         public void Display(ref Panel f, LayerMode layer, bool gridlines, Point panOffset)
         {
-            f.Controls.Clear();
+            f.CreateGraphics().Clear(Color.White);
 
             TileGridDimensions.Width += panOffset.X;
-            TileGridDimensions.Height += panOffset.Y;
+            TileGridDimensions.Height -= panOffset.Y;
 
             if (layer == LayerMode.Foreground)
             {
@@ -186,48 +268,19 @@ namespace Level_Editor
             }
             if (layer != LayerMode.Combined)
             {
-                foreach (DisplayablePicBox p in currentTileGrid)
+                foreach (Tile p in currentTileGrid.Tiles)
                 {
-                    if (gridlines)
-                    {
-                        p.Box.BorderStyle = BorderStyle.FixedSingle;
-                    }
-                    else if (!gridlines)
-                    {
-                        p.Box.BorderStyle = BorderStyle.None;
-                    }
-                    if (p.IsVisible(TileGridDimensions))
-                    {
-                        if (panOffset != PanOffset)
-                        {
-                            p.Box.Location = new Point(p.Box.Location.X + panOffset.X - PanOffset.X,
-                                                        p.Box.Location.Y + panOffset.Y - PanOffset.Y);
-                            
-                        }
-
-                        f.Controls.Add(p.Box);
-                    }
+                    p.ShowGridLines = gridlines;
                 }
-                PanOffset = panOffset;
+                currentTileGrid.Composite();
+                currentTileGrid.Draw(f.CreateGraphics(), panOffset);
             }
             else
             {
                 //TODO: Combine all layers
             }
             TileGridDimensions.Width -= panOffset.X;
-            TileGridDimensions.Height -= panOffset.Y;
-        }
-    }
-    public class DisplayablePicBox
-    {
-        public PictureBox Box { get; set; }
-        public DisplayablePicBox(PictureBox box)
-        {
-            Box = box;
-        }
-        public bool IsVisible(Size TileGridSize)
-        {
-            return (TileGridSize.Width > Box.Right || TileGridSize.Height > Box.Bottom);
+            TileGridDimensions.Height += panOffset.Y;
         }
     }
 }
