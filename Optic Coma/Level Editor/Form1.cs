@@ -7,12 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace Level_Editor
 {
     public partial class frmMain : Form
     {
-        public Dictionary<string, Image> LoadedImages;
         public Level DefaultLevel;
         public bool ShowGridLines = true;
         public Level CurrentLevel;
@@ -20,6 +21,10 @@ namespace Level_Editor
         public Tool CurrentTool = Tool.Pan;
         public Point PanOffset;
         BackgroundWorker bW;
+        public List<Image> ImageResources = new List<Image>();
+        public List<string> ImageResourcesPaths = new List<string>();
+        public XmlSerializer xml;
+        public BufferedPanel TilePanel = new BufferedPanel();
 
         public frmMain()
         {
@@ -74,16 +79,19 @@ namespace Level_Editor
         {
             CurrentLevel = DefaultLevel;
             levelLoadProgress.Value = 0;
-            CurrentLevel.Display(ref tilePanel, LayerMode.Midground, ShowGridLines, PanOffset);
-            tilePanel.Update();
-            hScrollBarLevel.Maximum = (CurrentLevel.TileGridDimensions.Width) - tilePanel.Width;
-            vScrollBarLevel.Maximum = (CurrentLevel.TileGridDimensions.Height) - tilePanel.Height;
+            CurrentLevel.Display(ref TilePanel, LayerMode.Midground, ShowGridLines, PanOffset);
+            TilePanel.Update();
+            hScrollBarLevel.Maximum = (CurrentLevel.TileGridDimensions.Width) - TilePanel.Width;
+            vScrollBarLevel.Maximum = (CurrentLevel.TileGridDimensions.Height) - TilePanel.Height;
             hScrollBarLevel.Enabled = true;
             vScrollBarLevel.Enabled = true;
         }
         private void frmMain_Load(object sender, EventArgs e)
         {
             ActiveForm.StartPosition = FormStartPosition.CenterScreen;
+            TilePanel.Size = tilePanel.Size; TilePanel.Location = tilePanel.Location; TilePanel.Anchor = AnchorStyles.Right;
+            newLevel.Controls.Add(TilePanel);
+            newLevel.Controls.Remove(tilePanel);
 
             bW = new BackgroundWorker();
             bW.WorkerReportsProgress = true;
@@ -93,25 +101,30 @@ namespace Level_Editor
             bW.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bW_RunWorkerCompleted);
             bW.RunWorkerAsync();
         }
-        private void frmMain_Resize(object sender, EventArgs e)
-        {
-
-        }
 
         private void showGridlinesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (ShowGridLines)
             {
                 ShowGridLines = false;
-                CurrentLevel.Display(ref tilePanel, CurrentLayer, ShowGridLines, PanOffset);
-                tilePanel.Update();
+                CurrentLevel.Display(ref TilePanel, CurrentLayer, ShowGridLines, PanOffset);
+                TilePanel.Update();
             }
             else
             {
                 ShowGridLines = true;
-                CurrentLevel.Display(ref tilePanel, CurrentLayer, ShowGridLines, PanOffset);
-                tilePanel.Update();
+                CurrentLevel.Display(ref TilePanel, CurrentLayer, ShowGridLines, PanOffset);
+                TilePanel.Update();
             }
+        }
+
+        private void UpdateImageResourceToolBar()
+        {
+            foreach(Image i in ImageResources)
+            {
+                panelResources.Controls.Add(new PictureBox() { Size = new Size(32, 32), Image = i, SizeMode = PictureBoxSizeMode.StretchImage });
+            }
+            panelResources.Update();
         }
 
         private void vScrollBarLevel_Scroll(object sender, ScrollEventArgs e)
@@ -119,8 +132,8 @@ namespace Level_Editor
             ScrollEventArgs s = e as ScrollEventArgs;
             PanOffset.Y = s.NewValue;
             lblScrollDebug.Text = string.Format("X: {0}, Y: {1} ", PanOffset.X, PanOffset.Y);
-            CurrentLevel.Display(ref tilePanel, CurrentLayer, ShowGridLines, PanOffset);
-            tilePanel.Update();
+            CurrentLevel.Display(ref TilePanel, CurrentLayer, ShowGridLines, PanOffset);
+            TilePanel.Update();
         }
 
         private void hScrollBarLevel_Scroll(object sender, ScrollEventArgs e)
@@ -128,8 +141,43 @@ namespace Level_Editor
             ScrollEventArgs s = e as ScrollEventArgs;
             PanOffset.X = s.NewValue;
             lblScrollDebug.Text = string.Format("X: {0}, Y: {1} ", PanOffset.X, PanOffset.Y);
-            CurrentLevel.Display(ref tilePanel, CurrentLayer, ShowGridLines, PanOffset);
-            tilePanel.Update();
+            CurrentLevel.Display(ref TilePanel, CurrentLayer, ShowGridLines, PanOffset);
+            TilePanel.Update();
+        }
+
+        private void textureToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openFileDialogImages.ShowDialog();
+        }
+
+        private void openFileDialogImages_FileOk(object sender, CancelEventArgs e)
+        {
+            ImageResources.Add(Image.FromFile(openFileDialogImages.FileName));
+            UpdateImageResourceToolBar();
+        }
+
+        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+
+        }
+
+        public void Save(string path)
+        {
+            using (var f = new FileStream(path, FileMode.Create))
+            {
+                xml = new XmlSerializer(typeof(string));
+                xml.Serialize(f, ImageResourcesPaths);
+                xml = new XmlSerializer(typeof(Image));
+                xml.Serialize(f, CurrentLevel.fTileGrid.GetComposedImage());
+                xml.Serialize(f, CurrentLevel.mTileGrid.GetComposedImage());
+                xml.Serialize(f, CurrentLevel.bTileGrid.GetComposedImage());
+                //TODO: Enemy spawners, npc, etc
+            }
+        }
+
+        private void openFileDialogLevels_FileOk(object sender, CancelEventArgs e)
+        {
+
         }
     }
     public class Tile
@@ -195,6 +243,11 @@ namespace Level_Editor
             }
             ComposedImage = b;
         }
+        public Image GetComposedImage()
+        {
+            Composite();
+            return ComposedImage;
+        }
         public void Draw(Graphics g, Point PanOffset)
         {
             g.DrawImage(ComposedImage, PanOffset);
@@ -247,7 +300,7 @@ namespace Level_Editor
             
             currentTileGrid = mTileGrid;
         }
-        public void Display(ref Panel f, LayerMode layer, bool gridlines, Point panOffset)
+        public void Display(ref BufferedPanel f, LayerMode layer, bool gridlines, Point panOffset)
         {
             f.CreateGraphics().Clear(Color.White);
 
@@ -281,6 +334,13 @@ namespace Level_Editor
             }
             TileGridDimensions.Width -= panOffset.X;
             TileGridDimensions.Height += panOffset.Y;
+        }
+    }
+    public class BufferedPanel : Panel
+    {
+        public BufferedPanel()
+        {
+            DoubleBuffered = true;
         }
     }
 }

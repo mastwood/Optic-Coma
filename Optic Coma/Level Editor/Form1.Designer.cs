@@ -60,22 +60,23 @@
             this.toolbarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tilePainterToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enemyTypesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.openFileDialogImages = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.newLevel = new System.Windows.Forms.TabPage();
             this.tilePanel = new System.Windows.Forms.Panel();
-            this.btnLights = new System.Windows.Forms.Button();
-            this.btnEnemies = new System.Windows.Forms.Button();
-            this.btnTiles = new System.Windows.Forms.Button();
             this.levelTabControl = new System.Windows.Forms.TabControl();
             this.grpTools = new System.Windows.Forms.GroupBox();
             this.vScrollBarLevel = new System.Windows.Forms.VScrollBar();
             this.hScrollBarLevel = new System.Windows.Forms.HScrollBar();
             this.lblScrollDebug = new System.Windows.Forms.Label();
             this.levelLoadProgress = new System.Windows.Forms.ProgressBar();
+            this.grpResources = new System.Windows.Forms.GroupBox();
+            this.panelResources = new System.Windows.Forms.FlowLayoutPanel();
+            this.openFileDialogLevels = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip.SuspendLayout();
             this.newLevel.SuspendLayout();
             this.levelTabControl.SuspendLayout();
+            this.grpResources.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -126,6 +127,7 @@
             // 
             this.textureToolStripMenuItem.Name = "textureToolStripMenuItem";
             resources.ApplyResources(this.textureToolStripMenuItem, "textureToolStripMenuItem");
+            this.textureToolStripMenuItem.Click += new System.EventHandler(this.textureToolStripMenuItem_Click);
             // 
             // soundToolStripMenuItem
             // 
@@ -271,17 +273,15 @@
             this.enemyTypesToolStripMenuItem.Name = "enemyTypesToolStripMenuItem";
             resources.ApplyResources(this.enemyTypesToolStripMenuItem, "enemyTypesToolStripMenuItem");
             // 
-            // openFileDialog
+            // openFileDialogImages
             // 
-            this.openFileDialog.FileName = "openFileDialog1";
+            this.openFileDialogImages.FileName = "openFileDialog1";
+            this.openFileDialogImages.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialogImages_FileOk);
             // 
             // newLevel
             // 
             this.newLevel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.newLevel.Controls.Add(this.tilePanel);
-            this.newLevel.Controls.Add(this.btnLights);
-            this.newLevel.Controls.Add(this.btnEnemies);
-            this.newLevel.Controls.Add(this.btnTiles);
             resources.ApplyResources(this.newLevel, "newLevel");
             this.newLevel.Name = "newLevel";
             this.newLevel.UseVisualStyleBackColor = true;
@@ -290,24 +290,6 @@
             // 
             resources.ApplyResources(this.tilePanel, "tilePanel");
             this.tilePanel.Name = "tilePanel";
-            // 
-            // btnLights
-            // 
-            resources.ApplyResources(this.btnLights, "btnLights");
-            this.btnLights.Name = "btnLights";
-            this.btnLights.UseVisualStyleBackColor = true;
-            // 
-            // btnEnemies
-            // 
-            resources.ApplyResources(this.btnEnemies, "btnEnemies");
-            this.btnEnemies.Name = "btnEnemies";
-            this.btnEnemies.UseVisualStyleBackColor = true;
-            // 
-            // btnTiles
-            // 
-            resources.ApplyResources(this.btnTiles, "btnTiles");
-            this.btnTiles.Name = "btnTiles";
-            this.btnTiles.UseVisualStyleBackColor = true;
             // 
             // levelTabControl
             // 
@@ -346,10 +328,28 @@
             resources.ApplyResources(this.levelLoadProgress, "levelLoadProgress");
             this.levelLoadProgress.Name = "levelLoadProgress";
             // 
+            // grpResources
+            // 
+            this.grpResources.Controls.Add(this.panelResources);
+            resources.ApplyResources(this.grpResources, "grpResources");
+            this.grpResources.Name = "grpResources";
+            this.grpResources.TabStop = false;
+            // 
+            // panelResources
+            // 
+            resources.ApplyResources(this.panelResources, "panelResources");
+            this.panelResources.Name = "panelResources";
+            // 
+            // openFileDialogLevels
+            // 
+            this.openFileDialogLevels.FileName = "openFileDialog1";
+            this.openFileDialogLevels.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialogLevels_FileOk);
+            // 
             // frmMain
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.grpResources);
             this.Controls.Add(this.levelLoadProgress);
             this.Controls.Add(this.lblScrollDebug);
             this.Controls.Add(this.hScrollBarLevel);
@@ -359,12 +359,13 @@
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
             this.Name = "frmMain";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
             this.Load += new System.EventHandler(this.frmMain_Load);
-            this.Resize += new System.EventHandler(this.frmMain_Resize);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.newLevel.ResumeLayout(false);
             this.levelTabControl.ResumeLayout(false);
+            this.grpResources.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -403,12 +404,9 @@
         private System.Windows.Forms.ToolStripMenuItem toolbarToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tilePainterToolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enemyTypesToolStripMenuItem;
-        private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.OpenFileDialog openFileDialogImages;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.TabPage newLevel;
-        private System.Windows.Forms.Button btnLights;
-        private System.Windows.Forms.Button btnEnemies;
-        private System.Windows.Forms.Button btnTiles;
         private System.Windows.Forms.TabControl levelTabControl;
         private System.Windows.Forms.GroupBox grpTools;
         private System.Windows.Forms.VScrollBar vScrollBarLevel;
@@ -416,6 +414,9 @@
         public System.Windows.Forms.Panel tilePanel;
         private System.Windows.Forms.Label lblScrollDebug;
         private System.Windows.Forms.ProgressBar levelLoadProgress;
+        private System.Windows.Forms.GroupBox grpResources;
+        private System.Windows.Forms.FlowLayoutPanel panelResources;
+        private System.Windows.Forms.OpenFileDialog openFileDialogLevels;
     }
 }
 
