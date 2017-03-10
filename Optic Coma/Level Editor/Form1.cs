@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Level_Editor
 {
@@ -25,7 +26,7 @@ namespace Level_Editor
         public List<string> ImageResourcesPaths = new List<string>();
         public XmlSerializer xml;
         public BufferedPanel TilePanel = new BufferedPanel();
-
+        public Image ImageToPaint = Properties.Resources.defaultTileImage;
         public frmMain()
         {
             InitializeComponent();
@@ -203,6 +204,66 @@ namespace Level_Editor
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void rdoToolPainter_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdoToolPainter.Checked) CurrentTool = Tool.Draw;
+        }
+
+        private void panelResources_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (panelResources.Controls.Count > 0)
+            {
+                foreach (PictureBox c in panelResources.Controls)
+                {
+                    if (c.Bounds.Contains(e.Location))
+                    {
+                        ImageToPaint = c.Image;
+                    }
+                }
+            }
+        }
+        public struct IconInfo
+        {
+            public bool fIcon;
+            public int xHotspot;
+            public int yHotspot;
+            public IntPtr hbmMask;
+            public IntPtr hbmColor;
+        }
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetIconInfo(IntPtr hIcon, ref IconInfo pIconInfo);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr CreateIconIndirect(ref IconInfo icon);
+
+        public static Cursor CreateCursor(Bitmap bmp, int xHotSpot, int yHotSpot)
+        {
+            IntPtr ptr = bmp.GetHicon();
+            IconInfo tmp = new IconInfo();
+            GetIconInfo(ptr, ref tmp);
+            tmp.xHotspot = xHotSpot;
+            tmp.yHotspot = yHotSpot;
+            tmp.fIcon = false;
+            ptr = CreateIconIndirect(ref tmp);
+            return new Cursor(ptr);
+        }
+        private void tilePanel_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (CurrentTool == Tool.Draw)
+            {
+                tilePanel.Cursor = CreateCursor((Bitmap)ImageToPaint, 0, 0);
+                Rectangle b = new Rectangle
+                (
+                    e.Location,
+                    ImageToPaint.Size
+                );
+                tilePanel.Cursor.Draw(CreateGraphics(), b);
+                
+            }
         }
     }
     public class Tile

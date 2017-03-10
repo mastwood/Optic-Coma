@@ -33,6 +33,7 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openRecentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,10 +74,11 @@
             this.grpResources = new System.Windows.Forms.GroupBox();
             this.panelResources = new System.Windows.Forms.FlowLayoutPanel();
             this.openFileDialogLevels = new System.Windows.Forms.OpenFileDialog();
-            this.openRecentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rdoToolPainter = new System.Windows.Forms.RadioButton();
             this.menuStrip.SuspendLayout();
             this.newLevel.SuspendLayout();
             this.levelTabControl.SuspendLayout();
+            this.grpTools.SuspendLayout();
             this.grpResources.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -112,6 +114,11 @@
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             resources.ApplyResources(this.openToolStripMenuItem, "openToolStripMenuItem");
+            // 
+            // openRecentToolStripMenuItem
+            // 
+            this.openRecentToolStripMenuItem.Name = "openRecentToolStripMenuItem";
+            resources.ApplyResources(this.openRecentToolStripMenuItem, "openRecentToolStripMenuItem");
             // 
             // saveToolStripMenuItem
             // 
@@ -308,6 +315,7 @@
             // 
             resources.ApplyResources(this.tilePanel, "tilePanel");
             this.tilePanel.Name = "tilePanel";
+            this.tilePanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.tilePanel_MouseMove);
             // 
             // levelTabControl
             // 
@@ -319,6 +327,7 @@
             // 
             // grpTools
             // 
+            this.grpTools.Controls.Add(this.rdoToolPainter);
             this.grpTools.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             resources.ApplyResources(this.grpTools, "grpTools");
             this.grpTools.Name = "grpTools";
@@ -345,16 +354,20 @@
             // 
             resources.ApplyResources(this.panelResources, "panelResources");
             this.panelResources.Name = "panelResources";
+            this.panelResources.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelResources_MouseClick);
             // 
             // openFileDialogLevels
             // 
             this.openFileDialogLevels.FileName = "openFileDialog1";
             this.openFileDialogLevels.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialogLevels_FileOk);
             // 
-            // openRecentToolStripMenuItem
+            // rdoToolPainter
             // 
-            this.openRecentToolStripMenuItem.Name = "openRecentToolStripMenuItem";
-            resources.ApplyResources(this.openRecentToolStripMenuItem, "openRecentToolStripMenuItem");
+            resources.ApplyResources(this.rdoToolPainter, "rdoToolPainter");
+            this.rdoToolPainter.Name = "rdoToolPainter";
+            this.rdoToolPainter.TabStop = true;
+            this.rdoToolPainter.UseVisualStyleBackColor = true;
+            this.rdoToolPainter.CheckedChanged += new System.EventHandler(this.rdoToolPainter_CheckedChanged);
             // 
             // frmMain
             // 
@@ -374,6 +387,8 @@
             this.menuStrip.PerformLayout();
             this.newLevel.ResumeLayout(false);
             this.levelTabControl.ResumeLayout(false);
+            this.grpTools.ResumeLayout(false);
+            this.grpTools.PerformLayout();
             this.grpResources.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -427,6 +442,7 @@
         private System.Windows.Forms.VScrollBar vScrollBarLevel;
         private System.Windows.Forms.HScrollBar hScrollBarLevel;
         private System.Windows.Forms.ToolStripMenuItem openRecentToolStripMenuItem;
+        private System.Windows.Forms.RadioButton rdoToolPainter;
     }
 }
 

@@ -121,192 +121,15 @@
     <value>17, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="newToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>269, 38</value>
-  </data>
-  <data name="newToolStripMenuItem.Text" xml:space="preserve">
-    <value>New</value>
-  </data>
-  <data name="openToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>269, 38</value>
-  </data>
-  <data name="openToolStripMenuItem.Text" xml:space="preserve">
-    <value>Open</value>
-  </data>
-  <data name="openRecentToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>269, 38</value>
-  </data>
-  <data name="openRecentToolStripMenuItem.Text" xml:space="preserve">
-    <value>Open Recent</value>
-  </data>
-  <data name="saveToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>269, 38</value>
-  </data>
-  <data name="saveToolStripMenuItem.Text" xml:space="preserve">
-    <value>Save</value>
-  </data>
-  <data name="textureToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>193, 38</value>
-  </data>
-  <data name="textureToolStripMenuItem.Text" xml:space="preserve">
-    <value>Texture</value>
-  </data>
-  <data name="soundToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>193, 38</value>
-  </data>
-  <data name="soundToolStripMenuItem.Text" xml:space="preserve">
-    <value>Sound</value>
-  </data>
-  <data name="addToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>269, 38</value>
-  </data>
-  <data name="addToolStripMenuItem.Text" xml:space="preserve">
-    <value>Add</value>
-  </data>
-  <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>266, 6</value>
-  </data>
-  <data name="exitToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>269, 38</value>
-  </data>
-  <data name="exitToolStripMenuItem.Text" xml:space="preserve">
-    <value>Exit</value>
-  </data>
-  <data name="fileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 38</value>
-  </data>
-  <data name="fileToolStripMenuItem.Text" xml:space="preserve">
-    <value>File</value>
-  </data>
-  <data name="undoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>213, 38</value>
-  </data>
-  <data name="undoToolStripMenuItem.Text" xml:space="preserve">
-    <value>Undo</value>
-  </data>
-  <data name="redoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>213, 38</value>
-  </data>
-  <data name="redoToolStripMenuItem.Text" xml:space="preserve">
-    <value>Redo</value>
-  </data>
-  <data name="toolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>210, 6</value>
-  </data>
-  <data name="copyToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>213, 38</value>
-  </data>
-  <data name="copyToolStripMenuItem.Text" xml:space="preserve">
-    <value>Copy</value>
-  </data>
-  <data name="pasteToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>213, 38</value>
-  </data>
-  <data name="pasteToolStripMenuItem.Text" xml:space="preserve">
-    <value>Paste</value>
-  </data>
-  <data name="cutToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>213, 38</value>
-  </data>
-  <data name="cutToolStripMenuItem.Text" xml:space="preserve">
-    <value>Cut</value>
-  </data>
-  <data name="deleteToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>213, 38</value>
-  </data>
-  <data name="deleteToolStripMenuItem.Text" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="toolStripSeparator3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>210, 6</value>
-  </data>
-  <data name="foregroundToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>242, 38</value>
-  </data>
-  <data name="foregroundToolStripMenuItem.Text" xml:space="preserve">
-    <value>Foreground</value>
-  </data>
-  <data name="midgroundToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>242, 38</value>
-  </data>
-  <data name="midgroundToolStripMenuItem.Text" xml:space="preserve">
-    <value>Midground</value>
-  </data>
-  <data name="backgroundToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>242, 38</value>
-  </data>
-  <data name="backgroundToolStripMenuItem.Text" xml:space="preserve">
-    <value>Background</value>
-  </data>
-  <data name="entitiesToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>242, 38</value>
-  </data>
-  <data name="entitiesToolStripMenuItem.Text" xml:space="preserve">
-    <value>Entities</value>
-  </data>
-  <data name="objectsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>242, 38</value>
-  </data>
-  <data name="objectsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Objects</value>
-  </data>
-  <data name="spawnersToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>242, 38</value>
-  </data>
-  <data name="spawnersToolStripMenuItem.Text" xml:space="preserve">
-    <value>Spawners</value>
-  </data>
-  <data name="selectAllToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>213, 38</value>
-  </data>
-  <data name="selectAllToolStripMenuItem.Text" xml:space="preserve">
-    <value>Select All</value>
-  </data>
-  <data name="editToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>67, 38</value>
-  </data>
-  <data name="editToolStripMenuItem.Text" xml:space="preserve">
-    <value>Edit</value>
-  </data>
-  <data name="showGridlinesToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>273, 38</value>
-  </data>
-  <data name="showGridlinesToolStripMenuItem.Text" xml:space="preserve">
-    <value>Show Gridlines</value>
-  </data>
-  <data name="tilePainterToolsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>295, 38</value>
-  </data>
-  <data name="tilePainterToolsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Tile Painter Tools</value>
-  </data>
-  <data name="enemyTypesToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>295, 38</value>
-  </data>
-  <data name="enemyTypesToolStripMenuItem.Text" xml:space="preserve">
-    <value>Enemy Types</value>
-  </data>
-  <data name="toolbarToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>273, 38</value>
-  </data>
-  <data name="toolbarToolStripMenuItem.Text" xml:space="preserve">
-    <value>Toolbar</value>
-  </data>
-  <data name="viewToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>78, 38</value>
-  </data>
-  <data name="viewToolStripMenuItem.Text" xml:space="preserve">
-    <value>View</value>
-  </data>
   <data name="menuStrip.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="menuStrip.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>12, 4, 0, 4</value>
+    <value>9, 3, 0, 3</value>
   </data>
   <data name="menuStrip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>2548, 46</value>
+    <value>1434, 35</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="menuStrip.TabIndex" type="System.Int32, mscorlib">
@@ -327,6 +150,183 @@
   <data name="&gt;&gt;menuStrip.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
+  <data name="fileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>50, 29</value>
+  </data>
+  <data name="fileToolStripMenuItem.Text" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="newToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>198, 30</value>
+  </data>
+  <data name="newToolStripMenuItem.Text" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="openToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>198, 30</value>
+  </data>
+  <data name="openToolStripMenuItem.Text" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="openRecentToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>198, 30</value>
+  </data>
+  <data name="openRecentToolStripMenuItem.Text" xml:space="preserve">
+    <value>Open Recent</value>
+  </data>
+  <data name="saveToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>198, 30</value>
+  </data>
+  <data name="saveToolStripMenuItem.Text" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="addToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>198, 30</value>
+  </data>
+  <data name="addToolStripMenuItem.Text" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="textureToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>152, 30</value>
+  </data>
+  <data name="textureToolStripMenuItem.Text" xml:space="preserve">
+    <value>Texture</value>
+  </data>
+  <data name="soundToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>152, 30</value>
+  </data>
+  <data name="soundToolStripMenuItem.Text" xml:space="preserve">
+    <value>Sound</value>
+  </data>
+  <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>195, 6</value>
+  </data>
+  <data name="exitToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>198, 30</value>
+  </data>
+  <data name="exitToolStripMenuItem.Text" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="editToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>54, 29</value>
+  </data>
+  <data name="editToolStripMenuItem.Text" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="undoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>168, 30</value>
+  </data>
+  <data name="undoToolStripMenuItem.Text" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="redoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>168, 30</value>
+  </data>
+  <data name="redoToolStripMenuItem.Text" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="toolStripSeparator2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>165, 6</value>
+  </data>
+  <data name="copyToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>168, 30</value>
+  </data>
+  <data name="copyToolStripMenuItem.Text" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="pasteToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>168, 30</value>
+  </data>
+  <data name="pasteToolStripMenuItem.Text" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="cutToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>168, 30</value>
+  </data>
+  <data name="cutToolStripMenuItem.Text" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="deleteToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>168, 30</value>
+  </data>
+  <data name="deleteToolStripMenuItem.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="toolStripSeparator3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>165, 6</value>
+  </data>
+  <data name="selectAllToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>168, 30</value>
+  </data>
+  <data name="selectAllToolStripMenuItem.Text" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="foregroundToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>192, 30</value>
+  </data>
+  <data name="foregroundToolStripMenuItem.Text" xml:space="preserve">
+    <value>Foreground</value>
+  </data>
+  <data name="midgroundToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>192, 30</value>
+  </data>
+  <data name="midgroundToolStripMenuItem.Text" xml:space="preserve">
+    <value>Midground</value>
+  </data>
+  <data name="backgroundToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>192, 30</value>
+  </data>
+  <data name="backgroundToolStripMenuItem.Text" xml:space="preserve">
+    <value>Background</value>
+  </data>
+  <data name="entitiesToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>192, 30</value>
+  </data>
+  <data name="entitiesToolStripMenuItem.Text" xml:space="preserve">
+    <value>Entities</value>
+  </data>
+  <data name="objectsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>192, 30</value>
+  </data>
+  <data name="objectsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Objects</value>
+  </data>
+  <data name="spawnersToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>192, 30</value>
+  </data>
+  <data name="spawnersToolStripMenuItem.Text" xml:space="preserve">
+    <value>Spawners</value>
+  </data>
+  <data name="viewToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>61, 29</value>
+  </data>
+  <data name="viewToolStripMenuItem.Text" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="showGridlinesToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>214, 30</value>
+  </data>
+  <data name="showGridlinesToolStripMenuItem.Text" xml:space="preserve">
+    <value>Show Gridlines</value>
+  </data>
+  <data name="toolbarToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>214, 30</value>
+  </data>
+  <data name="toolbarToolStripMenuItem.Text" xml:space="preserve">
+    <value>Toolbar</value>
+  </data>
+  <data name="tilePainterToolsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>227, 30</value>
+  </data>
+  <data name="tilePainterToolsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Tile Painter Tools</value>
+  </data>
+  <data name="enemyTypesToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>227, 30</value>
+  </data>
+  <data name="enemyTypesToolStripMenuItem.Text" xml:space="preserve">
+    <value>Enemy Types</value>
+  </data>
   <metadata name="openFileDialogImages.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>125, 17</value>
   </metadata>
@@ -340,10 +340,10 @@
     <value>False</value>
   </data>
   <data name="hScrollBarLevel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>42, 1098</value>
+    <value>32, 878</value>
   </data>
   <data name="hScrollBarLevel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1836, 31</value>
+    <value>1377, 31</value>
   </data>
   <data name="hScrollBarLevel.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -367,10 +367,10 @@
     <value>False</value>
   </data>
   <data name="vScrollBarLevel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1913, 55</value>
+    <value>1435, 44</value>
   </data>
   <data name="vScrollBarLevel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>31, 993</value>
+    <value>31, 794</value>
   </data>
   <data name="vScrollBarLevel.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -394,7 +394,7 @@
     <value>0, 0, 0, 0</value>
   </data>
   <data name="tilePanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1897, 1080</value>
+    <value>1423, 864</value>
   </data>
   <data name="tilePanel.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -412,16 +412,16 @@
     <value>2</value>
   </data>
   <data name="newLevel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 39</value>
+    <value>4, 29</value>
   </data>
   <data name="newLevel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 6, 6, 6</value>
+    <value>4, 5, 4, 5</value>
   </data>
   <data name="newLevel.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 6, 6, 6</value>
+    <value>4, 5, 4, 5</value>
   </data>
   <data name="newLevel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1966, 1153</value>
+    <value>1478, 927</value>
   </data>
   <data name="newLevel.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -442,13 +442,13 @@
     <value>0</value>
   </data>
   <data name="levelTabControl.Location" type="System.Drawing.Point, System.Drawing">
-    <value>530, 54</value>
+    <value>398, 43</value>
   </data>
   <data name="levelTabControl.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 6, 6, 6</value>
+    <value>4, 5, 4, 5</value>
   </data>
   <data name="levelTabControl.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1982, 1200</value>
+    <value>1486, 960</value>
   </data>
   <data name="levelTabControl.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -465,17 +465,29 @@
   <data name="&gt;&gt;levelTabControl.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
+  <data name="&gt;&gt;rdoToolPainter.Name" xml:space="preserve">
+    <value>rdoToolPainter</value>
+  </data>
+  <data name="&gt;&gt;rdoToolPainter.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rdoToolPainter.Parent" xml:space="preserve">
+    <value>grpTools</value>
+  </data>
+  <data name="&gt;&gt;rdoToolPainter.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="grpTools.Location" type="System.Drawing.Point, System.Drawing">
-    <value>26, 54</value>
+    <value>20, 43</value>
   </data>
   <data name="grpTools.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 6, 6, 6</value>
+    <value>4, 5, 4, 5</value>
   </data>
   <data name="grpTools.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 6, 6, 6</value>
+    <value>4, 5, 4, 5</value>
   </data>
   <data name="grpTools.Size" type="System.Drawing.Size, System.Drawing">
-    <value>468, 404</value>
+    <value>351, 323</value>
   </data>
   <data name="grpTools.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -499,13 +511,13 @@
     <value>True</value>
   </data>
   <data name="lblScrollDebug.Location" type="System.Drawing.Point, System.Drawing">
-    <value>2602, 23</value>
+    <value>1952, 18</value>
   </data>
   <data name="lblScrollDebug.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 0, 6, 0</value>
+    <value>4, 0, 4, 0</value>
   </data>
   <data name="lblScrollDebug.Size" type="System.Drawing.Size, System.Drawing">
-    <value>173, 25</value>
+    <value>127, 20</value>
   </data>
   <data name="lblScrollDebug.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -526,13 +538,13 @@
     <value>2</value>
   </data>
   <data name="levelLoadProgress.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 1421</value>
+    <value>18, 1137</value>
   </data>
   <data name="levelLoadProgress.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 6, 6, 6</value>
+    <value>4, 5, 4, 5</value>
   </data>
   <data name="levelLoadProgress.Size" type="System.Drawing.Size, System.Drawing">
-    <value>470, 44</value>
+    <value>352, 35</value>
   </data>
   <data name="levelLoadProgress.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -549,18 +561,6 @@
   <data name="&gt;&gt;levelLoadProgress.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="panelResources.Location" type="System.Drawing.Point, System.Drawing">
-    <value>14, 38</value>
-  </data>
-  <data name="panelResources.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 6, 6, 6</value>
-  </data>
-  <data name="panelResources.Size" type="System.Drawing.Size, System.Drawing">
-    <value>442, 861</value>
-  </data>
-  <data name="panelResources.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
   <data name="&gt;&gt;panelResources.Name" xml:space="preserve">
     <value>panelResources</value>
   </data>
@@ -574,16 +574,16 @@
     <value>0</value>
   </data>
   <data name="grpResources.Location" type="System.Drawing.Point, System.Drawing">
-    <value>26, 469</value>
+    <value>20, 375</value>
   </data>
   <data name="grpResources.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 6, 6, 6</value>
+    <value>4, 5, 4, 5</value>
   </data>
   <data name="grpResources.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 6, 6, 6</value>
+    <value>4, 5, 4, 5</value>
   </data>
   <data name="grpResources.Size" type="System.Drawing.Size, System.Drawing">
-    <value>468, 851</value>
+    <value>351, 681</value>
   </data>
   <data name="grpResources.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -603,9 +603,60 @@
   <data name="&gt;&gt;grpResources.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="panelResources.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 30</value>
+  </data>
+  <data name="panelResources.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>4, 5, 4, 5</value>
+  </data>
+  <data name="panelResources.Size" type="System.Drawing.Size, System.Drawing">
+    <value>332, 689</value>
+  </data>
+  <data name="panelResources.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;panelResources.Name" xml:space="preserve">
+    <value>panelResources</value>
+  </data>
+  <data name="&gt;&gt;panelResources.Type" xml:space="preserve">
+    <value>System.Windows.Forms.FlowLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;panelResources.Parent" xml:space="preserve">
+    <value>grpResources</value>
+  </data>
+  <data name="&gt;&gt;panelResources.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <metadata name="openFileDialogLevels.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>387, 17</value>
   </metadata>
+  <data name="rdoToolPainter.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="rdoToolPainter.Location" type="System.Drawing.Point, System.Drawing">
+    <value>26, 29</value>
+  </data>
+  <data name="rdoToolPainter.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 24</value>
+  </data>
+  <data name="rdoToolPainter.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="rdoToolPainter.Text" xml:space="preserve">
+    <value>Painter</value>
+  </data>
+  <data name="&gt;&gt;rdoToolPainter.Name" xml:space="preserve">
+    <value>rdoToolPainter</value>
+  </data>
+  <data name="&gt;&gt;rdoToolPainter.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rdoToolPainter.Parent" xml:space="preserve">
+    <value>grpTools</value>
+  </data>
+  <data name="&gt;&gt;rdoToolPainter.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -613,10 +664,10 @@
     <value>93</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>12, 25</value>
+    <value>9, 20</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>2548, 1383</value>
+    <value>1434, 830</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -6791,7 +6842,7 @@
 </value>
   </data>
   <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 6, 6, 6</value>
+    <value>4, 5, 4, 5</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Optic Coma Level Editor</value>
@@ -6812,6 +6863,12 @@
     <value>openToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;openToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;openRecentToolStripMenuItem.Name" xml:space="preserve">
+    <value>openRecentToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;openRecentToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;saveToolStripMenuItem.Name" xml:space="preserve">
@@ -6993,12 +7050,6 @@
   </data>
   <data name="&gt;&gt;openFileDialogLevels.Type" xml:space="preserve">
     <value>System.Windows.Forms.OpenFileDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;openRecentToolStripMenuItem.Name" xml:space="preserve">
-    <value>openRecentToolStripMenuItem</value>
-  </data>
-  <data name="&gt;&gt;openRecentToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>frmMain</value>
