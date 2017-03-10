@@ -315,7 +315,6 @@
             // 
             resources.ApplyResources(this.tilePanel, "tilePanel");
             this.tilePanel.Name = "tilePanel";
-            this.tilePanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.tilePanel_MouseMove);
             // 
             // levelTabControl
             // 

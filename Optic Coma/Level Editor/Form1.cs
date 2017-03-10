@@ -27,6 +27,8 @@ namespace Level_Editor
         public XmlSerializer xml;
         public BufferedPanel TilePanel = new BufferedPanel();
         public Image ImageToPaint = Properties.Resources.defaultTileImage;
+        public Cursor CurrentGridCursor;
+
         public frmMain()
         {
             InitializeComponent();
@@ -103,8 +105,10 @@ namespace Level_Editor
         {
             ActiveForm.StartPosition = FormStartPosition.CenterScreen;
             TilePanel.Size = tilePanel.Size; TilePanel.Location = tilePanel.Location; TilePanel.Anchor = AnchorStyles.Right;
+            TilePanel.MouseMove += new MouseEventHandler(TilePanel_MouseMove);
             newLevel.Controls.Add(TilePanel);
             newLevel.Controls.Remove(tilePanel);
+            CurrentGridCursor = CreateCursor((Bitmap)ImageToPaint, 0, 0);
 
             bW = new BackgroundWorker();
             bW.WorkerReportsProgress = true;
@@ -135,7 +139,15 @@ namespace Level_Editor
         {
             foreach(Image i in ImageResources)
             {
-                panelResources.Controls.Add(new PictureBox() { Size = new Size(32, 32), Image = i, SizeMode = PictureBoxSizeMode.StretchImage });
+                panelResources.Controls.Add
+                (
+                    new PictureBox()
+                    {
+                        Size = new Size(32, 32),
+                        Image = i,
+                        SizeMode = PictureBoxSizeMode.StretchImage
+                    }
+                );
             }
             panelResources.Update();
         }
@@ -217,7 +229,7 @@ namespace Level_Editor
             {
                 foreach (PictureBox c in panelResources.Controls)
                 {
-                    if (c.Bounds.Contains(e.Location))
+                    if (new Rectangle(c.Location, c.Size).Contains(e.Location))
                     {
                         ImageToPaint = c.Image;
                     }
@@ -233,13 +245,31 @@ namespace Level_Editor
             public IntPtr hbmColor;
         }
 
+        /// <summary>
+        /// Windows defined method that has been extracted from a system32 file
+        /// </summary>
+        /// <param name="hIcon"></param>
+        /// <param name="pIconInfo"></param>
+        /// <returns></returns>
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GetIconInfo(IntPtr hIcon, ref IconInfo pIconInfo);
 
+        /// <summary>
+        /// Windows defined method that has been extracted from a system32 file
+        /// </summary>
+        /// <param name="hIcon"></param>
+        /// <param name="pIconInfo"></param>
+        /// <returns></returns>
         [DllImport("user32.dll")]
         public static extern IntPtr CreateIconIndirect(ref IconInfo icon);
 
+        /// <summary>
+        /// Windows defined method that has been extracted from a system32 file
+        /// </summary>
+        /// <param name="hIcon"></param>
+        /// <param name="pIconInfo"></param>
+        /// <returns></returns>
         public static Cursor CreateCursor(Bitmap bmp, int xHotSpot, int yHotSpot)
         {
             IntPtr ptr = bmp.GetHicon();
@@ -251,18 +281,28 @@ namespace Level_Editor
             ptr = CreateIconIndirect(ref tmp);
             return new Cursor(ptr);
         }
-        private void tilePanel_MouseMove(object sender, MouseEventArgs e)
+        private void TilePanel_MouseMove(object sender, EventArgs e)
         {
+            MouseEventArgs k = e as MouseEventArgs;
             if (CurrentTool == Tool.Draw)
             {
-                tilePanel.Cursor = CreateCursor((Bitmap)ImageToPaint, 0, 0);
-                Rectangle b = new Rectangle
-                (
-                    e.Location,
-                    ImageToPaint.Size
-                );
-                tilePanel.Cursor.Draw(CreateGraphics(), b);
-                
+                try
+                {
+                    if (!CreateCursor((Bitmap)ImageToPaint, 0, 0).Equals(CurrentGridCursor))
+                    {
+                        TilePanel.Cursor = CreateCursor((Bitmap)ImageToPaint, 0, 0);                        
+                    }
+                    Rectangle b = new Rectangle
+                        (
+                            k.Location,
+                            ImageToPaint.Size
+                        );
+                    TilePanel.Cursor.Draw(CreateGraphics(), b);
+                }
+                catch(Exception ex)
+                {
+                    ErrorHandler.AppendLog(ex);
+                }
             }
         }
     }
@@ -300,6 +340,28 @@ namespace Level_Editor
             }
         }
     }
+    public class ErrorHandler
+    {
+        public ErrorHandler()
+        {
+
+        }
+        public static void AppendLog(Exception ex)
+        {
+            using (StreamWriter f = new StreamWriter(new FileStream("log.txt", FileMode.Append)))
+            {
+                f.WriteLineAsync(DateTime.Now + "\n" + ex.StackTrace + "\n");
+            }
+        }
+        public void ClearLog()
+        {
+            using (StreamWriter f = new StreamWriter(new FileStream("log.txt", FileMode.Create)))
+            {
+                f.WriteAsync("");
+            }
+        }
+    }
+
     public class TileGrid
     {
         public List<Tile> Tiles;
