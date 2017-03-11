@@ -70,18 +70,20 @@ namespace Level_Editor
                 {
                     TileGrid[] a = LoadAsync(ref worker);
                     DefaultLevel = new Level(new Size(320 * 4, 320 * 4), 0, a[0], a[1], a[2]);
-                    
-                    using (var f = new FileStream("recentpaths", FileMode.Open))
+                    try
                     {
-                        try
+                        using (var f = new FileStream("recentpaths", FileMode.Open))
                         {
-                            xml = new XmlSerializer(typeof(string));
-                            openRecentToolStripMenuItem.DropDownItems.Add((string)xml.Deserialize(f));
+                            try
+                            {
+                                xml = new XmlSerializer(typeof(string));
+                                openRecentToolStripMenuItem.DropDownItems.Add((string)xml.Deserialize(f));
+                            }
+                            catch (Exception ex)
+                            {
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                        }
-                    }
+                    }catch(Exception ex) { }
                 }
             }
         }
@@ -103,7 +105,8 @@ namespace Level_Editor
         }
         private void frmMain_Load(object sender, EventArgs e)
         {
-            ActiveForm.StartPosition = FormStartPosition.CenterScreen;
+            StartPosition = FormStartPosition.CenterScreen;
+            WindowState = FormWindowState.Maximized;
             TilePanel.Size = tilePanel.Size; TilePanel.Location = tilePanel.Location; TilePanel.Anchor = AnchorStyles.Right;
             TilePanel.MouseMove += new MouseEventHandler(TilePanel_MouseMove);
             TilePanel.MouseClick += new MouseEventHandler(TilePanel_MouseClick);
