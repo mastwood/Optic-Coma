@@ -15,19 +15,19 @@ namespace Level_Editor
 {
     public partial class frmMain : Form
     {
-        public Level DefaultLevel;
-        public bool ShowGridLines = true;
-        public Level CurrentLevel;
-        public LayerMode CurrentLayer = LayerMode.Midground;
-        public Tool CurrentTool = Tool.Pan;
-        public Point PanOffset;
-        BackgroundWorker bW;
-        public List<Image> ImageResources = new List<Image>();
-        public List<string> ImageResourcesPaths = new List<string>();
-        public XmlSerializer xml;
-        public BufferedPanel TilePanel = new BufferedPanel();
-        public Image ImageToPaint = Properties.Resources.defaultTileImage;
-        public Cursor CurrentGridCursor;
+        public  Level DefaultLevel;
+        public  bool ShowGridLines = true;
+        public  Level CurrentLevel;
+        public  LayerMode CurrentLayer = LayerMode.Midground;
+        public  Tool CurrentTool = Tool.Pan;
+        public  Point PanOffset;
+        private BackgroundWorker bW;
+        public  List<Image> ImageResources = new List<Image>();
+        public  List<string> ImageResourcesPaths = new List<string>();
+        public  XmlSerializer xml;
+        public  BufferedPanel TilePanel = new BufferedPanel();
+        public  Image ImageToPaint = Properties.Resources.defaultTileImage;
+        public  Cursor CurrentGridCursor;
 
         public frmMain()
         {
@@ -106,6 +106,8 @@ namespace Level_Editor
             ActiveForm.StartPosition = FormStartPosition.CenterScreen;
             TilePanel.Size = tilePanel.Size; TilePanel.Location = tilePanel.Location; TilePanel.Anchor = AnchorStyles.Right;
             TilePanel.MouseMove += new MouseEventHandler(TilePanel_MouseMove);
+            TilePanel.MouseClick += new MouseEventHandler(TilePanel_MouseClick);
+
             newLevel.Controls.Add(TilePanel);
             newLevel.Controls.Remove(tilePanel);
             CurrentGridCursor = CreateCursor((Bitmap)ImageToPaint, 0, 0);
@@ -304,6 +306,10 @@ namespace Level_Editor
                     ErrorHandler.AppendLog(ex);
                 }
             }
+        }
+        private void TilePanel_MouseClick(object sender, EventArgs e)
+        {
+            
         }
     }
     public class Tile
