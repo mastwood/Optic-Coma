@@ -13,9 +13,12 @@ using System.Runtime.InteropServices;
 
 namespace Level_Editor
 {
-    class Win32ExternalInfrastructure
+    /*public class Win32ExternalInfrastructure
     {
         #region win32 externs and infrastructure
+        /// <summary>
+        /// Contains information for win32 to use when creating a new cursor
+        /// </summary>
         public struct IconInfo
         {
             public bool fIcon;
@@ -45,7 +48,7 @@ namespace Level_Editor
         public static extern IntPtr CreateIconIndirect(ref IconInfo icon);
 
         /// <summary>
-        /// Windows defined method that has been extracted from a system32 file
+        /// Windows defined method that has been created from MSDN documentation
         /// </summary>
         /// <param name="hIcon"></param>
         /// <param name="pIconInfo"></param>
@@ -62,5 +65,12 @@ namespace Level_Editor
             return new Cursor(ptr);
         }
         #endregion
+    }*/
+    public class BufferedPanel : Panel
+    {
+        public BufferedPanel()
+        {
+            DoubleBuffered = true;
+        }
     }
 }

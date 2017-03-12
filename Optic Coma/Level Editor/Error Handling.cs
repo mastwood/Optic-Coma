@@ -21,14 +21,14 @@ namespace Level_Editor
         }
         public static void AppendLog(Exception ex)
         {
-            using (StreamWriter f = new StreamWriter(new FileStream("log.txt", FileMode.Append)))
+            using (TextWriter f = new StreamWriter(new FileStream("log.txt", FileMode.Append)))
             {
                 f.WriteLineAsync(DateTime.Now + "\n" + ex.StackTrace + "\n");
             }
         }
         public static void ClearLog()
         {
-            using (StreamWriter f = new StreamWriter(new FileStream("log.txt", FileMode.Create)))
+            using (TextWriter f = new StreamWriter(new FileStream("log.txt", FileMode.Create)))
             {
                 f.WriteAsync("");
             }

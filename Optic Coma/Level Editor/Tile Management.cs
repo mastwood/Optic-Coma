@@ -84,7 +84,7 @@ namespace Level_Editor
         }
         public void Draw(Graphics g, Point PanOffset)
         {
-            g.DrawImage(ComposedImage, PanOffset);
+            g.DrawImage(GetComposedImage(), PanOffset);
         }
     }
 }

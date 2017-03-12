@@ -65,7 +65,6 @@ namespace Level_Editor
                 {
                     p.ShowGridLines = gridlines;
                 }
-                currentTileGrid.Composite();
                 currentTileGrid.Draw(f.CreateGraphics(), panOffset);
             }
             else

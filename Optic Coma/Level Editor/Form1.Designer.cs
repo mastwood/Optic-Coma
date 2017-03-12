@@ -66,20 +66,23 @@
             this.newLevel = new System.Windows.Forms.TabPage();
             this.hScrollBarLevel = new System.Windows.Forms.HScrollBar();
             this.vScrollBarLevel = new System.Windows.Forms.VScrollBar();
+            this.lblScrollDebug = new System.Windows.Forms.Label();
             this.tilePanel = new System.Windows.Forms.Panel();
             this.levelTabControl = new System.Windows.Forms.TabControl();
             this.grpTools = new System.Windows.Forms.GroupBox();
-            this.lblScrollDebug = new System.Windows.Forms.Label();
+            this.rdoToolPainter = new System.Windows.Forms.RadioButton();
             this.levelLoadProgress = new System.Windows.Forms.ProgressBar();
             this.grpResources = new System.Windows.Forms.GroupBox();
             this.panelResources = new System.Windows.Forms.FlowLayoutPanel();
+            this.defaultImagePicBoxInFlowChart = new System.Windows.Forms.PictureBox();
             this.openFileDialogLevels = new System.Windows.Forms.OpenFileDialog();
-            this.rdoToolPainter = new System.Windows.Forms.RadioButton();
             this.menuStrip.SuspendLayout();
             this.newLevel.SuspendLayout();
             this.levelTabControl.SuspendLayout();
             this.grpTools.SuspendLayout();
             this.grpResources.SuspendLayout();
+            this.panelResources.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.defaultImagePicBoxInFlowChart)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -294,6 +297,7 @@
             this.newLevel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.newLevel.Controls.Add(this.hScrollBarLevel);
             this.newLevel.Controls.Add(this.vScrollBarLevel);
+            this.newLevel.Controls.Add(this.lblScrollDebug);
             this.newLevel.Controls.Add(this.tilePanel);
             resources.ApplyResources(this.newLevel, "newLevel");
             this.newLevel.Name = "newLevel";
@@ -310,6 +314,11 @@
             resources.ApplyResources(this.vScrollBarLevel, "vScrollBarLevel");
             this.vScrollBarLevel.Name = "vScrollBarLevel";
             this.vScrollBarLevel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBarLevel_Scroll);
+            // 
+            // lblScrollDebug
+            // 
+            resources.ApplyResources(this.lblScrollDebug, "lblScrollDebug");
+            this.lblScrollDebug.Name = "lblScrollDebug";
             // 
             // tilePanel
             // 
@@ -332,10 +341,13 @@
             this.grpTools.Name = "grpTools";
             this.grpTools.TabStop = false;
             // 
-            // lblScrollDebug
+            // rdoToolPainter
             // 
-            resources.ApplyResources(this.lblScrollDebug, "lblScrollDebug");
-            this.lblScrollDebug.Name = "lblScrollDebug";
+            resources.ApplyResources(this.rdoToolPainter, "rdoToolPainter");
+            this.rdoToolPainter.Name = "rdoToolPainter";
+            this.rdoToolPainter.TabStop = true;
+            this.rdoToolPainter.UseVisualStyleBackColor = true;
+            this.rdoToolPainter.CheckedChanged += new System.EventHandler(this.rdoToolPainter_CheckedChanged);
             // 
             // levelLoadProgress
             // 
@@ -351,22 +363,21 @@
             // 
             // panelResources
             // 
+            this.panelResources.Controls.Add(this.defaultImagePicBoxInFlowChart);
             resources.ApplyResources(this.panelResources, "panelResources");
             this.panelResources.Name = "panelResources";
-            this.panelResources.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panelResources_MouseClick);
+            // 
+            // defaultImagePicBoxInFlowChart
+            // 
+            this.defaultImagePicBoxInFlowChart.InitialImage = global::Level_Editor.Properties.Resources.defaultTileImage;
+            resources.ApplyResources(this.defaultImagePicBoxInFlowChart, "defaultImagePicBoxInFlowChart");
+            this.defaultImagePicBoxInFlowChart.Name = "defaultImagePicBoxInFlowChart";
+            this.defaultImagePicBoxInFlowChart.TabStop = false;
             // 
             // openFileDialogLevels
             // 
             this.openFileDialogLevels.FileName = "openFileDialog1";
             this.openFileDialogLevels.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialogLevels_FileOk);
-            // 
-            // rdoToolPainter
-            // 
-            resources.ApplyResources(this.rdoToolPainter, "rdoToolPainter");
-            this.rdoToolPainter.Name = "rdoToolPainter";
-            this.rdoToolPainter.TabStop = true;
-            this.rdoToolPainter.UseVisualStyleBackColor = true;
-            this.rdoToolPainter.CheckedChanged += new System.EventHandler(this.rdoToolPainter_CheckedChanged);
             // 
             // frmMain
             // 
@@ -374,7 +385,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.grpResources);
             this.Controls.Add(this.levelLoadProgress);
-            this.Controls.Add(this.lblScrollDebug);
             this.Controls.Add(this.grpTools);
             this.Controls.Add(this.levelTabControl);
             this.Controls.Add(this.menuStrip);
@@ -385,10 +395,13 @@
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.newLevel.ResumeLayout(false);
+            this.newLevel.PerformLayout();
             this.levelTabControl.ResumeLayout(false);
             this.grpTools.ResumeLayout(false);
             this.grpTools.PerformLayout();
             this.grpResources.ResumeLayout(false);
+            this.panelResources.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.defaultImagePicBoxInFlowChart)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -442,6 +455,7 @@
         private System.Windows.Forms.HScrollBar hScrollBarLevel;
         private System.Windows.Forms.ToolStripMenuItem openRecentToolStripMenuItem;
         private System.Windows.Forms.RadioButton rdoToolPainter;
+        private System.Windows.Forms.PictureBox defaultImagePicBoxInFlowChart;
     }
 }
 

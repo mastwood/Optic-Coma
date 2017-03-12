@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 
 namespace Level_Editor
 {
@@ -111,9 +113,10 @@ namespace Level_Editor
             WindowState = FormWindowState.Maximized;
             TilePanel.Size = tilePanel.Size; TilePanel.Location = tilePanel.Location; TilePanel.Anchor = AnchorStyles.Right;
             TilePanel.MouseMove += new MouseEventHandler(TilePanel_MouseMove);
+            TilePanel.Click += new EventHandler(TilePanel_Click);
             newLevel.Controls.Add(TilePanel);
             newLevel.Controls.Remove(tilePanel);
-            CurrentGridCursor = Win32ExternalInfrastructure.CreateCursor((Bitmap)ImageToPaint, 0, 0);
+            CurrentGridCursor = new Cursor(((Bitmap)ImageToPaint).GetHicon());
 
             bW = new BackgroundWorker();
             bW.WorkerReportsProgress = true;
@@ -125,11 +128,13 @@ namespace Level_Editor
         }
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            /*
             DialogResult r = MessageBox.Show("Save?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
             if (r == DialogResult.Yes)
             {
                 SaveLevel("saveFile");
             }
+            */
         }
 
         #endregion 
@@ -179,8 +184,21 @@ namespace Level_Editor
 
         private void openFileDialogImages_FileOk(object sender, CancelEventArgs e)
         {
-            ImageResources.Add(Image.FromFile(openFileDialogImages.FileName));
+            Bitmap i = (Bitmap)Image.FromFile(openFileDialogImages.FileName);
+            Bitmap o = (Bitmap)GetResizedImage(i, new Rectangle(0, 0, 32, 32));
+            ImageResources.Add(o);
             UpdateImageResourceToolBar();
+        }
+        public static Image GetResizedImage(Image img, Rectangle rect)
+        {
+            Bitmap b = new Bitmap(rect.Width, rect.Height);
+            using (Graphics g = Graphics.FromImage(b))
+            {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.DrawImage(img, 0, 0, rect.Width, rect.Height);
+                g.Dispose();
+                return (Image)b.Clone();
+            }
         }
         #endregion
         #region serialization
@@ -217,33 +235,27 @@ namespace Level_Editor
             if (rdoToolPainter.Checked) CurrentTool = Tool.Draw;
         }
         #endregion
-        #region panel events
+        #region panel events and methods
         private void panelResources_MouseClick(object sender, MouseEventArgs e)
         {
-            if (panelResources.Controls.Count > 0)
-            {
-                foreach (PictureBox c in panelResources.Controls)
-                {
-                    if (new Rectangle(c.Location, c.Size).Contains(e.Location))
-                    {
-                        ImageToPaint = c.Image;
-                    }
-                }
-            }
+            
         }
         private void UpdateImageResourceToolBar()
         {
             foreach (Image i in ImageResources)
             {
-                panelResources.Controls.Add
-                (
-                    new PictureBox()
-                    {
-                        Size = new Size(32, 32),
-                        Image = i,
-                        SizeMode = PictureBoxSizeMode.StretchImage
-                    }
-                );
+                PictureBox p = new PictureBox()
+                {
+                    Size = new Size(32, 32),
+                    Image = i,
+                    SizeMode = PictureBoxSizeMode.StretchImage
+                };
+                //lambda operation allows me to add specific stuff to events
+                p.MouseClick += (object sender, MouseEventArgs e) =>
+                {
+                    ImageToPaint = p.Image;
+                };
+                panelResources.Controls.Add(p);
             }
             panelResources.Update();
         }
@@ -254,16 +266,7 @@ namespace Level_Editor
             {
                 try
                 {
-                    if (!Win32ExternalInfrastructure.CreateCursor((Bitmap)ImageToPaint, 0, 0).Equals(CurrentGridCursor))
-                    {
-                        TilePanel.Cursor = Win32ExternalInfrastructure.CreateCursor((Bitmap)ImageToPaint, 0, 0);
-                    }
-                    Rectangle b = new Rectangle
-                        (
-                            k.Location,
-                            ImageToPaint.Size
-                        );
-                    TilePanel.Cursor.Draw(CreateGraphics(), b);
+                    TilePanel.Cursor = new Cursor(((Bitmap)ImageToPaint).GetHicon());
                 }
                 catch (Exception ex)
                 {
@@ -271,16 +274,24 @@ namespace Level_Editor
                 }
             }
         }
-        #endregion
-
-    }
-
-
-    public class BufferedPanel : Panel
-    {
-        public BufferedPanel()
+        private void TilePanel_Click(object sender, EventArgs e)
         {
-            DoubleBuffered = true;
+            MouseEventArgs m = e as MouseEventArgs;
+            foreach (Tile t in CurrentLevel.currentTileGrid.Tiles)
+            {
+                Point loc = new Point(t.Location.X + PanOffset.X, t.Location.Y + PanOffset.Y);
+                Rectangle r = new Rectangle(loc, t.Texture.Size);
+                if (r.Contains(m.Location))
+                {
+                    CurrentLevel.currentTileGrid.Tiles.Remove(t);
+                    t.SetTexture(ImageToPaint);
+                    CurrentLevel.currentTileGrid.Tiles.Add(t);
+                    CurrentLevel.currentTileGrid.Draw(TilePanel.CreateGraphics(), PanOffset);
+                    TilePanel.Update();
+                    return;
+                }
+            }
         }
+        #endregion
     }
 }
