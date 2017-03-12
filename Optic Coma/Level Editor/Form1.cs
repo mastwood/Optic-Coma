@@ -15,6 +15,7 @@ namespace Level_Editor
 {
     public partial class frmMain : Form
     {
+        #region Fields
         public Level DefaultLevel;
         public bool ShowGridLines = true;
         public Level CurrentLevel;
@@ -28,11 +29,12 @@ namespace Level_Editor
         public BufferedPanel TilePanel = new BufferedPanel();
         public Image ImageToPaint = Properties.Resources.defaultTileImage;
         public Cursor CurrentGridCursor;
-
+        #endregion
         public frmMain()
         {
             InitializeComponent();
         }
+        #region FormLoad
         private TileGrid[] LoadAsync(ref BackgroundWorker w)
         {
             List<Tile>
@@ -111,7 +113,7 @@ namespace Level_Editor
             TilePanel.MouseMove += new MouseEventHandler(TilePanel_MouseMove);
             newLevel.Controls.Add(TilePanel);
             newLevel.Controls.Remove(tilePanel);
-            CurrentGridCursor = CreateCursor((Bitmap)ImageToPaint, 0, 0);
+            CurrentGridCursor = Win32ExternalInfrastructure.CreateCursor((Bitmap)ImageToPaint, 0, 0);
 
             bW = new BackgroundWorker();
             bW.WorkerReportsProgress = true;
@@ -121,40 +123,17 @@ namespace Level_Editor
             bW.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bW_RunWorkerCompleted);
             bW.RunWorkerAsync();
         }
-
-        private void showGridlinesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (ShowGridLines)
+            DialogResult r = MessageBox.Show("Save?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+            if (r == DialogResult.Yes)
             {
-                ShowGridLines = false;
-                CurrentLevel.Display(ref TilePanel, CurrentLayer, ShowGridLines, PanOffset);
-                TilePanel.Update();
-            }
-            else
-            {
-                ShowGridLines = true;
-                CurrentLevel.Display(ref TilePanel, CurrentLayer, ShowGridLines, PanOffset);
-                TilePanel.Update();
+                SaveLevel("saveFile");
             }
         }
 
-        private void UpdateImageResourceToolBar()
-        {
-            foreach(Image i in ImageResources)
-            {
-                panelResources.Controls.Add
-                (
-                    new PictureBox()
-                    {
-                        Size = new Size(32, 32),
-                        Image = i,
-                        SizeMode = PictureBoxSizeMode.StretchImage
-                    }
-                );
-            }
-            panelResources.Update();
-        }
-
+        #endregion 
+        #region scrollbars
         private void vScrollBarLevel_Scroll(object sender, ScrollEventArgs e)
         {
             ScrollEventArgs s = e as ScrollEventArgs;
@@ -172,7 +151,27 @@ namespace Level_Editor
             CurrentLevel.Display(ref TilePanel, CurrentLayer, ShowGridLines, PanOffset);
             TilePanel.Update();
         }
-
+        #endregion
+        #region toolstrip item click events
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        private void showGridlinesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (ShowGridLines)
+            {
+                ShowGridLines = false;
+                CurrentLevel.Display(ref TilePanel, CurrentLayer, ShowGridLines, PanOffset);
+                TilePanel.Update();
+            }
+            else
+            {
+                ShowGridLines = true;
+                CurrentLevel.Display(ref TilePanel, CurrentLayer, ShowGridLines, PanOffset);
+                TilePanel.Update();
+            }
+        }
         private void textureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             openFileDialogImages.ShowDialog();
@@ -183,17 +182,9 @@ namespace Level_Editor
             ImageResources.Add(Image.FromFile(openFileDialogImages.FileName));
             UpdateImageResourceToolBar();
         }
-
-        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            DialogResult r = MessageBox.Show("Save?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
-            if(r == DialogResult.Yes)
-            {
-                Save("saveFile");
-            }
-        }
-
-        public void Save(string path)
+        #endregion
+        #region serialization
+        public void SaveLevel(string path)
         {
             using (var f = new FileStream(path, FileMode.Create))
             {
@@ -210,22 +201,23 @@ namespace Level_Editor
                 //TODO: Enemy spawners, npc, etc
             }
         }
+        public void LoadLevel(string path)
+        {
 
+        }
         private void openFileDialogLevels_FileOk(object sender, CancelEventArgs e)
         {
-
+            string s = openFileDialogLevels.FileName;
+            LoadLevel(s);
         }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
+        #endregion
+        #region toolmenu radio buttons
         private void rdoToolPainter_CheckedChanged(object sender, EventArgs e)
         {
             if (rdoToolPainter.Checked) CurrentTool = Tool.Draw;
         }
-
+        #endregion
+        #region panel events
         private void panelResources_MouseClick(object sender, MouseEventArgs e)
         {
             if (panelResources.Controls.Count > 0)
@@ -239,50 +231,21 @@ namespace Level_Editor
                 }
             }
         }
-        public struct IconInfo
+        private void UpdateImageResourceToolBar()
         {
-            public bool fIcon;
-            public int xHotspot;
-            public int yHotspot;
-            public IntPtr hbmMask;
-            public IntPtr hbmColor;
-        }
-
-        /// <summary>
-        /// Windows defined method that has been extracted from a system32 file
-        /// </summary>
-        /// <param name="hIcon"></param>
-        /// <param name="pIconInfo"></param>
-        /// <returns></returns>
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetIconInfo(IntPtr hIcon, ref IconInfo pIconInfo);
-
-        /// <summary>
-        /// Windows defined method that has been extracted from a system32 file
-        /// </summary>
-        /// <param name="hIcon"></param>
-        /// <param name="pIconInfo"></param>
-        /// <returns></returns>
-        [DllImport("user32.dll")]
-        public static extern IntPtr CreateIconIndirect(ref IconInfo icon);
-
-        /// <summary>
-        /// Windows defined method that has been extracted from a system32 file
-        /// </summary>
-        /// <param name="hIcon"></param>
-        /// <param name="pIconInfo"></param>
-        /// <returns></returns>
-        public static Cursor CreateCursor(Bitmap bmp, int xHotSpot, int yHotSpot)
-        {
-            IntPtr ptr = bmp.GetHicon();
-            IconInfo tmp = new IconInfo();
-            GetIconInfo(ptr, ref tmp);
-            tmp.xHotspot = xHotSpot;
-            tmp.yHotspot = yHotSpot;
-            tmp.fIcon = false;
-            ptr = CreateIconIndirect(ref tmp);
-            return new Cursor(ptr);
+            foreach (Image i in ImageResources)
+            {
+                panelResources.Controls.Add
+                (
+                    new PictureBox()
+                    {
+                        Size = new Size(32, 32),
+                        Image = i,
+                        SizeMode = PictureBoxSizeMode.StretchImage
+                    }
+                );
+            }
+            panelResources.Update();
         }
         private void TilePanel_MouseMove(object sender, EventArgs e)
         {
@@ -291,9 +254,9 @@ namespace Level_Editor
             {
                 try
                 {
-                    if (!CreateCursor((Bitmap)ImageToPaint, 0, 0).Equals(CurrentGridCursor))
+                    if (!Win32ExternalInfrastructure.CreateCursor((Bitmap)ImageToPaint, 0, 0).Equals(CurrentGridCursor))
                     {
-                        TilePanel.Cursor = CreateCursor((Bitmap)ImageToPaint, 0, 0);                        
+                        TilePanel.Cursor = Win32ExternalInfrastructure.CreateCursor((Bitmap)ImageToPaint, 0, 0);
                     }
                     Rectangle b = new Rectangle
                         (
@@ -302,186 +265,17 @@ namespace Level_Editor
                         );
                     TilePanel.Cursor.Draw(CreateGraphics(), b);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     ErrorHandler.AppendLog(ex);
                 }
             }
         }
-    }
-    public class Tile
-    {
-        public Point Location;
-        public Image Texture;
-        public bool ShowGridLines;
-        public Tile(Point l, Image i)
-        {
-            Location = l;
-            Texture = i;
-        }
-        public void SetLocation(Point l)
-        {
-            Location = l;
-        }
-        public void SetTexture(Image i)
-        {
-            Texture = i;
-        }
-        public void Draw(Graphics g)
-        {
-            g.DrawImage(Texture, Location);
-            if (ShowGridLines)
-            {
-                GraphicsUnit f = GraphicsUnit.Pixel;
-                PointF[] points = {
-                    new PointF(Texture.GetBounds(ref f).Top, Texture.GetBounds(ref f).Left),
-                    new PointF(Texture.GetBounds(ref f).Top, Texture.GetBounds(ref f).Right),
-                    new PointF(Texture.GetBounds(ref f).Bottom, Texture.GetBounds(ref f).Right),
-                    new PointF(Texture.GetBounds(ref f).Bottom, Texture.GetBounds(ref f).Left)
-                    };
-                g.DrawLines(Pens.Black, points);
-            }
-        }
-    }
-    public class ErrorHandler
-    {
-        public ErrorHandler()
-        {
+        #endregion
 
-        }
-        public static void AppendLog(Exception ex)
-        {
-            using (StreamWriter f = new StreamWriter(new FileStream("log.txt", FileMode.Append)))
-            {
-                f.WriteLineAsync(DateTime.Now + "\n" + ex.StackTrace + "\n");
-            }
-        }
-        public void ClearLog()
-        {
-            using (StreamWriter f = new StreamWriter(new FileStream("log.txt", FileMode.Create)))
-            {
-                f.WriteAsync("");
-            }
-        }
     }
 
-    public class TileGrid
-    {
-        public List<Tile> Tiles;
-        Bitmap ComposedImage;
-        public TileGrid(List<Tile> t)
-        {
-            Tiles = t;
-        }
-        public void Composite()
-        {
-            int Width = 0, Height = 0;
-            foreach (Tile t in Tiles)
-            {
-                if (t.Location.X > Width) Width = t.Location.X;
-                if (t.Location.Y > Height) Height = t.Location.Y;
-            }
-            Bitmap b = new Bitmap(Width, Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            using (Graphics canvas = Graphics.FromImage(b))
-            {
-                canvas.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-
-                foreach(Tile j in Tiles)
-                {
-                    canvas.DrawImage(j.Texture, j.Location);
-                }
-            }
-            ComposedImage = b;
-        }
-        public Image GetComposedImage()
-        {
-            Composite();
-            return ComposedImage;
-        }
-        public void Draw(Graphics g, Point PanOffset)
-        {
-            g.DrawImage(ComposedImage, PanOffset);
-        }
-    }
-    public enum LayerMode
-    {
-        Foreground,
-        Midground,
-        Background,
-        Combined
-    }
-    public enum Tool
-    {
-        Pan,
-        Draw,
-        Erase,
-        Edit,
-        SelectBox,
-        SelectIndividual
-    }
-
-    public class Level
-    {
-        public List<string> DependantTextures; //load textures from this list of strings
-        public TileGrid fTileGrid;
-        public TileGrid mTileGrid;
-        public TileGrid bTileGrid;
-        public TileGrid currentTileGrid;
-        public Size TileGridDimensions;
-        public int LevelNumber; //which level is it
-
-        /// <summary>
-        /// Constructor for a level
-        /// </summary>
-        /// <param name="Level Size (in pixels"></param>
-        /// <param name="Level ID"></param>
-        /// <param name="Foreground Tiles"></param>
-        /// <param name="Midground Tiles"></param>
-        /// <param name="Background Tiles"></param>
-        public Level(Size gridSize, int place, 
-            TileGrid f, TileGrid m, TileGrid b)
-        {
-            fTileGrid = f;
-            mTileGrid = m;
-            bTileGrid = b;
-            
-            TileGridDimensions = gridSize;
-            LevelNumber = place;
-            
-            currentTileGrid = mTileGrid;
-        }
-        public void Display(ref BufferedPanel f, LayerMode layer, bool gridlines, Point panOffset)
-        {
-            f.CreateGraphics().Clear(Color.White);
-
-            if (layer == LayerMode.Foreground)
-            {
-                currentTileGrid = fTileGrid;
-            }
-            else if (layer == LayerMode.Midground)
-            {
-                currentTileGrid = mTileGrid;
-            }
-            else if (layer == LayerMode.Background)
-            {
-                currentTileGrid = bTileGrid;
-            }
-            if (layer != LayerMode.Combined)
-            {
-                foreach (Tile p in currentTileGrid.Tiles)
-                {
-                    p.ShowGridLines = gridlines;
-                }
-                currentTileGrid.Composite();
-                currentTileGrid.Draw(f.CreateGraphics(), panOffset);
-            }
-            else
-            {
-                //TODO: Combine all layers
-            }
-        }
-    }
     public class BufferedPanel : Panel
     {
         public BufferedPanel()
