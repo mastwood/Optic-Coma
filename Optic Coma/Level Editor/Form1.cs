@@ -31,6 +31,7 @@ namespace Level_Editor
         public BufferedPanel TilePanel = new BufferedPanel();
         public Image ImageToPaint = Properties.Resources.defaultTileImage;
         public Cursor CurrentGridCursor;
+
         #endregion
         public frmMain()
         {
@@ -293,5 +294,25 @@ namespace Level_Editor
             }
         }
         #endregion
+
+        private void tilePanel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LevelNameInputDialog f = new LevelNameInputDialog();
+            f.ShowDialog();
+            string s = f.GetLevelName();
+            levelTabControl.TabPages.Add(s);
+        }
+    }
+    public class BufferedPanel : Panel
+    {
+        public BufferedPanel()
+        {
+            DoubleBuffered = true;
+        }
     }
 }

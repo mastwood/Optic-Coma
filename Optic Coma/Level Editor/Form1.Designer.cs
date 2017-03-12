@@ -112,6 +112,7 @@
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             resources.ApplyResources(this.newToolStripMenuItem, "newToolStripMenuItem");
+            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
@@ -324,6 +325,7 @@
             // 
             resources.ApplyResources(this.tilePanel, "tilePanel");
             this.tilePanel.Name = "tilePanel";
+            this.tilePanel.Click += new System.EventHandler(this.tilePanel_Click);
             // 
             // levelTabControl
             // 
@@ -443,7 +445,6 @@
         private System.Windows.Forms.OpenFileDialog openFileDialogImages;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.TabPage newLevel;
-        private System.Windows.Forms.TabControl levelTabControl;
         private System.Windows.Forms.GroupBox grpTools;
         public System.Windows.Forms.Panel tilePanel;
         private System.Windows.Forms.Label lblScrollDebug;
@@ -456,6 +457,7 @@
         private System.Windows.Forms.ToolStripMenuItem openRecentToolStripMenuItem;
         private System.Windows.Forms.RadioButton rdoToolPainter;
         private System.Windows.Forms.PictureBox defaultImagePicBoxInFlowChart;
+        public System.Windows.Forms.TabControl levelTabControl;
     }
 }
 
