@@ -6,27 +6,20 @@ using System.Linq;
 using System.Xml.Serialization;
 using System;
 namespace Optic_Coma
-{
-    [Serializable]
-    public struct SaveData
-    {
-        [XmlElement("Location_X")]
-        public static float LocationX { get; set; }
-
-        [XmlElement("Location_Y")]
-        public static float LocationY { get; set; }
-
-        [XmlElement("RecentSavePoint")]
-        public static float RecentSavePoint { get; set; }
-    }
-    
+{   
     public class Foundation : Game
     {
+        /// <summary>
+        /// Controls saving the game
+        /// </summary>
         public static XmlSerializer SaveReaderWriter = new XmlSerializer(typeof(float[]));
 
         public static PenumbraComponent LightingEngine;
 
-        public static GraphicsDeviceManager Graphics;
+        public static GraphicsDeviceManager GlobalGraphicsDeviceManager;
+
+        public static ScreenManager GlobalScreenManager;
+
         private SpriteBatch _spriteBatch;
 
         public static int ScreenWidth;
@@ -34,17 +27,16 @@ namespace Optic_Coma
         
         public static bool IsFullScreen;
 
-        public string InstallDirectory;
         public Foundation()
         {
             //x = new XmlSerializer(typeof(GameState));
             LightingEngine = new PenumbraComponent(this);
 
             IsMouseVisible = true;
-            Graphics = new GraphicsDeviceManager(this);
+            GlobalGraphicsDeviceManager = new GraphicsDeviceManager(this);
 
             Content.RootDirectory = "Content";
-            InstallDirectory = Content.RootDirectory;
+
             Components.Add(LightingEngine);
             LightingEngine.AmbientColor = new Color(30,0,0,255);
             LightingEngine.Debug = true;
@@ -58,16 +50,18 @@ namespace Optic_Coma
         /// </summary>
         protected override void Initialize()
         {
+            GlobalScreenManager = new ScreenManager();
+
             float[] i = new float[3];
 
             ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             ScreenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
-            Graphics.PreferredBackBufferWidth = (int)ScreenManager.Instance.Dimensions.X;
-            Graphics.PreferredBackBufferHeight = (int)ScreenManager.Instance.Dimensions.Y;
-            Graphics.IsFullScreen = false;
+            GlobalGraphicsDeviceManager.PreferredBackBufferWidth = (int)GlobalScreenManager.Dimensions.X;
+            GlobalGraphicsDeviceManager.PreferredBackBufferHeight = (int)GlobalScreenManager.Dimensions.Y;
+            GlobalGraphicsDeviceManager.IsFullScreen = false;
 
-            Graphics.ApplyChanges();
+            GlobalGraphicsDeviceManager.ApplyChanges();
             //Send the size to the graphics manager
 
             if (SaveFileSerializer.Load(SaveReaderWriter) != null)
@@ -87,7 +81,7 @@ namespace Optic_Coma
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             //Instantiate spriteBatch
-            ScreenManager.Instance.LoadContent(Content, LightingEngine);
+            GlobalScreenManager.LoadContent(Content, LightingEngine);
         }
 
         /// <summary>
@@ -96,7 +90,7 @@ namespace Optic_Coma
         /// </summary>
         protected override void UnloadContent()
         {
-            ScreenManager.Instance.UnloadContent();
+            GlobalScreenManager.UnloadContent();
         }
 
         /// <summary>
@@ -108,17 +102,17 @@ namespace Optic_Coma
         {
             if (IsFullScreen)
             {
-                Graphics.PreferredBackBufferWidth = ScreenWidth;
-                Graphics.PreferredBackBufferHeight = ScreenHeight;
-                Graphics.IsFullScreen = true;
+                GlobalGraphicsDeviceManager.PreferredBackBufferWidth = ScreenWidth;
+                GlobalGraphicsDeviceManager.PreferredBackBufferHeight = ScreenHeight;
+                GlobalGraphicsDeviceManager.IsFullScreen = true;
             }
             else
             {
-                Graphics.PreferredBackBufferWidth = (int)ScreenManager.Instance.Dimensions.X;
-                Graphics.PreferredBackBufferHeight = (int)ScreenManager.Instance.Dimensions.Y;
-                Graphics.IsFullScreen = false;
+                GlobalGraphicsDeviceManager.PreferredBackBufferWidth = (int)GlobalScreenManager.Dimensions.X;
+                GlobalGraphicsDeviceManager.PreferredBackBufferHeight = (int)GlobalScreenManager.Dimensions.Y;
+                GlobalGraphicsDeviceManager.IsFullScreen = false;
             }
-            ScreenManager.Instance.Update(gameTime, LightingEngine);
+            GlobalScreenManager.Update(gameTime, LightingEngine);
             base.Update(gameTime);
         }
 
@@ -130,7 +124,7 @@ namespace Optic_Coma
         {
             GraphicsDevice.Clear(Color.Black);
             _spriteBatch.Begin(SpriteSortMode.BackToFront);
-            ScreenManager.Instance.Draw(_spriteBatch, gameTime, LightingEngine);
+            GlobalScreenManager.Draw(_spriteBatch, gameTime, LightingEngine);
             _spriteBatch.End();
         }
     }
@@ -178,7 +172,7 @@ namespace Optic_Coma
             image.GetData<Color>(imageData);
             Rectangle sourceRectangle = new Rectangle((int)(sourceLocation.X * individualSize), (int)(sourceLocation.Y * individualSize), individualSize, individualSize);
             Color[] imagePiece = GetImageData(imageData, image.Width, sourceRectangle);
-            Texture2D returnable = new Texture2D(Foundation.Graphics.GraphicsDevice, individualSize, individualSize);
+            Texture2D returnable = new Texture2D(Foundation.GlobalGraphicsDeviceManager.GraphicsDevice, individualSize, individualSize);
             returnable.SetData<Color>(imagePiece);
             return returnable;
         }

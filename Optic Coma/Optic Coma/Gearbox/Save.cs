@@ -15,7 +15,24 @@ using System.ComponentModel;
 
 namespace Optic_Coma
 {
+    /// <summary>
+    /// Contains data to save upon game exit
+    /// </summary>
+    [Serializable]
+    public struct SaveData
+    {
+        [XmlElement("Location_X")]
+        public static float LocationX { get; set; }
 
+        [XmlElement("Location_Y")]
+        public static float LocationY { get; set; }
+
+        [XmlElement("RecentSavePoint")]
+        public static float RecentSavePoint { get; set; }
+    }
+    /// <summary>
+    /// Serializes save files
+    /// </summary>
     public class SaveFileSerializer
     {
         public SaveFileSerializer()
@@ -75,7 +92,9 @@ namespace Optic_Coma
         }
         
     }
-   
+    /// <summary>
+    /// Writes error reports
+    /// </summary>
     public class LogWriter
     {
         public string[] Lines;

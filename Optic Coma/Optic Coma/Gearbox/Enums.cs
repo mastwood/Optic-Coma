@@ -44,7 +44,7 @@ namespace Optic_Coma
     /// <summary>
     /// Order in which things are rendered on the screen
     /// </summary>
-    public enum LayerDepth
+    public enum LayerDepthBTF
     {
         BGImage,
         BackgroundTiles,
@@ -54,5 +54,16 @@ namespace Optic_Coma
         Enemy,
         ForegroundTiles,
         HUD
+    }
+    public enum LayerDepth
+    {
+        HUD,
+        ForegroundTiles,
+        Enemy,
+        Flashlight,
+        Player,
+        MidgroundTiles,
+        BackgroundTiles,
+        BGImage
     }
 }

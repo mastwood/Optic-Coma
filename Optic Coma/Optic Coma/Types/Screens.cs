@@ -25,11 +25,11 @@ namespace Optic_Coma
 
         public virtual void LoadContent()
         {
-            BaseScreenContent = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
+            BaseScreenContent = new ContentManager(Foundation.GlobalScreenManager.Content.ServiceProvider, "Content");
         }
         public virtual void LoadContent(LevelHandler l)
         {
-            BaseScreenContent = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content");
+            BaseScreenContent = new ContentManager(Foundation.GlobalScreenManager.Content.ServiceProvider, "Content");
         }
         public virtual void UnloadContent()
         {
@@ -75,8 +75,8 @@ namespace Optic_Coma
             enterButtonTexture = BaseScreenContent.Load<Texture2D>("buttonSheet");
             buttonFont = BaseScreenContent.Load<SpriteFont>("buttonFont");
 
-            enterButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - enterButtonTexture.Width / 2,
-                                         ScreenManager.Instance.Dimensions.Y / 2 - enterButtonTexture.Height / 8);
+            enterButtonPos = new Vector2(Foundation.GlobalScreenManager.Dimensions.X / 2 - enterButtonTexture.Width / 2,
+                                         Foundation.GlobalScreenManager.Dimensions.Y / 2 - enterButtonTexture.Height / 8);
 
             bg = BaseScreenContent.Load<Texture2D>("starsbg");
         }
@@ -95,6 +95,19 @@ namespace Optic_Coma
         {
             spriteBatch.Draw
             (
+                bg,
+                null,
+                new Rectangle(0, 0, (int)Foundation.GlobalScreenManager.Dimensions.X, (int)Foundation.GlobalScreenManager.Dimensions.Y),
+                null,
+                null,
+                0,
+                null,
+                Color.White,
+                SpriteEffects.None,
+                (float)LayerDepth.BGImage / 10f
+            );
+            spriteBatch.Draw
+            (
                 titleGraphic,
                 null,
                 new Rectangle((int)Entity.CenterScreen.X - titleGraphic.Width / 2, 0, titleGraphic.Width, titleGraphic.Height / 2),
@@ -104,27 +117,15 @@ namespace Optic_Coma
                 null,
                 Color.White,
                 SpriteEffects.None,
-                (float)LayerDepth.BGImage
+                (float)LayerDepth.BGImage / 10f
             );
-            spriteBatch.Draw
-            (
-                bg,
-                null,
-                new Rectangle(0, 0, (int)ScreenManager.Instance.Dimensions.X, (int)ScreenManager.Instance.Dimensions.Y),
-                null,
-                null,
-                0,
-                null,
-                Color.White,
-                SpriteEffects.None,
-                (float)LayerDepth.BGImage
-            );
+            
             //We're making our button! Woo!
             btnEnterGame.Draw
             (
                 enterButtonTexture,
                 spriteBatch,
-                ScreenManager.Instance.MenuKey_OnPress,
+                Foundation.GlobalScreenManager.MenuKey_OnPress,
                 enterButtonPos,
                 buttonFont,
                 "Enter Game",
@@ -172,12 +173,20 @@ namespace Optic_Coma
 
         public Action<object, DoWorkEventArgs> LoaderMethod;
 
-        public int screenWidth = (int)ScreenManager.Instance.Dimensions.X;
-        public int screenHeight = (int)ScreenManager.Instance.Dimensions.Y;
+        public int screenWidth = (int)Foundation.GlobalScreenManager.Dimensions.X;
+        public int screenHeight = (int)Foundation.GlobalScreenManager.Dimensions.Y;
 
         public bool inherited;
         public Level InheritedLevel;
 
+        /// <summary>
+        /// Checks if player will be out of bounds in the next game tick
+        /// </summary>
+        /// <param name="walkableTiles"></param>
+        /// <param name="nonWalkableTriangles"></param>
+        /// <param name="location"></param>
+        /// <param name="playerHitBox"></param>
+        /// <returns></returns>
         public static bool NotOutOfBounds(List<Vector2> walkableTiles, List<Triangle> nonWalkableTriangles, Vector2 location, Rectangle playerHitBox)
         {
             List<Rectangle> levelArea = new List<Rectangle>();
@@ -205,6 +214,12 @@ namespace Optic_Coma
             return false;
         }
         
+        /// <summary>
+        /// Gets distance between player and nearest enemy
+        /// </summary>
+        /// <param name="enemies"></param>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public float GetDistToClosestEnemy(List<Enemy> enemies, Vector2 source)
         {
             lowDist = -1;
@@ -223,7 +238,12 @@ namespace Optic_Coma
             return (float)lowDist;
         }
 
-        public double LogisticForLight(float x)
+        /// <summary>
+        /// Calculates magnitude of light as distance increases or decreases
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        public static double LogisticForLight(float x)
         {
             double xD;
             xD = Convert.ToDouble(x);
@@ -243,8 +263,8 @@ namespace Optic_Coma
         {
             font = BaseScreenContent.Load<SpriteFont>("buttonFont");
             playerTexture = BaseScreenContent.Load<Texture2D>(playerPath);
-            playerPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - playerTexture.Width / 2,
-                                     ScreenManager.Instance.Dimensions.Y / 2 - playerTexture.Height / 8);
+            playerPos = new Vector2(Foundation.GlobalScreenManager.Dimensions.X / 2 - playerTexture.Width / 2,
+                                     Foundation.GlobalScreenManager.Dimensions.Y / 2 - playerTexture.Height / 8);
             lightTexture = BaseScreenContent.Load<Texture2D>("light");
             flashLightTexture = BaseScreenContent.Load<Texture2D>(flashPath);
             player = new Player(playerTexture, playerPos, flashLightTexture);
@@ -302,7 +322,7 @@ namespace Optic_Coma
                     0,
                     Vector2.Zero,
                     SpriteEffects.None,
-                    (float)LayerDepth.BGImage
+                    (float)LayerDepth.BGImage / 10f
                 );
                 foreach (Enemy enemy in enemies)
                 {
@@ -331,7 +351,7 @@ namespace Optic_Coma
                     Vector2.Zero,
                     Vector2.One,
                     SpriteEffects.None,
-                    (float)LayerDepth.HUD
+                    (float)LayerDepth.HUD / 10f
                 );
                 spriteBatch.DrawString
                 (
@@ -343,7 +363,7 @@ namespace Optic_Coma
                     Vector2.Zero,
                     Vector2.One,
                     SpriteEffects.None,
-                    (float)LayerDepth.HUD);
+                    (float)LayerDepth.HUD / 10f);
                 spriteBatch.DrawString(
                     font,
                     "Lighting Debug Enabled?: " + Foundation.LightingEngine.Debug,
@@ -353,7 +373,7 @@ namespace Optic_Coma
                     Vector2.Zero,
                     Vector2.One,
                     SpriteEffects.None,
-                    (float)LayerDepth.HUD);
+                    (float)LayerDepth.HUD / 10f);
                 spriteBatch.DrawString(
                     font,
                     "Distance to Closest Enemy: " + GetDistToClosestEnemy(enemies, Entity.CenterScreen),
@@ -363,12 +383,12 @@ namespace Optic_Coma
                     Vector2.Zero,
                     Vector2.One,
                     SpriteEffects.None,
-                    (float)LayerDepth.HUD);
+                    (float)LayerDepth.HUD / 10f);
                 pauseButton.Draw
                 (
                     buttonSheet,
                     spriteBatch,
-                    ScreenManager.Instance.PauseKey_OnPress,
+                    Foundation.GlobalScreenManager.PauseKey_OnPress,
                     pauseButtonPos,
                     font,
                     "Pause Game",
@@ -389,14 +409,14 @@ namespace Optic_Coma
             pauseButtonPos = Vector2.Zero;
 
             btnUnpause = new Button();
-            unpauseButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
-                                           ScreenManager.Instance.Dimensions.Y / 2);
+            unpauseButtonPos = new Vector2(Foundation.GlobalScreenManager.Dimensions.X / 2 - buttonSheet.Width / 2,
+                                           Foundation.GlobalScreenManager.Dimensions.Y / 2);
             btnExit = new Button();
-            exitButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
-                                        ScreenManager.Instance.Dimensions.Y / 2 - 128);
+            exitButtonPos = new Vector2(Foundation.GlobalScreenManager.Dimensions.X / 2 - buttonSheet.Width / 2,
+                                        Foundation.GlobalScreenManager.Dimensions.Y / 2 - 128);
             btnFullscreen = new Button();
-            fullButtonPos = new Vector2(ScreenManager.Instance.Dimensions.X / 2 - buttonSheet.Width / 2,
-                                        ScreenManager.Instance.Dimensions.Y / 2 + 64 - 128);
+            fullButtonPos = new Vector2(Foundation.GlobalScreenManager.Dimensions.X / 2 - buttonSheet.Width / 2,
+                                        Foundation.GlobalScreenManager.Dimensions.Y / 2 + 64 - 128);
         }
     }
     internal class Level1Screen : LevelScreen
@@ -454,9 +474,9 @@ namespace Optic_Coma
         public void Loader(object sender, DoWorkEventArgs e)
         {
             IsPaused = false;
-
+            enemies = new List<Enemy>();
             WalkableTiles = TileSetup();
-            LevelSize = new Vector2(ScreenManager.Instance.Dimensions.X * 2, ScreenManager.Instance.Dimensions.Y * 2);
+            LevelSize = new Vector2(Foundation.GlobalScreenManager.Dimensions.X * 2, Foundation.GlobalScreenManager.Dimensions.Y * 2);
             debugColRect = BaseScreenContent.Load<Texture2D>("rectbox");
             floorTexture = BaseScreenContent.Load<Texture2D>("floorSheet");
             TileRenderer = new OldTileSystem(floorTexture, 4, 4, 1, LevelSize, WalkableTiles);
@@ -470,11 +490,11 @@ namespace Optic_Coma
             LoadDefaultButtons();
             #endregion
             #region entities
-            enemyTexture = BaseScreenContent.Load<Texture2D>(enemyPath);
-            enemyPos = new Vector2(ScreenManager.Instance.Dimensions.X / 4 - playerTexture.Width / 2,
-                                     ScreenManager.Instance.Dimensions.Y / 4 - playerTexture.Height / 8);
+            enemyTexture = Foundation.GlobalScreenManager.Content.Load<Texture2D>(enemyPath);
+            enemyPos = new Vector2(Foundation.GlobalScreenManager.Dimensions.X / 4 - playerTexture.Width / 2,
+                                     Foundation.GlobalScreenManager.Dimensions.Y / 4 - playerTexture.Height / 8);
             enemies.Add(new Enemy(enemyTexture, enemyPos, EnemyType.Jiggler));
-            enemies.Add(new Enemy(enemyTexture, new Vector2(ScreenManager.Instance.Dimensions.X - enemyPos.X, ScreenManager.Instance.Dimensions.X - enemyPos.Y), EnemyType.Wavey));
+            enemies.Add(new Enemy(enemyTexture, new Vector2(Foundation.GlobalScreenManager.Dimensions.X - enemyPos.X, Foundation.GlobalScreenManager.Dimensions.X - enemyPos.Y), EnemyType.Wavey));
             foreach (var enemy in enemies)
             {
                 nonPlayerEntities.Add(enemy);               
@@ -623,7 +643,7 @@ namespace Optic_Coma
                     Foundation.LightingEngine.Hulls.Clear();
                     foreach(Enemy enemy in nonPlayerEntities)
                     {
-                        enemy.UpdateHull();
+                        enemy.UpdateHull(ref Foundation.LightingEngine);
                     }
 
                     DataToSave[0] = TileOffsetLocation.X; DataToSave[1] = TileOffsetLocation.Y; DataToSave[2] = 0;
@@ -655,7 +675,7 @@ namespace Optic_Coma
                     (
                         buttonSheet,
                         spriteBatch,
-                        ScreenManager.Instance.ExitKey_OnPress,
+                        Foundation.GlobalScreenManager.ExitKey_OnPress,
                         exitButtonPos,
                         font,
                         "Exit Game",
@@ -665,7 +685,7 @@ namespace Optic_Coma
                     (
                         buttonSheet,
                         spriteBatch,
-                        ScreenManager.Instance.PauseKey_OnPress,
+                        Foundation.GlobalScreenManager.PauseKey_OnPress,
                         unpauseButtonPos,
                         font,
                         "Un-Pause Game",
@@ -675,7 +695,7 @@ namespace Optic_Coma
                     (
                         buttonSheet,
                         spriteBatch,
-                        ScreenManager.Instance.ChangeScreenMode,
+                        Foundation.GlobalScreenManager.ChangeScreenMode,
                         fullButtonPos,
                         font,
                         "   Toggle \nFullscreen",

@@ -36,7 +36,7 @@ namespace Optic_Coma
         public EntitySpriteMode Mode;
         public Vector2 TileSize { get; set; }
         public Vector2 TotalSize { get; set; }
-        public Texture2D SpriteSheet;
+        public Texture2D SpriteSheetTex;
 
         [XmlIgnore]
         public int CurrentColumn = 0;
@@ -44,6 +44,8 @@ namespace Optic_Coma
         public int CurrentRow = 0;
         [XmlIgnore]
         public Rectangle SourceRectangle;
+        [XmlIgnore]
+        public Rectangle DestinationRectangle;
 
         public EntitySprite()
         {
@@ -56,18 +58,41 @@ namespace Optic_Coma
                 (int)TileSize.Y * CurrentRow,
                 (int)TileSize.X,
                 (int)TileSize.Y);
-            Rectangle DestinationRectangle = new Rectangle(
+            DestinationRectangle = new Rectangle(
                 (int)location.X,
                 (int)location.Y,
                 (int)TileSize.X,
                 (int)TileSize.Y);
-            spriteBatch.Draw(SpriteSheet, DestinationRectangle, SourceRectangle, Color.White, 0, new Vector2(0,0), SpriteEffects.None, Layer)
 
             base.Draw(spriteBatch);
         }
         public override void Update()
         {
             base.Update();
+        }
+    }
+    public class EnemySprite : EntitySprite
+    {
+        public override void Draw(SpriteBatch spriteBatch, Vector2 location)
+        {
+            base.Draw(spriteBatch, location);
+            spriteBatch.Draw(SpriteSheetTex, DestinationRectangle, SourceRectangle, Color.White, 0, Vector2.Zero, SpriteEffects.None, (float)LayerDepth.Enemy / 10f);
+        }
+    }
+    public class PlayerSprite : EntitySprite
+    {
+        public override void Draw(SpriteBatch spriteBatch, Vector2 location)
+        {
+            base.Draw(spriteBatch, location);
+            spriteBatch.Draw(SpriteSheetTex, DestinationRectangle, SourceRectangle, Color.White, 0, Vector2.Zero, SpriteEffects.None, (float)LayerDepth.Player / 10f);
+        }
+    }
+    public class NPCSprite : EntitySprite
+    {
+        public override void Draw(SpriteBatch spriteBatch, Vector2 location)
+        {
+            base.Draw(spriteBatch, location);
+            spriteBatch.Draw(SpriteSheetTex, DestinationRectangle, SourceRectangle, Color.White, 0, Vector2.Zero, SpriteEffects.None, (float)LayerDepth.Enemy / 10f);
         }
     }
 

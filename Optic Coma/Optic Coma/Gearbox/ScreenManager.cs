@@ -12,33 +12,16 @@ namespace Optic_Coma
     public class ScreenManager
     { 
         private KeyboardState _oldState;
-        ///Create a new instance of screen manager and called it, incidentally, "instance".
-        ///This instance can not be changed or redefined by other classes, but may be used
-        private static ScreenManager _instance;
 
         public Vector2 Dimensions { private set; get; }
-        //Private set public get means that it can only be changed in this class, but other classes can recive the information stored
 
         public ContentManager Content { private set; get; }
-
 
         public BaseScreen CurrentScreen { set; get; }
 
         public List<Level> LevelsLoaded;
 
-        //Oh boy it's a singleton
-        public static ScreenManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new ScreenManager();
-                return _instance;
-            }
-        }
-
-        private ScreenManager()
-        //If you remember from the main class, the constructor gives the screenmanager class its "default" settings on startup
+        public ScreenManager()
         {
             //Size of screen where Dimensions.X and Dimensions.Y are variables that can be used but must be converted to integers to be used
             Dimensions = new Vector2(1024, 800);
@@ -48,13 +31,15 @@ namespace Optic_Coma
         }
         public void LoadContent(ContentManager content, PenumbraComponent lightingEngine)
         {
-            this.Content = new ContentManager(content.ServiceProvider, "Content");
+            Content = new ContentManager(content.ServiceProvider, "Content");
             //instantiate content, then tell it where the content is stored as the 2nd parameter, as well as the pipeline to load the content, called "ServiceProvider"
 
-            LevelsLoaded = LevelReadWriter.Read(new string[] { "level1.xml" });
+            //LevelsLoaded = LevelReadWriter.Read(new string[] { "level1.xml" });
 
             if (CurrentScreen is MenuScreen)
+            {
                 CurrentScreen.LoadContent();
+            }
             else if (CurrentScreen is Level1Screen)
             {
                 CurrentScreen.LoadContent();
@@ -129,12 +114,12 @@ namespace Optic_Coma
             if (Foundation.IsFullScreen)
             {
                 Foundation.IsFullScreen = false;
-                Foundation.Graphics.ApplyChanges();
+                Foundation.GlobalGraphicsDeviceManager.ApplyChanges();
             }
             else
             {
                 Foundation.IsFullScreen = true;
-                Foundation.Graphics.ApplyChanges();
+                Foundation.GlobalGraphicsDeviceManager.ApplyChanges();
             }
         }
         public Foundation Foundation;

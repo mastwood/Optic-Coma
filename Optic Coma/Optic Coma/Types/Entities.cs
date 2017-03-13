@@ -18,7 +18,7 @@ namespace Optic_Coma
         /// <summary>
         /// Global magic number
         /// </summary>
-        public static Vector2 CenterScreen = new Vector2(ScreenManager.Instance.Dimensions.X / 2, ScreenManager.Instance.Dimensions.Y / 2);
+        public static Vector2 CenterScreen = new Vector2(Foundation.GlobalScreenManager.Dimensions.X / 2, Foundation.GlobalScreenManager.Dimensions.Y / 2);
         /// <summary>
         /// Direction entity is facing
         /// </summary>
@@ -186,7 +186,7 @@ namespace Optic_Coma
                     Texture.Height / 2
                 ),
                 SpriteEffects.None,
-                (float)LayerDepth.Player
+                (float)LayerDepth.Player / 10f
             );
             spriteBatch.Draw
             (
@@ -207,7 +207,7 @@ namespace Optic_Coma
                     flashLightTexture.Height / 2
                 ),
                 SpriteEffects.None,
-                (float)LayerDepth.Flashlight
+                (float)LayerDepth.Flashlight / 10f
             );
         }  
     }
@@ -253,6 +253,7 @@ namespace Optic_Coma
 
         public Enemy(Texture2D texture, Vector2 initPosition, EnemyType eType)
         {
+            Properties = new EnemyProperties();
             random = new Random();
             Properties.Texture = texture;
             Properties.Mode = eType;
@@ -345,7 +346,7 @@ namespace Optic_Coma
                     Properties.Texture.Height / 2
                 ),
                 SpriteEffects.None,
-                (float)LayerDepth.Enemy
+                (float)LayerDepth.Enemy / 10f
             );
         } //Draw
     } //class

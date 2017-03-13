@@ -12,9 +12,12 @@ namespace Optic_Coma
         bool[][][] TilePresent;
         Vector2[][] WhichTexture;
         int sizeOfTex;
-        public TileSystem(Texture2D t, Vector2 s, List<Vector2> w, bool[][][] b, Vector2[][] f, int texsize)
+        LayerDepth Layer = LayerDepth.MidgroundTiles;
+
+        public TileSystem(Texture2D t, Vector2 s, List<Vector2> w, bool[][][] b, Vector2[][] f, int texsize, LayerDepth l)
         {
             SpriteSheet = t; Size = s;
+            Layer = l;
         }
         public void Draw(SpriteBatch spriteBatch, Vector2 locationOffset)
         {
@@ -36,7 +39,7 @@ namespace Optic_Coma
                             Vector2.Zero,
                             1f,
                             SpriteEffects.None,
-                            ScreenManager.Instance.TileLayer
+                            (float)Layer / 10f
                         );
                     }
                 }
@@ -103,7 +106,7 @@ namespace Optic_Coma
                             Vector2.Zero,
                             1f,
                             SpriteEffects.None,
-                            ScreenManager.Instance.TileLayer
+                            (float)LayerDepth.MidgroundTiles / 10f
                         );
                     }
                 }

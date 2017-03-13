@@ -34,11 +34,6 @@ namespace Optic_Coma
         public void SpawnNextEnemies()
         {
 
-            foreach (Enemy e in currentlySpawning)
-            {
-                if (!e.Spawned)
-                    e.Initialize();
-            }
         }
     } //TODO: Implement this into level editor
 
@@ -104,7 +99,10 @@ namespace Optic_Coma
     {
         public List<string> DependantTextures;
         public List<EnemySpawnerProperties> EnemySpawners;
-        
+        public LevelSerializable()
+        {
+
+        }
     }
 
     public class LevelReadWriter
