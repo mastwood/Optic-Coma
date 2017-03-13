@@ -29,13 +29,7 @@ namespace Optic_Coma
         }
     }
 
-    public enum EntitySpriteMode
-    {
-        Idle,
-        Walking,
-        Running,
-        Hit
-    }
+    
 
     public class EntitySprite : SpriteSheet
     {

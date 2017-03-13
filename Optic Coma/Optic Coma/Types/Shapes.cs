@@ -7,10 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Optic_Coma
 {
-    public enum Orientation
-    {
-        Vert, Horiz
-    }
+    
 
     public class Triangle
     {

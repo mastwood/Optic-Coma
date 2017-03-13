@@ -8,17 +8,7 @@ using System.Collections.Generic;
 
 namespace Optic_Coma
 {
-    public enum LayerDepth
-    {
-        BGImage,
-        BackgroundTiles,
-        MidgroundTiles,
-        Player,
-        Flashlight,
-        Enemy,
-        ForegroundTiles,
-        HUD
-    }
+    
     public class ScreenManager
     { 
         private KeyboardState _oldState;

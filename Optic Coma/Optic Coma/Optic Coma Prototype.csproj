@@ -73,6 +73,7 @@
     <StartupObject>Optic_Coma.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Gearbox\Enums.cs" />
     <Compile Include="Gearbox\Save.cs" />
     <Compile Include="SerializationInterfaces.cs" />
     <Compile Include="Types\LevelHandler.cs" />
