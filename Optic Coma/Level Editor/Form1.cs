@@ -138,7 +138,20 @@ namespace Level_Editor
             */
         }
 
-        #endregion 
+        #endregion
+        #region Static Methods
+        public static Image GetResizedImage(Image img, Rectangle rect)
+        {
+            Bitmap b = new Bitmap(rect.Width, rect.Height);
+            using (Graphics g = Graphics.FromImage(b))
+            {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.DrawImage(img, 0, 0, rect.Width, rect.Height);
+                g.Dispose();
+                return (Image)b.Clone();
+            }
+        }
+        #endregion
         #region scrollbars
         private void vScrollBarLevel_Scroll(object sender, ScrollEventArgs e)
         {
@@ -159,6 +172,13 @@ namespace Level_Editor
         }
         #endregion
         #region toolstrip item click events
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LevelNameInputDialog f = new LevelNameInputDialog();
+            f.ShowDialog();
+            string s = f.GetLevelName();
+            levelTabControl.TabPages.Add(s);
+        }
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
@@ -188,41 +208,24 @@ namespace Level_Editor
             Bitmap i = (Bitmap)Image.FromFile(openFileDialogImages.FileName);
             Bitmap o = (Bitmap)GetResizedImage(i, new Rectangle(0, 0, 32, 32));
             ImageResources.Add(o);
+            ImageResourcesPaths.Add(openFileDialogImages.FileName);
             UpdateImageResourceToolBar();
         }
-        public static Image GetResizedImage(Image img, Rectangle rect)
-        {
-            Bitmap b = new Bitmap(rect.Width, rect.Height);
-            using (Graphics g = Graphics.FromImage(b))
-            {
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.DrawImage(img, 0, 0, rect.Width, rect.Height);
-                g.Dispose();
-                return (Image)b.Clone();
-            }
-        }
+        
         #endregion
         #region serialization
         public void SaveLevel(string path)
         {
             using (var f = new FileStream(path, FileMode.Create))
             {
-                xml = new XmlSerializer(typeof(string));
-                if(ImageResourcesPaths.Count > 0)
-                    xml.Serialize(f, ImageResourcesPaths);
-                xml = new XmlSerializer(typeof(Bitmap));
-                if(CurrentLevel.fTileGrid.GetComposedImage() != null)
-                    xml.Serialize(f, CurrentLevel.fTileGrid.GetComposedImage());
-                if (CurrentLevel.mTileGrid.GetComposedImage() != null)
-                    xml.Serialize(f, CurrentLevel.mTileGrid.GetComposedImage());
-                if (CurrentLevel.bTileGrid.GetComposedImage() != null)
-                    xml.Serialize(f, CurrentLevel.bTileGrid.GetComposedImage());
-                //TODO: Enemy spawners, npc, etc
+
             }
         }
         public void LoadLevel(string path)
         {
-
+            using (var f = new FileStream(path, FileMode.Open))
+            {
+            }
         }
         private void openFileDialogLevels_FileOk(object sender, CancelEventArgs e)
         {
@@ -300,13 +303,7 @@ namespace Level_Editor
 
         }
 
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LevelNameInputDialog f = new LevelNameInputDialog();
-            f.ShowDialog();
-            string s = f.GetLevelName();
-            levelTabControl.TabPages.Add(s);
-        }
+        
     }
     public class BufferedPanel : Panel
     {

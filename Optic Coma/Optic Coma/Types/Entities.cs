@@ -3,9 +3,22 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Penumbra;
-
+using System.Xml.Serialization;
 namespace Optic_Coma
 {
+    public enum EnemyType
+    {
+        Jiggler,
+        Wavey
+    }
+    public enum NPCMode
+    {
+        ScriptedMovement,
+        Stationary,
+        Dead
+    }
+
+
     public abstract class Entity
     {
         public Vector2 CurrentPosition;
@@ -26,6 +39,24 @@ namespace Optic_Coma
         public virtual void Draw(SpriteBatch spriteBatch)
         {
 
+        }
+        /// <summary>
+        /// Allows for serialization of arrays -- Enemyspawner
+        /// </summary>
+        /// <returns></returns>
+        public static XmlSerializer EnemySpawner_CreateOverrider()
+        {
+            // Creating XmlAttributeOverrides and XmlAttributes objects.
+            XmlAttributeOverrides xOver = new XmlAttributeOverrides();
+            XmlAttributes xAttrs = new XmlAttributes();
+
+            // Add an override for the XmlArray.    
+            XmlArrayAttribute xArray = new XmlArrayAttribute("EnemyWave");
+            xAttrs.XmlArray = xArray;
+            xOver.Add(typeof(EnemySpawnerProperties), "EnemyWaveArray", xAttrs);
+
+            // Create the XmlSerializer and return it.
+            return new XmlSerializer(typeof(EnemySpawnerProperties), xOver);
         }
         public static float WalkMult(float dir, float angle, float amp, bool useExp)
         {
@@ -68,7 +99,6 @@ namespace Optic_Coma
             }
         }
     }
-
 
     public class Player : Entity
     {
@@ -145,7 +175,7 @@ namespace Optic_Coma
                     Texture.Height / 2
                 ),
                 SpriteEffects.None,
-                ScreenManager.Instance.EntityLayer
+                (float)LayerDepth.Player
             );
             spriteBatch.Draw
             (
@@ -166,28 +196,38 @@ namespace Optic_Coma
                     flashLightTexture.Height / 2
                 ),
                 SpriteEffects.None,
-                ScreenManager.Instance.FlashlightLayer
+                (float)LayerDepth.Flashlight
             );
         }  
     }
 
-    public enum EnemyType
+    /// <summary>
+    /// Contains the properties of an enemy that will be loaded or saved alongside a level
+    /// </summary>
+    public class EnemyProperties
     {
-        Jiggler,
-        Wavey
+        public EnemyType Mode;
+        public Texture2D Texture;
     }
+    public class NPCProperties
+    {
+        public NPCMode InitMode;
+        public Vector2 InitLocation;
+        public Texture2D Texture;
+    }
+    public class NPC : Entity
+    {
+        public NPCProperties Properties;
 
+        public NPC()
+        {
+        }
+
+    }
     public class Enemy : Entity
     {
-        public EnemyType EnemyMode;
-        ///     Example use:
-        ///     if(EnemyMode == EnemyType.Wavey)
-        ///     {
-        ///          DOSTUFF()
-        ///     }
-
+        public EnemyProperties Properties;
         public float EnemyAngle = 0f;
-        public Texture2D Texture { get; set; }
         private static Random random;
         private int speed;
         private int dir;
@@ -198,8 +238,8 @@ namespace Optic_Coma
         public Enemy(Texture2D texture, Vector2 initPosition, EnemyType eType)
         {
             random = new Random();
-            Texture = texture;
-            EnemyMode = eType;
+            Properties.Texture = texture;
+            Properties.Mode = eType;
             CurrentPosition = initPosition;
             speed = 4 + Acceleration;
             moveAmp = 0;
@@ -219,7 +259,7 @@ namespace Optic_Coma
             {
                 
                 Angle = EnemyAngle;
-                if (EnemyMode == EnemyType.Jiggler)
+                if (Properties.Mode == EnemyType.Jiggler)
                 {
                     EnemyAngle = (float)(Math.Atan2(CenterScreen.Y - CurrentPosition.Y,
                              CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
@@ -227,7 +267,7 @@ namespace Optic_Coma
                     moveAmp = 4; //We can toy around with this later.
                     dir = random.Next(0, 4);
                 }
-                else if (EnemyMode == EnemyType.Wavey)
+                else if (Properties.Mode == EnemyType.Wavey)
                 {
                     moveAmp += 0.01f;
                     if (moveAmp >= Math.PI * 4)
@@ -253,46 +293,49 @@ namespace Optic_Coma
         {
             if (Spawned)
             {
-                if (EnemyMode == EnemyType.Jiggler)
+                switch (Properties.Mode)
                 {
-                    dir = random.Next(0, 4);
-                    if (dir == 0)
-                        CurrentPosition.Y -= (4 * WalkMult((float)Math.PI / 2, EnemyAngle, moveAmp, false));
-                    else if (dir == 1)
-                        CurrentPosition.X -= (4 * WalkMult(0, EnemyAngle, moveAmp, false));
-                    else if (dir == 2)
-                        CurrentPosition.Y += (4 * WalkMult(3 * (float)Math.PI / 2, EnemyAngle, moveAmp, false));
-                    else
-                        CurrentPosition.X += (4 * WalkMult((float)Math.PI, EnemyAngle, moveAmp, false));
-                }
-                else if (EnemyMode == EnemyType.Wavey)
-                {
-                    CurrentPosition.X -= (float)Math.Cos(EnemyAngle) * ((float)Math.Sin(moveAmp) + 1);
-                    CurrentPosition.Y -= (float)Math.Sin(EnemyAngle) * ((float)Math.Sin(moveAmp) + 1);
-                }
+                    case EnemyType.Jiggler:
+                        dir = random.Next(0, 4);
+                        switch (dir)
+                        {
+                            case 0:
+                                CurrentPosition.Y -= (4 * WalkMult((float)Math.PI / 2, EnemyAngle, moveAmp, false));break;
+                            case 1:
+                                CurrentPosition.X -= (4 * WalkMult(0, EnemyAngle, moveAmp, false));break;
+                            case 2:
+                                CurrentPosition.Y += (4 * WalkMult(3 * (float)Math.PI / 2, EnemyAngle, moveAmp, false));break;
+                            default:
+                                CurrentPosition.X += (4 * WalkMult((float)Math.PI, EnemyAngle, moveAmp, false));break;
+                        }
+                        break;
+                    case EnemyType.Wavey:
+                        CurrentPosition.X -= (float)Math.Cos(EnemyAngle) * ((float)Math.Sin(moveAmp) + 1);
+                        CurrentPosition.Y -= (float)Math.Sin(EnemyAngle) * ((float)Math.Sin(moveAmp) + 1);break;
+                } 
                 spriteBatch.Draw
                 (
-                    Texture,
+                    Properties.Texture,
                     new Rectangle
                     (
                         (int)CurrentPosition.X,
                         (int)CurrentPosition.Y,
-                        Texture.Width,
-                        Texture.Height
+                        Properties.Texture.Width,
+                        Properties.Texture.Height
                     ),
                     null,
                     Color.White,
                     EnemyAngle,
                     new Vector2
                     (
-                        Texture.Width / 2,
-                        Texture.Height / 2
+                        Properties.Texture.Width / 2,
+                        Properties.Texture.Height / 2
                     ),
                     SpriteEffects.None,
-                    ScreenManager.Instance.EntityLayer
+                    (float)LayerDepth.Enemy
                 );
-            }
-        }
+            } //If(Spawned)
+        } //Draw
+    } //class
+} //namespace
 
-    }
-}

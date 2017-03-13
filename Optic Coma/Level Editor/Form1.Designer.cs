@@ -384,7 +384,7 @@
             // frmMain
             // 
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.grpResources);
             this.Controls.Add(this.levelLoadProgress);
             this.Controls.Add(this.grpTools);

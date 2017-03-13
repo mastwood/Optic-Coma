@@ -74,6 +74,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Gearbox\Save.cs" />
+    <Compile Include="SerializationInterfaces.cs" />
     <Compile Include="Types\LevelHandler.cs" />
     <Compile Include="Types\Shapes.cs" />
     <Compile Include="Types\Sprite.cs" />

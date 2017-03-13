@@ -95,19 +95,6 @@ namespace Optic_Coma
         {
             spriteBatch.Draw
             (
-                bg,
-                null,
-                new Rectangle(0, 0, (int)ScreenManager.Instance.Dimensions.X, (int)ScreenManager.Instance.Dimensions.Y),
-                null,
-                null,
-                0,
-                null,
-                Color.White,
-                SpriteEffects.None,
-                ScreenManager.Instance.BgLayer
-            );
-            spriteBatch.Draw
-            (
                 titleGraphic,
                 null,
                 new Rectangle((int)Entity.CenterScreen.X - titleGraphic.Width / 2, 0, titleGraphic.Width, titleGraphic.Height / 2),
@@ -117,7 +104,20 @@ namespace Optic_Coma
                 null,
                 Color.White,
                 SpriteEffects.None,
-                ScreenManager.Instance.BgLayer - 0.01f
+                (float)LayerDepth.BGImage
+            );
+            spriteBatch.Draw
+            (
+                bg,
+                null,
+                new Rectangle(0, 0, (int)ScreenManager.Instance.Dimensions.X, (int)ScreenManager.Instance.Dimensions.Y),
+                null,
+                null,
+                0,
+                null,
+                Color.White,
+                SpriteEffects.None,
+                (float)LayerDepth.BGImage
             );
             //We're making our button! Woo!
             btnEnterGame.Draw
@@ -293,7 +293,17 @@ namespace Optic_Coma
 
                 Foundation.LightingEngine.BeginDraw();
                 spriteBatch.Begin(SpriteSortMode.BackToFront);
-                spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, screenWidth, screenHeight), null, Color.White, 0, Vector2.Zero, SpriteEffects.None, ScreenManager.Instance.BgLayer);
+                spriteBatch.Draw
+                (
+                    backgroundTexture,
+                    new Rectangle(0, 0, screenWidth, screenHeight),
+                    null,
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    SpriteEffects.None,
+                    (float)LayerDepth.BGImage
+                );
                 foreach (Enemy enemy in enemies)
                 {
                     enemy.Draw(spriteBatch);
@@ -309,11 +319,51 @@ namespace Optic_Coma
                 {
                     InheritedLevel.Draw(spriteBatch, gameTime);
                 }
+                #region HUD
                 var fps = string.Format("FPS: {0}", FrameCounter.AverageFramesPerSecond);
-                spriteBatch.DrawString(font, "Position: " + TileOffsetLocation.X + "," + TileOffsetLocation.Y, new Vector2(1, 84), Color.White);
-                spriteBatch.DrawString(font, fps, new Vector2(1, 65), Color.White);
-                spriteBatch.DrawString(font, "Lighting Debug Enabled?: " + Foundation.LightingEngine.Debug, new Vector2(1, 103), Color.White);
-                spriteBatch.DrawString(font, "Distance to Closest Enemy: " + GetDistToClosestEnemy(enemies, Entity.CenterScreen), new Vector2(1, 123), Color.White);
+                spriteBatch.DrawString
+                (
+                    font, 
+                    "Position: " + TileOffsetLocation.X + "," + TileOffsetLocation.Y,
+                    new Vector2(1, 84),
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    Vector2.One,
+                    SpriteEffects.None,
+                    (float)LayerDepth.HUD
+                );
+                spriteBatch.DrawString
+                (
+                    font,
+                    "FPS: " + fps,
+                    new Vector2(1, 65),
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    Vector2.One,
+                    SpriteEffects.None,
+                    (float)LayerDepth.HUD);
+                spriteBatch.DrawString(
+                    font,
+                    "Lighting Debug Enabled?: " + Foundation.LightingEngine.Debug,
+                    new Vector2(1, 103),
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    Vector2.One,
+                    SpriteEffects.None,
+                    (float)LayerDepth.HUD);
+                spriteBatch.DrawString(
+                    font,
+                    "Distance to Closest Enemy: " + GetDistToClosestEnemy(enemies, Entity.CenterScreen),
+                    new Vector2(1, 123),
+                    Color.White, 
+                    0,
+                    Vector2.Zero,
+                    Vector2.One,
+                    SpriteEffects.None,
+                    (float)LayerDepth.HUD);
                 pauseButton.Draw
                 (
                     buttonSheet,
@@ -324,6 +374,7 @@ namespace Optic_Coma
                     "Pause Game",
                     Color.Black
                 );
+                #endregion
             }
             else if (inherited && !hasLoaded)
             {

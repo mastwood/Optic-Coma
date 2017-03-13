@@ -82,10 +82,10 @@ namespace Optic_Coma
                 Vector2.Zero,
                 1f,
                 SpriteEffects.None,
-                ScreenManager.Instance.ButtonLayer
+                (float)LayerDepth.HUD
             );
 
-            spriteBatch.DrawString(font, text, textLocation, color, 0f, Vector2.Zero, 1, SpriteEffects.None, ScreenManager.Instance.ButtonTextLayer);
+            spriteBatch.DrawString(font, text, textLocation, color, 0f, Vector2.Zero, 1, SpriteEffects.None, (float)LayerDepth.HUD);
             _preMouse = curMouse;
         }
     }

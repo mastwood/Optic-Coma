@@ -8,10 +8,19 @@ using System.Collections.Generic;
 
 namespace Optic_Coma
 {
-    public class ScreenManager
+    public enum LayerDepth
     {
-        public float TileLayer = 0.9f, ButtonLayer = 0.1f, ButtonTextLayer = 0.05f, BgLayer = 1f, MgLayer = 0.5f, EntityLayer = 0.6f, FlashlightLayer = 0.61f, FgLayer = 0.4f; 
-
+        BGImage,
+        BackgroundTiles,
+        MidgroundTiles,
+        Player,
+        Flashlight,
+        Enemy,
+        ForegroundTiles,
+        HUD
+    }
+    public class ScreenManager
+    { 
         private KeyboardState _oldState;
         ///Create a new instance of screen manager and called it, incidentally, "instance".
         ///This instance can not be changed or redefined by other classes, but may be used

@@ -3,6 +3,15 @@ using System.IO;
 using System.Xml.Serialization;
 using System.Security.Cryptography;
 using System.Text;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using System.Threading;
+using System.ComponentModel;
+
 
 namespace Optic_Coma
 {
@@ -64,6 +73,7 @@ namespace Optic_Coma
                 return null;
             }
         }
+        
     }
    
     public class LogWriter

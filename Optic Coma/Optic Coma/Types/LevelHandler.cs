@@ -15,18 +15,25 @@ namespace Optic_Coma
 {
     using WorkerAction = Action<object, DoWorkEventArgs>; //rename this to prevent typing cus lazy
 
+    public class EnemySpawnerProperties
+    {
+        [XmlArray] public List<EnemyProperties>[] EnemyWaveArray;
+        public int NumWaves;
+    }
     public class EnemySpawner
     {
-        Queue<List<Enemy>> enemies;
-        EnemySpawner(Queue<List<Enemy>> e) //queue is used so that enemies can be loaded in first-to-last and then taken out first-to-last
+        public EnemySpawnerProperties Properties;
+
+        EnemySpawner(List<Enemy>[] e) //queue is used so that enemies can be loaded in first-to-last and then taken out first-to-last
         {
-            enemies = e;
+
         }
 
-        List<Enemy> currentlySpawning;
+        [XmlIgnore] List<Enemy> currentlySpawning;
+        [XmlIgnore] int WaveNum;
         public void SpawnNextEnemies()
         {
-            currentlySpawning = enemies.Dequeue();
+
             foreach (Enemy e in currentlySpawning)
             {
                 if (!e.Spawned)
@@ -69,14 +76,7 @@ namespace Optic_Coma
         LevelHandler Handler;
         public Level(LevelSerializable LS)
         {
-            Name = LS.LevelName; Index = LS.LevelIndex;
-            ALoader += (object sender, DoWorkEventArgs e) =>
-            {
-                spriteSheet = BaseScreen.BaseScreenContent.Load<Texture2D>(LS.spriteSheetTexturePath);
-                backgroundImage = BaseScreen.BaseScreenContent.Load<Texture2D>(LS.backgroundImageTexturePath);
-            };
-            Player = new Player(spriteSheet, new Vector2(LS.playerInitPosition_X, LS.playerInitPosition_Y), null);
-            tileSystem = new TileSystem(spriteSheet, new Vector2(LS.levelSize_X,LS.levelSize_Y), LS.walkableTiles, LS.tilePresent, LS.whichTextureInSheet, 32);
+
         }
         public void LoadContent()
         {
@@ -102,18 +102,9 @@ namespace Optic_Coma
 
     [Serializable] public class LevelSerializable
     {
-        public string LevelName;
+        public List<string> DependantTextures;
+        public List<EnemySpawnerProperties> EnemySpawners;
         
-        public float playerInitPosition_X, playerInitPosition_Y;
-        public float levelSize_X, levelSize_Y;
-        
-        public List<Vector2> walkableTiles;
-        public bool[][][] tilePresent; //[x][y][l]
-        public Vector2[][] whichTextureInSheet; //[x][y]
-
-        public string spriteSheetTexturePath;
-        public string backgroundImageTexturePath;
-        public int LevelIndex; //which level is it in our order of levels
     }
 
     public class LevelReadWriter
