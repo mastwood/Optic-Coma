@@ -4,11 +4,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Penumbra;
 using System.Xml.Serialization;
-namespace Optic_Coma
+using OpticComa_Types;
+
+namespace OpticComa_Main
 {
-    
-
-
     public abstract class Entity
     {
         /// <summary>
@@ -26,7 +25,7 @@ namespace Optic_Coma
         /// <summary>
         /// Polygon for shape of shadow
         /// </summary>
-        public Hull Hull;
+        public Hull ShadowHull;
 
         public virtual void Update()
         {
@@ -42,24 +41,7 @@ namespace Optic_Coma
         {
 
         }
-        /// <summary>
-        /// Allows for serialization of arrays -- Enemyspawner
-        /// </summary>
-        /// <returns>Serializer</returns>
-        public static XmlSerializer EnemySpawner_CreateOverrider()
-        {
-            // Creating XmlAttributeOverrides and XmlAttributes objects.
-            XmlAttributeOverrides xOver = new XmlAttributeOverrides();
-            XmlAttributes xAttrs = new XmlAttributes();
 
-            // Add an override for the XmlArray.    
-            XmlArrayAttribute xArray = new XmlArrayAttribute("EnemyWave");
-            xAttrs.XmlArray = xArray;
-            xOver.Add(typeof(EnemySpawnerProperties), "EnemyWaveArray", xAttrs);
-
-            // Create the XmlSerializer and return it.
-            return new XmlSerializer(typeof(EnemySpawnerProperties), xOver);
-        }
         /// <summary>
         /// Calculates speed at which entities will move in certain situations
         /// </summary>
@@ -212,23 +194,7 @@ namespace Optic_Coma
         }  
     }
 
-    /// <summary>
-    /// Contains the properties of an enemy that will be loaded or saved alongside a level
-    /// </summary>
-    public class EnemyProperties
-    {
-        public EnemyType Mode;
-        public Texture2D Texture;
-    }
-    /// <summary>
-    /// Contains properties of some NPC that can be loaded and saved alongside a level
-    /// </summary>
-    public class NPCProperties
-    {
-        public NPCMode InitMode;
-        public Vector2 InitLocation;
-        public Texture2D Texture;
-    }
+    
     public class NPC : Entity
     {
         public NPCProperties Properties;
@@ -260,10 +226,9 @@ namespace Optic_Coma
             CurrentPosition = initPosition;
             speed = 4 + Acceleration;
             moveAmp = 0;
-            Hull = Hull.CreateRectangle(CurrentPosition, new Vector2(texture.Width, texture.Height), Angle, new Vector2(texture.Width/2, texture.Height/2));
-            Hull.Origin = new Vector2(CurrentPosition.X / 2, CurrentPosition.Y / 2);
-            
-            Hull.Enabled = true;
+            ShadowHull = Hull.CreateRectangle(CurrentPosition, new Vector2(texture.Width, texture.Height), Angle, new Vector2(texture.Width/2, texture.Height/2));
+            ShadowHull.Enabled = true;
+            Foundation.LightingEngine.Hulls.Add(ShadowHull);
         }
         /// <summary>
         /// Deprecated method - not used atm
@@ -295,15 +260,17 @@ namespace Optic_Coma
                             CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
                 }
             }
+            UpdateHull(ref Foundation.LightingEngine);
         }
         /// <summary>
         /// Updates shadow geometry in presence of light
         /// </summary>
         public void UpdateHull(ref PenumbraComponent lightingEngine)
         {
-            Hull.Rotation = Angle;
-            Hull.Position = Hull.Origin;
-            lightingEngine.Hulls.Add(Hull);
+            lightingEngine.Hulls.Remove(ShadowHull);
+            ShadowHull.Rotation = Angle;
+            ShadowHull.Position = ShadowHull.Origin;
+            lightingEngine.Hulls.Add(ShadowHull);
         }
         public override void Draw(SpriteBatch spriteBatch)
         {

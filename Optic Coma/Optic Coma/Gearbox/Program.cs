@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Optic_Coma
+namespace OpticComa_Main
 {
 #if WINDOWS || LINUX
     /// <summary>

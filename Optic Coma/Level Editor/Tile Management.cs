@@ -82,7 +82,7 @@ namespace Level_Editor
             Composite();
             return ComposedImage;
         }
-        public void Draw(Graphics g, Point PanOffset)
+        public void LevelEditorDraw(Graphics g, Point PanOffset)
         {
             g.DrawImage(GetComposedImage(), PanOffset);
         }

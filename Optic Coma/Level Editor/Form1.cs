@@ -240,6 +240,10 @@ namespace Level_Editor
         }
         #endregion
         #region panel events and methods
+        private void tilePanel_Click(object sender, EventArgs e)
+        {
+
+        }
         private void panelResources_MouseClick(object sender, MouseEventArgs e)
         {
             
@@ -290,20 +294,13 @@ namespace Level_Editor
                     CurrentLevel.currentTileGrid.Tiles.Remove(t);
                     t.SetTexture(ImageToPaint);
                     CurrentLevel.currentTileGrid.Tiles.Add(t);
-                    CurrentLevel.currentTileGrid.Draw(TilePanel.CreateGraphics(), PanOffset);
+                    CurrentLevel.currentTileGrid.LevelEditorDraw(TilePanel.CreateGraphics(), PanOffset);
                     TilePanel.Update();
                     return;
                 }
             }
         }
         #endregion
-
-        private void tilePanel_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        
     }
     public class BufferedPanel : Panel
     {

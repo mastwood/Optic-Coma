@@ -13,7 +13,7 @@ using System.Threading;
 using System.ComponentModel;
 
 
-namespace Optic_Coma
+namespace OpticComa_Main
 {
     /// <summary>
     /// Contains data to save upon game exit

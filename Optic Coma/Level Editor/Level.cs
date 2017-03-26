@@ -69,7 +69,7 @@ namespace Level_Editor
                 {
                     p.ShowGridLines = gridlines;
                 }
-                currentTileGrid.Draw(f.CreateGraphics(), panOffset);
+                currentTileGrid.LevelEditorDraw(f.CreateGraphics(), panOffset);
             }
             else
             {

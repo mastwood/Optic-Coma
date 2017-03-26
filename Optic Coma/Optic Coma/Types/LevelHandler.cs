@@ -10,24 +10,23 @@ using System.Threading;
 using System.ComponentModel;
 using System.IO;
 using Penumbra;
+using OpticComa_Types;
 
-namespace Optic_Coma
+namespace OpticComa_Main
 {
     using WorkerAction = Action<object, DoWorkEventArgs>; //rename this to prevent typing cus lazy
 
-    public class EnemySpawnerProperties
-    {
-        [XmlArray] public List<EnemyProperties>[] EnemyWaveArray;
-        public int NumWaves;
-    }
+    
     public class EnemySpawner
     {
         public EnemySpawnerProperties Properties;
 
-        EnemySpawner(List<Enemy>[] e) //queue is used so that enemies can be loaded in first-to-last and then taken out first-to-last
+        EnemySpawner(EnemySpawnerProperties inits) //queue is used so that enemies can be loaded in first-to-last and then taken out first-to-last
         {
-
+            Properties = inits;
+            foreach()
         }
+
 
         [XmlIgnore] List<Enemy> currentlySpawning;
         [XmlIgnore] int WaveNum;
@@ -53,7 +52,45 @@ namespace Optic_Coma
         }
     }
 
-    
+
+    public class HitboxMap
+    {
+        private List<IHitBox> hB;
+
+        public HitboxMap(List<IHitBox> h)
+        {
+            hB = h;
+        }
+        public HitboxMap()
+        {
+        }
+
+        public bool Collision(Rectangle hBPlayer)
+        {
+            foreach (IHitBox h in hB)
+                if (h.Contains(hBPlayer)) return true;
+
+            return false;
+        }
+        public void AddNewHitbox(IHitBox h)
+        {
+            hB.Add(h);
+        }
+        public void Update(Vector2 offset)
+        {
+            foreach(IHitBox h in hB)
+            {
+                h.Update(offset);
+            }
+        }
+    }
+    public class LevelContentReader : ContentTypeReader<LevelSerializable>
+    {
+        protected override LevelSerializable Read(ContentReader input, LevelSerializable existingInstance)
+        {
+            return input.ReadObject(existingInstance);
+        }
+    }
     public class Level
     {
         string Name;
@@ -62,16 +99,25 @@ namespace Optic_Coma
         public Player Player;
         public WorkerAction ALoader;
         public TileSystem tileSystem;
-        public Texture2D spriteSheet;
-        public Texture2D backgroundImage;
-
-        public List<PointLight> ambientLights; //deal with lighting later
+        public Texture2D mapBackground;
+        public Texture2D mapMidground;
+        public Texture2D mapForeground;
+        public Texture2D imgBackground;
+        public List<Vector2> pointLightLocations;
+        public List<IHitBox> HitBoxes;
 
         public bool HasLoaded;
         LevelHandler Handler;
         public Level(LevelSerializable LS)
         {
-
+            HitBoxes.AddRange(LS.TriHitBoxes);
+            HitBoxes.AddRange(LS.RectHitBoxes);
+            ALoader += (object sender, DoWorkEventArgs e) =>
+            {
+                mapBackground = Foundation.GlobalScreenManager.Content.Load<Texture2D>(LS.Background);
+                mapMidground = Foundation.GlobalScreenManager.Content.Load<Texture2D>(LS.Midground);
+                mapForeground = Foundation.GlobalScreenManager.Content.Load<Texture2D>(LS.Foreground);
+            };
         }
         public void LoadContent()
         {
@@ -95,43 +141,6 @@ namespace Optic_Coma
         }
     }
 
-    [Serializable] public class LevelSerializable
-    {
-        public List<string> DependantTextures;
-        public List<EnemySpawnerProperties> EnemySpawners;
-        public LevelSerializable()
-        {
-
-        }
-    }
-
-    public class LevelReadWriter
-    {
-        public LevelReadWriter()
-        {
-        }
-        public static List<Level> Read(string[] path)
-        {
-            XmlSerializer x = new XmlSerializer(typeof(LevelSerializable));
-            List<Level> l = new List<Level>();
-            try
-            {
-                foreach(string s in path) { 
-                    using (var f = new FileStream(s, FileMode.Open))
-                    {
-                        Level level = new Level((LevelSerializable)x.Deserialize(f));
-                        l.Add(level);
-                    }
-                }
-                return l;
-            }
-            catch(FileNotFoundException ex)
-            {
-                return null;
-            }
-        }
-        
-    }
     public class LevelHandler
     {
         public bool loaded;
@@ -144,6 +153,7 @@ namespace Optic_Coma
         {
             return (SuccessCode > 0);
         }
+
         public LevelHandler(WorkerAction action, bool checkLoad)
         {
             Action = action;

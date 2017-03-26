@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-namespace Optic_Coma
+using OpticComa_Types;
+
+namespace OpticComa_Main
 {
     public class TileSystem
     {
         Vector2 Size;
         Texture2D SpriteSheet;
-        List<Vector2> Walkables;
         bool[][][] TilePresent;
         Vector2[][] WhichTexture;
         int sizeOfTex;

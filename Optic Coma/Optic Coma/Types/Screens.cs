@@ -6,11 +6,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using System.Xml.Serialization;
+using System.IO;
 using System.Threading;
 using System.ComponentModel;
 using Penumbra;
+using OpticComa_Types;
 
-namespace Optic_Coma
+namespace OpticComa_Main
 {
     public class BaseScreen
     {
@@ -26,6 +28,11 @@ namespace Optic_Coma
         public virtual void LoadContent()
         {
             BaseScreenContent = new ContentManager(Foundation.GlobalScreenManager.Content.ServiceProvider, "Content");
+
+        }
+        public virtual void LoadContent(string path)
+        {
+            BaseScreenContent = new ContentManager(Foundation.GlobalScreenManager.Content.ServiceProvider, "Content");
         }
         public virtual void LoadContent(LevelHandler l)
         {
@@ -38,7 +45,12 @@ namespace Optic_Coma
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
 
-        }public virtual void Update(GameTime gameTime)
+        }
+        public virtual void Draw(SpriteBatch spriteBatch)
+        {
+
+        }
+        public virtual void Update(GameTime gameTime)
         {
 
         }
@@ -133,7 +145,43 @@ namespace Optic_Coma
             );
         }
     }
-    public class LevelScreen : BaseScreen
+    public class LevelScreen :BaseScreen
+    {
+        public LevelSerializable LevelContent;
+        public Dictionary<string, Texture2D> Textures = new Dictionary<string, Texture2D>();
+
+        public LevelScreen(string path)
+        {
+            LoadContent(path);
+        }
+        public override void LoadContent(string path)
+        {
+            XmlSerializer xml = new XmlSerializer(typeof(LevelSerializable));
+            using (FileStream f = new FileStream(path, FileMode.Open)) {
+                LevelContent = (LevelSerializable)xml.Deserialize(f);
+            }
+            Texture2D BackgroundTexture = null;
+            Texture2D BackgroundMap = null;
+            Texture2D MidgroundMap = null;
+            Texture2D ForegroundMap = null;
+            Texture2D PlayerTexture = null;
+
+            Textures.Add("backgroundTexture", BackgroundTexture);
+            Textures.Add("backgroundMap", BackgroundMap);
+            Textures.Add("backgroundMap", MidgroundMap);
+            Textures.Add("backgroundMap", ForegroundMap);
+            Textures.Add("playerTexture", PlayerTexture);
+        }
+        public override void UnloadContent()
+        {
+            base.UnloadContent();
+        }
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+
+        }
+    }
+    public class dLevelScreen : BaseScreen
     {
         private float deltaTime;
         public volatile bool hasLoaded = false; //volatile means that the variable can be used in multiple threads at once
@@ -171,13 +219,10 @@ namespace Optic_Coma
         public List<Enemy> enemies = new List<Enemy>();
         public Texture2D backgroundTexture;
 
-        public Action<object, DoWorkEventArgs> LoaderMethod;
-
         public int screenWidth = (int)Foundation.GlobalScreenManager.Dimensions.X;
         public int screenHeight = (int)Foundation.GlobalScreenManager.Dimensions.Y;
 
-        public bool inherited;
-        public Level InheritedLevel;
+        public Action<object, DoWorkEventArgs> LoaderMethod { get; set; }
 
         /// <summary>
         /// Checks if player will be out of bounds in the next game tick
@@ -250,13 +295,9 @@ namespace Optic_Coma
             return (350 / (1 + Math.Exp(-0.02d*(xD - 200d))));
         }
         
-        public LevelScreen()
+        public dLevelScreen()
         {
-            inherited = false;
-        }
-        public LevelScreen(Level l)
-        {
-            inherited = true;
+
         }
 
         public override void LoadContent()
@@ -269,17 +310,10 @@ namespace Optic_Coma
             flashLightTexture = BaseScreenContent.Load<Texture2D>(flashPath);
             player = new Player(playerTexture, playerPos, flashLightTexture);
 
-            if (inherited == false) //Level1Screen
-            {
-                backgroundTexture = BaseScreenContent.Load<Texture2D>("starsbg");
-                Handler = new LevelHandler(LoaderMethod, hasLoaded);
-                Handler.worker.RunWorkerAsync();
-            }
-            else if (inherited == true) //Level loaded from xml (LevelEditor)
-            {
-                InheritedLevel.LoadContent();
-                Handler = new LevelHandler(InheritedLevel.ALoader, hasLoaded);
-            }
+            backgroundTexture = BaseScreenContent.Load<Texture2D>("starsbg");
+            Handler = new LevelHandler(LoaderMethod, hasLoaded);
+            Handler.worker.RunWorkerAsync();
+
             base.LoadContent();
         }
         public override void UnloadContent()
@@ -290,25 +324,16 @@ namespace Optic_Coma
         {
             if(hasLoaded)
             { 
-                if (inherited)
-                {
-                    InheritedLevel.Update(gameTime);
-                }
-
                 deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 FrameCounter.Update(deltaTime);
             }
-            else if(inherited && !hasLoaded) //FOR LEVEL EDITOR
-            {
-                InheritedLevel.Update(gameTime);
-            }
+
             hasLoaded = Handler.loaded;
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (hasLoaded)
             {
-                
                 spriteBatch.End();
 
                 Foundation.LightingEngine.BeginDraw();
@@ -335,15 +360,12 @@ namespace Optic_Coma
                 Foundation.LightingEngine.Draw(gameTime);
 
                 spriteBatch.Begin(SpriteSortMode.BackToFront);
-                if (inherited)
-                {
-                    InheritedLevel.Draw(spriteBatch, gameTime);
-                }
+
                 #region HUD
                 var fps = string.Format("FPS: {0}", FrameCounter.AverageFramesPerSecond);
                 spriteBatch.DrawString
                 (
-                    font, 
+                    font,
                     "Position: " + TileOffsetLocation.X + "," + TileOffsetLocation.Y,
                     new Vector2(1, 84),
                     Color.White,
@@ -378,7 +400,7 @@ namespace Optic_Coma
                     font,
                     "Distance to Closest Enemy: " + GetDistToClosestEnemy(enemies, Entity.CenterScreen),
                     new Vector2(1, 123),
-                    Color.White, 
+                    Color.White,
                     0,
                     Vector2.Zero,
                     Vector2.One,
@@ -395,10 +417,6 @@ namespace Optic_Coma
                     Color.Black
                 );
                 #endregion
-            }
-            else if (inherited && !hasLoaded)
-            {
-                InheritedLevel.Draw(spriteBatch, gameTime);
             }
         }
 
@@ -419,7 +437,7 @@ namespace Optic_Coma
                                         Foundation.GlobalScreenManager.Dimensions.Y / 2 + 64 - 128);
         }
     }
-    internal class Level1Screen : LevelScreen
+    internal class Level1Screen : dLevelScreen
     {
         public bool Equals(Level1Screen level)
         {
@@ -576,7 +594,7 @@ namespace Optic_Coma
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
                                 nonPlayer.CurrentPosition.Y += (float)(4.25 * Entity.WalkMult((float)Math.PI / 2, player.FlashAngle, 1, false));
-                                nonPlayer.Hull.Position = nonPlayer.CurrentPosition;
+                                nonPlayer.ShadowHull.Position = nonPlayer.CurrentPosition;
                             }
                             TileOffsetLocation.Y += (float)(4.25 * Entity.WalkMult((float)Math.PI / 2, player.FlashAngle, 1, false));
                         }
@@ -588,7 +606,7 @@ namespace Optic_Coma
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
                                 nonPlayer.CurrentPosition.X += (float)(4.25 * Entity.WalkMult(0, player.FlashAngle, 1, false));
-                                nonPlayer.Hull.Position = nonPlayer.CurrentPosition;
+                                nonPlayer.ShadowHull.Position = nonPlayer.CurrentPosition;
                             }
                             TileOffsetLocation.X += (float)(4.25 * Entity.WalkMult(0, player.FlashAngle, 1, false));
                         }
@@ -600,7 +618,7 @@ namespace Optic_Coma
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
                                 nonPlayer.CurrentPosition.Y -= (float)(4.25 * Entity.WalkMult(3 * (float)Math.PI / 2, player.FlashAngle, 1, false));
-                                nonPlayer.Hull.Position = nonPlayer.CurrentPosition;
+                                nonPlayer.ShadowHull.Position = nonPlayer.CurrentPosition;
                             }
                             TileOffsetLocation.Y -= (float)(4.25 * Entity.WalkMult(3 * (float)Math.PI / 2, player.FlashAngle, 1, false));
                         }
@@ -612,17 +630,13 @@ namespace Optic_Coma
                             foreach (var nonPlayer in nonPlayerEntities)
                             {
                                 nonPlayer.CurrentPosition.X -= (float)(4.25 * Entity.WalkMult((float)Math.PI, player.FlashAngle, 1, false));
-                                nonPlayer.Hull.Position = nonPlayer.CurrentPosition;
+                                nonPlayer.ShadowHull.Position = nonPlayer.CurrentPosition;
                             }
                             TileOffsetLocation.X -= (float)(4.25 * Entity.WalkMult((float)Math.PI, player.FlashAngle, 1, false));
                         }
                     }
                     #endregion
                     
-                    foreach (Enemy enemy in nonPlayerEntities)
-                    {
-                        enemy.Update();
-                    }
                     float dist = GetDistToClosestEnemy(enemies, playerPos);
                     float colorVal;
                     if (dist <= 370f && dist >= 100)
@@ -641,9 +655,9 @@ namespace Optic_Coma
                     }
                     player.FlashLight.Rotation = (float)Math.PI + player.FlashAngle;
                     Foundation.LightingEngine.Hulls.Clear();
-                    foreach(Enemy enemy in nonPlayerEntities)
+                    foreach (Enemy enemy in nonPlayerEntities)
                     {
-                        enemy.UpdateHull(ref Foundation.LightingEngine);
+                        enemy.Update();
                     }
 
                     DataToSave[0] = TileOffsetLocation.X; DataToSave[1] = TileOffsetLocation.Y; DataToSave[2] = 0;

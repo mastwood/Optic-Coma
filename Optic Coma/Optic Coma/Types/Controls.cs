@@ -4,8 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Linq;
 using System.Collections.Generic;
+using OpticComa_Types;
 
-namespace Optic_Coma
+namespace OpticComa_Main
 {
     public class Button
     {        

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 using System;
-namespace Optic_Coma
+namespace OpticComa_Main
 {   
     public class Foundation : Game
     {

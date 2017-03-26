@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Optic_Coma
+namespace OpticComa_Types
 {
     /// <summary>
     /// Tells game how the enemy will move
@@ -44,17 +44,6 @@ namespace Optic_Coma
     /// <summary>
     /// Order in which things are rendered on the screen
     /// </summary>
-    public enum LayerDepthBTF
-    {
-        BGImage,
-        BackgroundTiles,
-        MidgroundTiles,
-        Player,
-        Flashlight,
-        Enemy,
-        ForegroundTiles,
-        HUD
-    }
     public enum LayerDepth
     {
         HUD,

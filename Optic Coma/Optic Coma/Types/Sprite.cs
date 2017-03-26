@@ -2,8 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Xml.Serialization;
+using OpticComa_Types;
 
-namespace Optic_Coma
+namespace OpticComa_Main
 {
     public class SpriteSheet
     {

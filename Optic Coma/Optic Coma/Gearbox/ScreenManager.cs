@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 using Penumbra;
 using System.Collections.Generic;
 
-namespace Optic_Coma
+namespace OpticComa_Main
 {
     
     public class ScreenManager

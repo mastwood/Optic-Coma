@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
-namespace Optic_Coma
+namespace OpticComa_Main
 {
     
 
@@ -34,13 +34,13 @@ namespace Optic_Coma
 
             if (s > 0 && t > 0 && 1-s-t > 0) return true;
 
-            s = 1 / (2 * area) * (V[0].Y * V[2].X - V[0].X * V[2].Y + (V[2].Y - V[0].Y) * topleft.X + (V[0].X - V[2].X) * topleft.Y);
-            t = 1 / (2 * area) * (V[0].X * V[1].Y - V[0].Y * V[1].X + (V[0].Y - V[1].Y) * topleft.X + (V[1].X - V[0].X) * topleft.Y);
+            s = 1 / (2 * area) * (V[0].Y * V[2].X - V[0].X * V[2].Y + (V[2].Y - V[0].Y) * botright.X + (V[0].X - V[2].X) * botright.Y);
+            t = 1 / (2 * area) * (V[0].X * V[1].Y - V[0].Y * V[1].X + (V[0].Y - V[1].Y) * botright.X + (V[1].X - V[0].X) * botright.Y);
 
             if (s > 0 && t > 0 && 1 - s - t > 0) return true;
 
-            s = 1 / (2 * area) * (V[0].Y * V[2].X - V[0].X * V[2].Y + (V[2].Y - V[0].Y) * botright.X + (V[0].X - V[2].X) * botright.Y);
-            t = 1 / (2 * area) * (V[0].X * V[1].Y - V[0].Y * V[1].X + (V[0].Y - V[1].Y) * botright.X + (V[1].X - V[0].X) * botright.Y);
+            s = 1 / (2 * area) * (V[0].Y * V[2].X - V[0].X * V[2].Y + (V[2].Y - V[0].Y) * topleft.X + (V[0].X - V[2].X) * topleft.Y);
+            t = 1 / (2 * area) * (V[0].X * V[1].Y - V[0].Y * V[1].X + (V[0].Y - V[1].Y) * topleft.X + (V[1].X - V[0].X) * topleft.Y);
 
             if (s > 0 && t > 0 && 1 - s - t > 0) return true;
 
@@ -49,7 +49,7 @@ namespace Optic_Coma
 
             if (s > 0 && t > 0 && 1 - s - t > 0) return true;
 
-            else return false;
+            return false;
         }
         
     }
