@@ -13,7 +13,8 @@ namespace OpticComa_Types
     [Serializable]
     public class EnemySpawnerProperties
     {
-        List<EnemyProperties> EnemyConfigs;
+        public List<EnemyProperties> EnemyConfigs;
+        public Vector2 Position;
     }
     /// <summary>
     /// Contains the properties of an enemy that will be loaded or saved alongside a level

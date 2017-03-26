@@ -8,6 +8,7 @@ using OpticComa_Types;
 
 namespace OpticComa_Main
 {
+
     public abstract class Entity
     {
         /// <summary>
@@ -216,6 +217,7 @@ namespace OpticComa_Main
         private int dir;
         private float moveAmp;
         public int Acceleration = 0;
+        public bool Spawned = true;
 
         public Enemy(Texture2D texture, Vector2 initPosition, EnemyType eType)
         {
@@ -226,7 +228,20 @@ namespace OpticComa_Main
             CurrentPosition = initPosition;
             speed = 4 + Acceleration;
             moveAmp = 0;
-            ShadowHull = Hull.CreateRectangle(CurrentPosition, new Vector2(texture.Width, texture.Height), Angle, new Vector2(texture.Width/2, texture.Height/2));
+            ShadowHull = Hull.CreateRectangle(CurrentPosition, 
+                new Vector2(texture.Width, texture.Height), Angle, new Vector2(texture.Width/2, texture.Height/2));
+            ShadowHull.Enabled = true;
+            Foundation.LightingEngine.Hulls.Add(ShadowHull);
+        }
+        public Enemy(EnemyProperties p, Vector2 initPosition)
+        {
+            Spawned = false;
+            CurrentPosition = initPosition;
+            Properties = p;
+            speed = 4 + Acceleration;
+            moveAmp = 0;
+            ShadowHull = Hull.CreateRectangle(CurrentPosition, 
+                new Vector2(p.Texture.Width, p.Texture.Height), Angle, new Vector2(p.Texture.Width / 2, p.Texture.Height / 2));
             ShadowHull.Enabled = true;
             Foundation.LightingEngine.Hulls.Add(ShadowHull);
         }
@@ -239,28 +254,31 @@ namespace OpticComa_Main
         }
         public override void Update()
         {
-            Angle = EnemyAngle;
-            if (Properties.Mode == EnemyType.Jiggler)
+            if (Spawned)
             {
-                //Atan2(int Opposite, int Adjacent)
-                EnemyAngle = (float)(Math.Atan2(CenterScreen.Y - CurrentPosition.Y,
-                            CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
-                //moveAmp += 0.001f;
-                moveAmp = 4; //We can toy around with this later.
-                dir = random.Next(0, 4);
-            }
-            else if (Properties.Mode == EnemyType.Wavey)
-            {
-                moveAmp += 0.01f;
-                if (moveAmp >= Math.PI * 4)
-                    moveAmp = 0;
-                if (Math.Sin(moveAmp) < 0)
+                Angle = EnemyAngle;
+                if (Properties.Mode == EnemyType.Jiggler)
                 {
+                    //Atan2(int Opposite, int Adjacent)
                     EnemyAngle = (float)(Math.Atan2(CenterScreen.Y - CurrentPosition.Y,
-                            CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
+                                CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
+                    //moveAmp += 0.001f;
+                    moveAmp = 4; //We can toy around with this later.
+                    dir = random.Next(0, 4);
                 }
+                else if (Properties.Mode == EnemyType.Wavey)
+                {
+                    moveAmp += 0.01f;
+                    if (moveAmp >= Math.PI * 4)
+                        moveAmp = 0;
+                    if (Math.Sin(moveAmp) < 0)
+                    {
+                        EnemyAngle = (float)(Math.Atan2(CenterScreen.Y - CurrentPosition.Y,
+                                CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
+                    }
+                }
+                UpdateHull(ref Foundation.LightingEngine);
             }
-            UpdateHull(ref Foundation.LightingEngine);
         }
         /// <summary>
         /// Updates shadow geometry in presence of light
@@ -274,47 +292,50 @@ namespace OpticComa_Main
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            switch (Properties.Mode)
+            if (Spawned)
             {
-                case EnemyType.Jiggler:
-                    dir = random.Next(0, 4);
-                    switch (dir)
-                    {
-                        case 0:
-                            CurrentPosition.Y -= (4 * WalkMult((float)Math.PI / 2, EnemyAngle, moveAmp, false));break;
-                        case 1:
-                            CurrentPosition.X -= (4 * WalkMult(0, EnemyAngle, moveAmp, false));break;
-                        case 2:
-                            CurrentPosition.Y += (4 * WalkMult(3 * (float)Math.PI / 2, EnemyAngle, moveAmp, false));break;
-                        default:
-                            CurrentPosition.X += (4 * WalkMult((float)Math.PI, EnemyAngle, moveAmp, false));break;
-                    }
-                    break;
-                case EnemyType.Wavey:
-                    CurrentPosition.X -= (float)Math.Cos(EnemyAngle) * ((float)Math.Sin(moveAmp) + 1);
-                    CurrentPosition.Y -= (float)Math.Sin(EnemyAngle) * ((float)Math.Sin(moveAmp) + 1);break;
-            } 
-            spriteBatch.Draw
-            (
-                Properties.Texture,
-                new Rectangle
+                switch (Properties.Mode)
+                {
+                    case EnemyType.Jiggler:
+                        dir = random.Next(0, 4);
+                        switch (dir)
+                        {
+                            case 0:
+                                CurrentPosition.Y -= (4 * WalkMult((float)Math.PI / 2, EnemyAngle, moveAmp, false)); break;
+                            case 1:
+                                CurrentPosition.X -= (4 * WalkMult(0, EnemyAngle, moveAmp, false)); break;
+                            case 2:
+                                CurrentPosition.Y += (4 * WalkMult(3 * (float)Math.PI / 2, EnemyAngle, moveAmp, false)); break;
+                            default:
+                                CurrentPosition.X += (4 * WalkMult((float)Math.PI, EnemyAngle, moveAmp, false)); break;
+                        }
+                        break;
+                    case EnemyType.Wavey:
+                        CurrentPosition.X -= (float)Math.Cos(EnemyAngle) * ((float)Math.Sin(moveAmp) + 1);
+                        CurrentPosition.Y -= (float)Math.Sin(EnemyAngle) * ((float)Math.Sin(moveAmp) + 1); break;
+                }
+                spriteBatch.Draw
                 (
-                    (int)CurrentPosition.X,
-                    (int)CurrentPosition.Y,
-                    Properties.Texture.Width,
-                    Properties.Texture.Height
-                ),
-                null,
-                Color.White,
-                EnemyAngle,
-                new Vector2
-                (
-                    Properties.Texture.Width / 2,
-                    Properties.Texture.Height / 2
-                ),
-                SpriteEffects.None,
-                (float)LayerDepth.Enemy / 10f
-            );
+                    Properties.Texture,
+                    new Rectangle
+                    (
+                        (int)CurrentPosition.X,
+                        (int)CurrentPosition.Y,
+                        Properties.Texture.Width,
+                        Properties.Texture.Height
+                    ),
+                    null,
+                    Color.White,
+                    EnemyAngle,
+                    new Vector2
+                    (
+                        Properties.Texture.Width / 2,
+                        Properties.Texture.Height / 2
+                    ),
+                    SpriteEffects.None,
+                    (float)LayerDepth.Enemy / 10f
+                );
+            }
         } //Draw
     } //class
 } //namespace

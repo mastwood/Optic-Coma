@@ -108,6 +108,12 @@
   <ItemGroup>
     <None Include="defaulttileimage.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpticComa.Types\OpticComa_Types.csproj">
+      <Project>{e8beffe3-13f7-4e35-9199-f34535d2fe6c}</Project>
+      <Name>OpticComa_Types</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -31,6 +31,11 @@ namespace Level_Editor
         public BufferedPanel TilePanel = new BufferedPanel();
         public Image ImageToPaint = Properties.Resources.defaultTileImage;
         public Cursor CurrentGridCursor;
+        public List<OpticComa_Types.EnemySpawnerProperties> Spawners;
+        public List<Microsoft.Xna.Framework.Vector2> PointLights;
+        public List<OpticComa_Types.TriHitBox> TriHitBoxes;
+        public List<OpticComa_Types.RectHitBox> RectHitBoxes;
+        public List<OpticComa_Types.EnemySpawnerProperties> EnemySpawners;
 
         #endregion
         public frmMain()
@@ -214,11 +219,20 @@ namespace Level_Editor
         
         #endregion
         #region serialization
-        public void SaveLevel(string path)
+        public void SaveLevel()
         {
-            using (var f = new FileStream(path, FileMode.Create))
+            XmlSerializer xml = new XmlSerializer(typeof(OpticComa_Types.LevelSerializable));
+            OpticComa_Types.LevelSerializable toSerialize = new OpticComa_Types.LevelSerializable();
+            toSerialize.Background = "level_" + CurrentLevel.LevelNumber + "_backgroundmap";
+            toSerialize.Midground = "level_" + CurrentLevel.LevelNumber + "_midgroundmap";
+            toSerialize.Foreground = "level_" + CurrentLevel.LevelNumber + "_foregroundmap";
+            toSerialize.PointLightLocations = PointLights;
+            toSerialize.TriHitBoxes = TriHitBoxes;
+            toSerialize.RectHitBoxes = RectHitBoxes;
+            toSerialize.EnemySpawners = EnemySpawners;
+            using (var f = new FileStream("level_" + CurrentLevel.LevelNumber + ".lvl", FileMode.Create))
             {
-
+                xml.Serialize(f, toSerialize);
             }
         }
         public void LoadLevel(string path)

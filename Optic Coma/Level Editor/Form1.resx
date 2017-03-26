@@ -483,6 +483,87 @@
   <data name="&gt;&gt;levelTabControl.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+  <data name="rdoToolEnemyPlace.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="rdoToolEnemyPlace.Location" type="System.Drawing.Point, System.Drawing">
+    <value>17, 89</value>
+  </data>
+  <data name="rdoToolEnemyPlace.Size" type="System.Drawing.Size, System.Drawing">
+    <value>132, 17</value>
+  </data>
+  <data name="rdoToolEnemyPlace.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="rdoToolEnemyPlace.Text" xml:space="preserve">
+    <value>Place Enemy Spawner</value>
+  </data>
+  <data name="&gt;&gt;rdoToolEnemyPlace.Name" xml:space="preserve">
+    <value>rdoToolEnemyPlace</value>
+  </data>
+  <data name="&gt;&gt;rdoToolEnemyPlace.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rdoToolEnemyPlace.Parent" xml:space="preserve">
+    <value>grpTools</value>
+  </data>
+  <data name="&gt;&gt;rdoToolEnemyPlace.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="rdoToolHitTri.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="rdoToolHitTri.Location" type="System.Drawing.Point, System.Drawing">
+    <value>17, 65</value>
+  </data>
+  <data name="rdoToolHitTri.Size" type="System.Drawing.Size, System.Drawing">
+    <value>132, 17</value>
+  </data>
+  <data name="rdoToolHitTri.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="rdoToolHitTri.Text" xml:space="preserve">
+    <value>Draw Collision Triangle</value>
+  </data>
+  <data name="&gt;&gt;rdoToolHitTri.Name" xml:space="preserve">
+    <value>rdoToolHitTri</value>
+  </data>
+  <data name="&gt;&gt;rdoToolHitTri.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rdoToolHitTri.Parent" xml:space="preserve">
+    <value>grpTools</value>
+  </data>
+  <data name="&gt;&gt;rdoToolHitTri.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="rdoToolHitBox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="rdoToolHitBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>17, 42</value>
+  </data>
+  <data name="rdoToolHitBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>112, 17</value>
+  </data>
+  <data name="rdoToolHitBox.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="rdoToolHitBox.Text" xml:space="preserve">
+    <value>Draw Collision Box</value>
+  </data>
+  <data name="&gt;&gt;rdoToolHitBox.Name" xml:space="preserve">
+    <value>rdoToolHitBox</value>
+  </data>
+  <data name="&gt;&gt;rdoToolHitBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rdoToolHitBox.Parent" xml:space="preserve">
+    <value>grpTools</value>
+  </data>
+  <data name="&gt;&gt;rdoToolHitBox.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
   <data name="rdoToolPainter.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -511,7 +592,7 @@
     <value>grpTools</value>
   </data>
   <data name="&gt;&gt;rdoToolPainter.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>3</value>
   </data>
   <data name="grpTools.Location" type="System.Drawing.Point, System.Drawing">
     <value>13, 28</value>

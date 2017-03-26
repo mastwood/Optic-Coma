@@ -20,20 +20,24 @@ namespace OpticComa_Main
     public class EnemySpawner
     {
         public EnemySpawnerProperties Properties;
+        public Enemy[] Enemies;
+        private int wave = 0;
 
         EnemySpawner(EnemySpawnerProperties inits) //queue is used so that enemies can be loaded in first-to-last and then taken out first-to-last
         {
             Properties = inits;
-            foreach()
+            Enemies = new Enemy[inits.EnemyConfigs.ToArray().Length];
+            for (int i = 0; i < Enemies.Length; i++)
+            {
+                Enemies[i] = new Enemy(inits.EnemyConfigs[i], inits.Position);
+            }
         }
-
-
-        [XmlIgnore] List<Enemy> currentlySpawning;
-        [XmlIgnore] int WaveNum;
-        public void SpawnNextEnemies()
+        public void SpawnNext()
         {
-
+            Enemies[wave].Spawned = true;
+            wave++;
         }
+
     } //TODO: Implement this into level editor
 
     public class TexLoc //for easy compilation of this data

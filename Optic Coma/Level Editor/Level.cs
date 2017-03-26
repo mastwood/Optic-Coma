@@ -13,13 +13,13 @@ using System.Runtime.InteropServices;
 
 namespace Level_Editor
 {
-    [Serializable] public class Level
+    public class Level
     {
         public List<string> DependantTextures; //load textures from this list of strings
         public TileGrid fTileGrid;
         public TileGrid mTileGrid;
         public TileGrid bTileGrid;
-        [XmlIgnore] public TileGrid currentTileGrid;
+        public TileGrid currentTileGrid;
         public Size TileGridDimensions;
         public int LevelNumber; //which level is it
 
