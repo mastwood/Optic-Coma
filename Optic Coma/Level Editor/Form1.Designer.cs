@@ -70,15 +70,15 @@
             this.tilePanel = new System.Windows.Forms.Panel();
             this.levelTabControl = new System.Windows.Forms.TabControl();
             this.grpTools = new System.Windows.Forms.GroupBox();
+            this.rdoToolEnemyPlace = new System.Windows.Forms.RadioButton();
+            this.rdoToolHitTri = new System.Windows.Forms.RadioButton();
+            this.rdoToolHitBox = new System.Windows.Forms.RadioButton();
             this.rdoToolPainter = new System.Windows.Forms.RadioButton();
             this.levelLoadProgress = new System.Windows.Forms.ProgressBar();
             this.grpResources = new System.Windows.Forms.GroupBox();
             this.panelResources = new System.Windows.Forms.FlowLayoutPanel();
             this.defaultImagePicBoxInFlowChart = new System.Windows.Forms.PictureBox();
             this.openFileDialogLevels = new System.Windows.Forms.OpenFileDialog();
-            this.rdoToolHitBox = new System.Windows.Forms.RadioButton();
-            this.rdoToolHitTri = new System.Windows.Forms.RadioButton();
-            this.rdoToolEnemyPlace = new System.Windows.Forms.RadioButton();
             this.menuStrip.SuspendLayout();
             this.newLevel.SuspendLayout();
             this.levelTabControl.SuspendLayout();
@@ -349,6 +349,30 @@
             this.grpTools.Name = "grpTools";
             this.grpTools.TabStop = false;
             // 
+            // rdoToolEnemyPlace
+            // 
+            resources.ApplyResources(this.rdoToolEnemyPlace, "rdoToolEnemyPlace");
+            this.rdoToolEnemyPlace.Name = "rdoToolEnemyPlace";
+            this.rdoToolEnemyPlace.TabStop = true;
+            this.rdoToolEnemyPlace.UseVisualStyleBackColor = true;
+            this.rdoToolEnemyPlace.CheckedChanged += new System.EventHandler(this.rdoToolEnemyPlace_CheckedChanged);
+            // 
+            // rdoToolHitTri
+            // 
+            resources.ApplyResources(this.rdoToolHitTri, "rdoToolHitTri");
+            this.rdoToolHitTri.Name = "rdoToolHitTri";
+            this.rdoToolHitTri.TabStop = true;
+            this.rdoToolHitTri.UseVisualStyleBackColor = true;
+            this.rdoToolHitTri.CheckedChanged += new System.EventHandler(this.rdoToolHitTri_CheckedChanged);
+            // 
+            // rdoToolHitBox
+            // 
+            resources.ApplyResources(this.rdoToolHitBox, "rdoToolHitBox");
+            this.rdoToolHitBox.Name = "rdoToolHitBox";
+            this.rdoToolHitBox.TabStop = true;
+            this.rdoToolHitBox.UseVisualStyleBackColor = true;
+            this.rdoToolHitBox.CheckedChanged += new System.EventHandler(this.rdoToolHitBox_CheckedChanged);
+            // 
             // rdoToolPainter
             // 
             resources.ApplyResources(this.rdoToolPainter, "rdoToolPainter");
@@ -386,27 +410,6 @@
             // 
             this.openFileDialogLevels.FileName = "openFileDialog1";
             this.openFileDialogLevels.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialogLevels_FileOk);
-            // 
-            // rdoToolHitBox
-            // 
-            resources.ApplyResources(this.rdoToolHitBox, "rdoToolHitBox");
-            this.rdoToolHitBox.Name = "rdoToolHitBox";
-            this.rdoToolHitBox.TabStop = true;
-            this.rdoToolHitBox.UseVisualStyleBackColor = true;
-            // 
-            // rdoToolHitTri
-            // 
-            resources.ApplyResources(this.rdoToolHitTri, "rdoToolHitTri");
-            this.rdoToolHitTri.Name = "rdoToolHitTri";
-            this.rdoToolHitTri.TabStop = true;
-            this.rdoToolHitTri.UseVisualStyleBackColor = true;
-            // 
-            // rdoToolEnemyPlace
-            // 
-            resources.ApplyResources(this.rdoToolEnemyPlace, "rdoToolEnemyPlace");
-            this.rdoToolEnemyPlace.Name = "rdoToolEnemyPlace";
-            this.rdoToolEnemyPlace.TabStop = true;
-            this.rdoToolEnemyPlace.UseVisualStyleBackColor = true;
             // 
             // frmMain
             // 

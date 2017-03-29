@@ -18,19 +18,30 @@ namespace Level_Editor
     public partial class frmMain : Form
     {
         #region Fields
+
         public Level DefaultLevel;
         public bool ShowGridLines = true;
         public Level CurrentLevel;
         public LayerMode CurrentLayer = LayerMode.Midground;
-        public Tool CurrentTool = Tool.Pan;
+        public Tool CurrentTool = Tool.Draw;
         public Point PanOffset;
-        BackgroundWorker bW;
+
+        // For loading the tile grid asynchronously
+        private BackgroundWorker bW;
+
+        // Images used by a level (These are for loading and saving a level)
         public List<Image> ImageResources = new List<Image>();
         public List<string> ImageResourcesPaths = new List<string>();
         public XmlSerializer xml;
+
+        // This holds the level tiles on the screen
         public BufferedPanel TilePanel = new BufferedPanel();
+
+        // For painter tool
         public Image ImageToPaint = Properties.Resources.defaultTileImage;
         public Cursor CurrentGridCursor;
+        
+        // Objects exported by editor
         public List<OpticComa_Types.EnemySpawnerProperties> Spawners;
         public List<Microsoft.Xna.Framework.Vector2> PointLights;
         public List<OpticComa_Types.TriHitBox> TriHitBoxes;
@@ -38,10 +49,19 @@ namespace Level_Editor
         public List<OpticComa_Types.EnemySpawnerProperties> EnemySpawners;
 
         #endregion
+
         public frmMain()
         {
             InitializeComponent();
         }
+        
+        /// <summary>
+        /// This section is mainly for loading the tile grid onto the screen, since it takes a
+        /// bit of processing power just to get all of the images loaded
+        /// Luckily, async workers as well as some black magic (win32 graphics objects) make this faster
+        /// </summary>
+        /// <param name="w"></param>
+        /// <returns></returns>
         #region FormLoad
         private TileGrid[] LoadAsync(ref BackgroundWorker w)
         {
@@ -97,7 +117,6 @@ namespace Level_Editor
                 }
             }
         }
-          
         private void bW_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             levelLoadProgress.Value = levelLoadProgress.Maximum * (e.ProgressPercentage / 100);
@@ -144,7 +163,18 @@ namespace Level_Editor
         }
 
         #endregion
+
+        ///<summary>
+        /// This section is for any methods that can/need to be be used throughout the program without problems
+        ///</summary>
         #region Static Methods
+        /// <summary>
+        /// Shrinks or expands an image into a rectangle
+        /// Used for making the little icon that appears beside the mouse in painting mode
+        /// </summary>
+        /// <param name="img"></param>
+        /// <param name="rect"></param>
+        /// <returns></returns>
         public static Image GetResizedImage(Image img, Rectangle rect)
         {
             Bitmap b = new Bitmap(rect.Width, rect.Height);
@@ -157,10 +187,16 @@ namespace Level_Editor
             }
         }
         #endregion
+
+        /// <summary>
+        /// This section is for logic pertaining to moving around the level
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         #region scrollbars
         private void vScrollBarLevel_Scroll(object sender, ScrollEventArgs e)
         {
-            ScrollEventArgs s = e as ScrollEventArgs;
+            ScrollEventArgs s = e as ScrollEventArgs; //used to be necessary, idk if it still is
             PanOffset.Y = -s.NewValue;
             lblScrollDebug.Text = string.Format("X: {0}, Y: {1} ", PanOffset.X, PanOffset.Y);
             CurrentLevel.Display(ref TilePanel, CurrentLayer, ShowGridLines, PanOffset);
@@ -176,6 +212,12 @@ namespace Level_Editor
             TilePanel.Update();
         }
         #endregion
+
+        /// <summary>
+        /// This section is for the bar at the top (new, edit, view, etc.)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         #region toolstrip item click events
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -218,8 +260,17 @@ namespace Level_Editor
         }
         
         #endregion
+
+        /// <summary>
+        /// This section is for saving and loading leveleditor files, not for exporting levels for the game
+        /// Allows you to save and continue working on a level later
+        /// </summary>
         #region serialization
         public void SaveLevel()
+        {
+            
+        }
+        public void ExportLevel()
         {
             XmlSerializer xml = new XmlSerializer(typeof(OpticComa_Types.LevelSerializable));
             OpticComa_Types.LevelSerializable toSerialize = new OpticComa_Types.LevelSerializable();
@@ -234,6 +285,9 @@ namespace Level_Editor
             {
                 xml.Serialize(f, toSerialize);
             }
+            CurrentLevel.bTileGrid.GetComposedImage().Save("level_" + CurrentLevel.LevelNumber + "_backgroundmapImg");
+            CurrentLevel.mTileGrid.GetComposedImage().Save("level_" + CurrentLevel.LevelNumber + "_midgroundmapImg");
+            CurrentLevel.fTileGrid.GetComposedImage().Save("level_" + CurrentLevel.LevelNumber + "_foregroundmapImg");
         }
         public void LoadLevel(string path)
         {
@@ -247,12 +301,36 @@ namespace Level_Editor
             LoadLevel(s);
         }
         #endregion
+
+        /// <summary>
+        /// The radio buttons on the top left of the program
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         #region toolmenu radio buttons
         private void rdoToolPainter_CheckedChanged(object sender, EventArgs e)
         {
             if (rdoToolPainter.Checked) CurrentTool = Tool.Draw;
         }
+        private void rdoToolHitBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdoToolHitBox.Checked) CurrentTool = Tool.HitBox;
+        }
+        private void rdoToolHitTri_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdoToolHitTri.Checked) CurrentTool = Tool.HitTri;
+        }
+        private void rdoToolEnemyPlace_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rdoToolEnemyPlace.Checked) CurrentTool = Tool.EnemySpawner;
+        }
         #endregion
+
+        /// <summary>
+        /// For logic when actually interacting with the level within the editor
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         #region panel events and methods
         private void tilePanel_Click(object sender, EventArgs e)
         {
@@ -299,22 +377,31 @@ namespace Level_Editor
         private void TilePanel_Click(object sender, EventArgs e)
         {
             MouseEventArgs m = e as MouseEventArgs;
-            foreach (Tile t in CurrentLevel.currentTileGrid.Tiles)
+            if (CurrentTool == Tool.Draw)
             {
-                Point loc = new Point(t.Location.X + PanOffset.X, t.Location.Y + PanOffset.Y);
-                Rectangle r = new Rectangle(loc, t.Texture.Size);
-                if (r.Contains(m.Location))
+                foreach (Tile t in CurrentLevel.currentTileGrid.Tiles)
                 {
-                    CurrentLevel.currentTileGrid.Tiles.Remove(t);
-                    t.SetTexture(ImageToPaint);
-                    CurrentLevel.currentTileGrid.Tiles.Add(t);
-                    CurrentLevel.currentTileGrid.LevelEditorDraw(TilePanel.CreateGraphics(), PanOffset);
-                    TilePanel.Update();
-                    return;
+                    Point loc = new Point(t.Location.X + PanOffset.X, t.Location.Y + PanOffset.Y);
+                    Rectangle r = new Rectangle(loc, t.Texture.Size);
+                    if (r.Contains(m.Location))
+                    {
+                        CurrentLevel.currentTileGrid.Tiles.Remove(t);
+                        t.SetTexture(ImageToPaint);
+                        CurrentLevel.currentTileGrid.Tiles.Add(t);
+                        CurrentLevel.currentTileGrid.LevelEditorDraw(TilePanel.CreateGraphics(), PanOffset);
+                        TilePanel.Update();
+                        return;
+                    }
                 }
+            }
+            else if (CurrentTool == Tool.EnemySpawner)
+            {
+
             }
         }
         #endregion
+
+        
     }
     public class BufferedPanel : Panel
     {

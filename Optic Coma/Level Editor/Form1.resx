@@ -121,6 +121,37 @@
     <value>17, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="menuStrip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="menuStrip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1259, 24</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="menuStrip.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="menuStrip.Text" xml:space="preserve">
+    <value>menuStrip1</value>
+  </data>
+  <data name="&gt;&gt;menuStrip.Name" xml:space="preserve">
+    <value>menuStrip</value>
+  </data>
+  <data name="&gt;&gt;menuStrip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.MenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;menuStrip.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;menuStrip.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="fileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>37, 20</value>
+  </data>
+  <data name="fileToolStripMenuItem.Text" xml:space="preserve">
+    <value>File</value>
+  </data>
   <data name="newToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>142, 22</value>
   </data>
@@ -145,6 +176,12 @@
   <data name="saveToolStripMenuItem.Text" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="addToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>142, 22</value>
+  </data>
+  <data name="addToolStripMenuItem.Text" xml:space="preserve">
+    <value>Add</value>
+  </data>
   <data name="textureToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>112, 22</value>
   </data>
@@ -157,12 +194,6 @@
   <data name="soundToolStripMenuItem.Text" xml:space="preserve">
     <value>Sound</value>
   </data>
-  <data name="addToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>142, 22</value>
-  </data>
-  <data name="addToolStripMenuItem.Text" xml:space="preserve">
-    <value>Add</value>
-  </data>
   <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
     <value>139, 6</value>
   </data>
@@ -172,11 +203,11 @@
   <data name="exitToolStripMenuItem.Text" xml:space="preserve">
     <value>Exit</value>
   </data>
-  <data name="fileToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>37, 20</value>
+  <data name="editToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>39, 20</value>
   </data>
-  <data name="fileToolStripMenuItem.Text" xml:space="preserve">
-    <value>File</value>
+  <data name="editToolStripMenuItem.Text" xml:space="preserve">
+    <value>Edit</value>
   </data>
   <data name="undoToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>122, 22</value>
@@ -220,6 +251,12 @@
   <data name="toolStripSeparator3.Size" type="System.Drawing.Size, System.Drawing">
     <value>119, 6</value>
   </data>
+  <data name="selectAllToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>122, 22</value>
+  </data>
+  <data name="selectAllToolStripMenuItem.Text" xml:space="preserve">
+    <value>Select All</value>
+  </data>
   <data name="foregroundToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>138, 22</value>
   </data>
@@ -256,23 +293,23 @@
   <data name="spawnersToolStripMenuItem.Text" xml:space="preserve">
     <value>Spawners</value>
   </data>
-  <data name="selectAllToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>122, 22</value>
+  <data name="viewToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>44, 20</value>
   </data>
-  <data name="selectAllToolStripMenuItem.Text" xml:space="preserve">
-    <value>Select All</value>
-  </data>
-  <data name="editToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>39, 20</value>
-  </data>
-  <data name="editToolStripMenuItem.Text" xml:space="preserve">
-    <value>Edit</value>
+  <data name="viewToolStripMenuItem.Text" xml:space="preserve">
+    <value>View</value>
   </data>
   <data name="showGridlinesToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>152, 22</value>
   </data>
   <data name="showGridlinesToolStripMenuItem.Text" xml:space="preserve">
     <value>Show Gridlines</value>
+  </data>
+  <data name="toolbarToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>152, 22</value>
+  </data>
+  <data name="toolbarToolStripMenuItem.Text" xml:space="preserve">
+    <value>Toolbar</value>
   </data>
   <data name="tilePainterToolsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>164, 22</value>
@@ -286,50 +323,88 @@
   <data name="enemyTypesToolStripMenuItem.Text" xml:space="preserve">
     <value>Enemy Types</value>
   </data>
-  <data name="toolbarToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>152, 22</value>
-  </data>
-  <data name="toolbarToolStripMenuItem.Text" xml:space="preserve">
-    <value>Toolbar</value>
-  </data>
-  <data name="viewToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>44, 20</value>
-  </data>
-  <data name="viewToolStripMenuItem.Text" xml:space="preserve">
-    <value>View</value>
-  </data>
-  <data name="menuStrip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="menuStrip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1259, 24</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="menuStrip.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="menuStrip.Text" xml:space="preserve">
-    <value>menuStrip1</value>
-  </data>
-  <data name="&gt;&gt;menuStrip.Name" xml:space="preserve">
-    <value>menuStrip</value>
-  </data>
-  <data name="&gt;&gt;menuStrip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.MenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;menuStrip.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;menuStrip.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
   <metadata name="openFileDialogImages.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>125, 17</value>
   </metadata>
   <metadata name="saveFileDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>258, 17</value>
   </metadata>
+  <data name="&gt;&gt;hScrollBarLevel.Name" xml:space="preserve">
+    <value>hScrollBarLevel</value>
+  </data>
+  <data name="&gt;&gt;hScrollBarLevel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.HScrollBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;hScrollBarLevel.Parent" xml:space="preserve">
+    <value>newLevel</value>
+  </data>
+  <data name="&gt;&gt;hScrollBarLevel.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;vScrollBarLevel.Name" xml:space="preserve">
+    <value>vScrollBarLevel</value>
+  </data>
+  <data name="&gt;&gt;vScrollBarLevel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.VScrollBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;vScrollBarLevel.Parent" xml:space="preserve">
+    <value>newLevel</value>
+  </data>
+  <data name="&gt;&gt;vScrollBarLevel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;lblScrollDebug.Name" xml:space="preserve">
+    <value>lblScrollDebug</value>
+  </data>
+  <data name="&gt;&gt;lblScrollDebug.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblScrollDebug.Parent" xml:space="preserve">
+    <value>newLevel</value>
+  </data>
+  <data name="&gt;&gt;lblScrollDebug.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;tilePanel.Name" xml:space="preserve">
+    <value>tilePanel</value>
+  </data>
+  <data name="&gt;&gt;tilePanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tilePanel.Parent" xml:space="preserve">
+    <value>newLevel</value>
+  </data>
+  <data name="&gt;&gt;tilePanel.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="newLevel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="newLevel.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="newLevel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>983, 598</value>
+  </data>
+  <data name="newLevel.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="newLevel.Text" xml:space="preserve">
+    <value>newLevel</value>
+  </data>
+  <data name="&gt;&gt;newLevel.Name" xml:space="preserve">
+    <value>newLevel</value>
+  </data>
+  <data name="&gt;&gt;newLevel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;newLevel.Parent" xml:space="preserve">
+    <value>levelTabControl</value>
+  </data>
+  <data name="&gt;&gt;newLevel.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="hScrollBarLevel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom</value>
   </data>
@@ -434,33 +509,6 @@
   </data>
   <data name="&gt;&gt;tilePanel.ZOrder" xml:space="preserve">
     <value>3</value>
-  </data>
-  <data name="newLevel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
-  </data>
-  <data name="newLevel.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
-  </data>
-  <data name="newLevel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>983, 598</value>
-  </data>
-  <data name="newLevel.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="newLevel.Text" xml:space="preserve">
-    <value>newLevel</value>
-  </data>
-  <data name="&gt;&gt;newLevel.Name" xml:space="preserve">
-    <value>newLevel</value>
-  </data>
-  <data name="&gt;&gt;newLevel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;newLevel.Parent" xml:space="preserve">
-    <value>levelTabControl</value>
-  </data>
-  <data name="&gt;&gt;newLevel.ZOrder" xml:space="preserve">
-    <value>0</value>
   </data>
   <data name="levelTabControl.Location" type="System.Drawing.Point, System.Drawing">
     <value>265, 28</value>
@@ -639,13 +687,40 @@
   <data name="&gt;&gt;levelLoadProgress.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="defaultImagePicBoxInFlowChart.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+  <data name="&gt;&gt;panelResources.Name" xml:space="preserve">
+    <value>panelResources</value>
   </data>
-  <data name="defaultImagePicBoxInFlowChart.Size" type="System.Drawing.Size, System.Drawing">
-    <value>32, 32</value>
+  <data name="&gt;&gt;panelResources.Type" xml:space="preserve">
+    <value>System.Windows.Forms.FlowLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="defaultImagePicBoxInFlowChart.TabIndex" type="System.Int32, mscorlib">
+  <data name="&gt;&gt;panelResources.Parent" xml:space="preserve">
+    <value>grpResources</value>
+  </data>
+  <data name="&gt;&gt;panelResources.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="grpResources.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 244</value>
+  </data>
+  <data name="grpResources.Size" type="System.Drawing.Size, System.Drawing">
+    <value>235, 404</value>
+  </data>
+  <data name="grpResources.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="grpResources.Text" xml:space="preserve">
+    <value>Textures</value>
+  </data>
+  <data name="&gt;&gt;grpResources.Name" xml:space="preserve">
+    <value>grpResources</value>
+  </data>
+  <data name="&gt;&gt;grpResources.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;grpResources.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;grpResources.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="&gt;&gt;defaultImagePicBoxInFlowChart.Name" xml:space="preserve">
@@ -681,28 +756,25 @@
   <data name="&gt;&gt;panelResources.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="grpResources.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 244</value>
+  <data name="defaultImagePicBoxInFlowChart.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
   </data>
-  <data name="grpResources.Size" type="System.Drawing.Size, System.Drawing">
-    <value>235, 404</value>
+  <data name="defaultImagePicBoxInFlowChart.Size" type="System.Drawing.Size, System.Drawing">
+    <value>32, 32</value>
   </data>
-  <data name="grpResources.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
+  <data name="defaultImagePicBoxInFlowChart.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
-  <data name="grpResources.Text" xml:space="preserve">
-    <value>Textures</value>
+  <data name="&gt;&gt;defaultImagePicBoxInFlowChart.Name" xml:space="preserve">
+    <value>defaultImagePicBoxInFlowChart</value>
   </data>
-  <data name="&gt;&gt;grpResources.Name" xml:space="preserve">
-    <value>grpResources</value>
+  <data name="&gt;&gt;defaultImagePicBoxInFlowChart.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;grpResources.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;defaultImagePicBoxInFlowChart.Parent" xml:space="preserve">
+    <value>panelResources</value>
   </data>
-  <data name="&gt;&gt;grpResources.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;grpResources.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;defaultImagePicBoxInFlowChart.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="openFileDialogLevels.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

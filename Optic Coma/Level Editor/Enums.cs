@@ -15,11 +15,11 @@ namespace Level_Editor
     }
     public enum Tool
     {
-        Pan,
         Draw,
-        Erase,
         Edit,
-        SelectBox,
-        SelectIndividual
+        SelectObj,
+        EnemySpawner,
+        HitBox,
+        HitTri
     }
 }

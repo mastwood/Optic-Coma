@@ -9,19 +9,18 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace Level_Editor
 {
     public class Level
     {
-        public List<string> DependantTextures; //load textures from this list of strings
-        public TileGrid fTileGrid;
-        public TileGrid mTileGrid;
-        public TileGrid bTileGrid;
-        public TileGrid currentTileGrid;
-        public Size TileGridDimensions;
-        public int LevelNumber; //which level is it
+        public List<string> DependantTexturePaths; //load textures from this list of strings
+        public TileGrid fTileGrid; //foreground
+        public TileGrid mTileGrid; //midground
+        public TileGrid bTileGrid; //background
+        public TileGrid currentTileGrid; //one being displayed
+        public Size TileGridDimensions; //size of level
+        public int LevelNumber; //which level is it (Passed to exporter)
 
         /// <summary>
         /// Constructor for a level
@@ -43,10 +42,24 @@ namespace Level_Editor
 
             currentTileGrid = mTileGrid;
         }
-        public void SetUpSerialization(List<string> loadedTextures)
+        
+        /// <summary>
+        /// Initializes serialization by passing the textures loaded by the program into the object
+        /// </summary>
+        /// <param name="loadedTexturePaths"></param>
+        public void SetUpSerialization(List<string> loadedTexturePaths)
         {
-            DependantTextures = loadedTextures;
+            DependantTexturePaths = loadedTexturePaths;
         }
+
+
+        /// <summary>
+        /// Displays level onto screen
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="layer"></param>
+        /// <param name="gridlines"></param>
+        /// <param name="panOffset"></param>
         public void Display(ref BufferedPanel f, LayerMode layer, bool gridlines, Point panOffset)
         {
             f.CreateGraphics().Clear(Color.White);
@@ -63,6 +76,7 @@ namespace Level_Editor
             {
                 currentTileGrid = bTileGrid;
             }
+            //------------------------------//
             if (layer != LayerMode.Combined)
             {
                 foreach (Tile p in currentTileGrid.Tiles)
@@ -73,7 +87,7 @@ namespace Level_Editor
             }
             else
             {
-                //TODO: Combine all layers
+                //TODO: Combine all layers??
             }
         }
     }
