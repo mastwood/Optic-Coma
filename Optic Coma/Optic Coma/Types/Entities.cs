@@ -215,7 +215,26 @@ namespace OpticComa_Main
 
         // These are so that we can easily export and import the important properties of the enemy
         public EnemyProperties Properties { get; set; } //The get-set part makes this a property and not a field
-        
+
+        /*
+               Properties that end with {get;set;} are called AutoProperties
+                These are used so that you dont get funky things like accidentally modifying the wrong value
+                Also, non-auto properties are good for hiding stuff
+                    For example: an index that starts at 1, maybe you put 0 for convention. A property setter could
+                    have logic that automatically changes this to 1 so that you dont have to do debugging.
+
+            danswain on stackexchange says:
+            
+                Object orientated programming principles say that, the internal workings of a class
+                should be hidden from the outside world. If you expose a field you're in essence 
+                exposing the internal implementation of the class. Therefore we wrap fields with 
+                Properties (or methods in Java's case) to give us the ability to change the implementation
+                without breaking code depending on us. Seeing as we can put logic in the Property also
+                allows us to perform validation logic etc if we need it. C# 3 has the possibly
+                confusing notion of autoproperties. This allows us to simply define the Property 
+                and the C#3 compiler will generate the private field for us.
+        */
+
         // Properties
         public float EnemyAngle { get; set; }
         private int speed { get; set; }
@@ -223,7 +242,12 @@ namespace OpticComa_Main
         private float velocityModifier { get; set; }
 
         // Legacy code
-        public int Acceleration = 0;
+        private int acceleration = 0;
+        public int Acceleration
+        {
+            get { return acceleration; }
+            set { acceleration = value; }
+        }
         public bool Spawned = true;
 
         /// <summary>
@@ -239,7 +263,7 @@ namespace OpticComa_Main
             Properties.Texture = texture;
             Properties.Mode = eType;
             CurrentPosition = initPosition;
-            speed = 4 + Acceleration;
+            speed = 4 + acceleration;
             velocityModifier = 0;
             EnemyAngle = 0f;
             ShadowHull = Hull.CreateRectangle(CurrentPosition, 
@@ -252,7 +276,7 @@ namespace OpticComa_Main
             Spawned = false;
             CurrentPosition = initPosition;
             Properties = p;
-            speed = 4 + Acceleration;
+            speed = 4 + acceleration;
             velocityModifier = 0;
             ShadowHull = Hull.CreateRectangle(CurrentPosition, 
                 new Vector2(p.Texture.Width, p.Texture.Height), Angle, new Vector2(p.Texture.Width / 2, p.Texture.Height / 2));
