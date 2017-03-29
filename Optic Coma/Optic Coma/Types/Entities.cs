@@ -210,15 +210,28 @@ namespace OpticComa_Main
     /// </summary>
     public class Enemy : Entity
     {
-        public EnemyProperties Properties;
-        public float EnemyAngle = 0f;
+        // Why is this static?
         private static Random random;
-        private int speed;
-        private int dir;
-        private float moveAmp;
+
+        // These are so that we can easily export and import the important properties of the enemy
+        public EnemyProperties Properties { get; set; } //The get-set part makes this a property and not a field
+        
+        // Properties
+        public float EnemyAngle { get; set; }
+        private int speed { get; set; }
+        private int direction { get; set; }
+        private float velocityModifier { get; set; }
+
+        // Legacy code
         public int Acceleration = 0;
         public bool Spawned = true;
 
+        /// <summary>
+        /// Constructs a new enemy
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="initPosition"></param>
+        /// <param name="eType"></param>
         public Enemy(Texture2D texture, Vector2 initPosition, EnemyType eType)
         {
             Properties = new EnemyProperties();
@@ -227,7 +240,8 @@ namespace OpticComa_Main
             Properties.Mode = eType;
             CurrentPosition = initPosition;
             speed = 4 + Acceleration;
-            moveAmp = 0;
+            velocityModifier = 0;
+            EnemyAngle = 0f;
             ShadowHull = Hull.CreateRectangle(CurrentPosition, 
                 new Vector2(texture.Width, texture.Height), Angle, new Vector2(texture.Width/2, texture.Height/2));
             ShadowHull.Enabled = true;
@@ -239,7 +253,7 @@ namespace OpticComa_Main
             CurrentPosition = initPosition;
             Properties = p;
             speed = 4 + Acceleration;
-            moveAmp = 0;
+            velocityModifier = 0;
             ShadowHull = Hull.CreateRectangle(CurrentPosition, 
                 new Vector2(p.Texture.Width, p.Texture.Height), Angle, new Vector2(p.Texture.Width / 2, p.Texture.Height / 2));
             ShadowHull.Enabled = true;
@@ -263,15 +277,15 @@ namespace OpticComa_Main
                     EnemyAngle = (float)(Math.Atan2(CenterScreen.Y - CurrentPosition.Y,
                                 CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
                     //moveAmp += 0.001f;
-                    moveAmp = 4; //We can toy around with this later.
-                    dir = random.Next(0, 4);
+                    velocityModifier = 4; //We can toy around with this later.
+                    direction = random.Next(0, 4);
                 }
                 else if (Properties.Mode == EnemyType.Wavey)
                 {
-                    moveAmp += 0.01f;
-                    if (moveAmp >= Math.PI * 4)
-                        moveAmp = 0;
-                    if (Math.Sin(moveAmp) < 0)
+                    velocityModifier += 0.01f;
+                    if (velocityModifier >= Math.PI * 4)
+                        velocityModifier = 0;
+                    if (Math.Sin(velocityModifier) < 0)
                     {
                         EnemyAngle = (float)(Math.Atan2(CenterScreen.Y - CurrentPosition.Y,
                                 CenterScreen.X - CurrentPosition.X)) + (float)Math.PI;
@@ -297,22 +311,22 @@ namespace OpticComa_Main
                 switch (Properties.Mode)
                 {
                     case EnemyType.Jiggler:
-                        dir = random.Next(0, 4);
-                        switch (dir)
+                        direction = random.Next(0, 4);
+                        switch (direction)
                         {
                             case 0:
-                                CurrentPosition.Y -= (4 * WalkMult((float)Math.PI / 2, EnemyAngle, moveAmp, false)); break;
+                                CurrentPosition.Y -= (4 * WalkMult((float)Math.PI / 2, EnemyAngle, velocityModifier, false)); break;
                             case 1:
-                                CurrentPosition.X -= (4 * WalkMult(0, EnemyAngle, moveAmp, false)); break;
+                                CurrentPosition.X -= (4 * WalkMult(0, EnemyAngle, velocityModifier, false)); break;
                             case 2:
-                                CurrentPosition.Y += (4 * WalkMult(3 * (float)Math.PI / 2, EnemyAngle, moveAmp, false)); break;
+                                CurrentPosition.Y += (4 * WalkMult(3 * (float)Math.PI / 2, EnemyAngle, velocityModifier, false)); break;
                             default:
-                                CurrentPosition.X += (4 * WalkMult((float)Math.PI, EnemyAngle, moveAmp, false)); break;
+                                CurrentPosition.X += (4 * WalkMult((float)Math.PI, EnemyAngle, velocityModifier, false)); break;
                         }
                         break;
                     case EnemyType.Wavey:
-                        CurrentPosition.X -= (float)Math.Cos(EnemyAngle) * ((float)Math.Sin(moveAmp) + 1);
-                        CurrentPosition.Y -= (float)Math.Sin(EnemyAngle) * ((float)Math.Sin(moveAmp) + 1); break;
+                        CurrentPosition.X -= (float)Math.Cos(EnemyAngle) * ((float)Math.Sin(velocityModifier) + 1);
+                        CurrentPosition.Y -= (float)Math.Sin(EnemyAngle) * ((float)Math.Sin(velocityModifier) + 1); break;
                 }
                 spriteBatch.Draw
                 (

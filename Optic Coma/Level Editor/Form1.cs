@@ -19,6 +19,7 @@ namespace Level_Editor
     {
         #region Fields
 
+        // States of the actual level being edited and the editor (TAKE THAT OBJECT ORIENTED PROGRAMMERS, WE'RE USING STATE ORIENTED PROGRAMMING)
         public Level DefaultLevel;
         public bool ShowGridLines = true;
         public Level CurrentLevel;
@@ -403,6 +404,10 @@ namespace Level_Editor
 
         
     }
+
+    /// <summary>
+    /// This object is just a panel which loads more smoothly but slightly less efficiently
+    /// </summary>
     public class BufferedPanel : Panel
     {
         public BufferedPanel()
