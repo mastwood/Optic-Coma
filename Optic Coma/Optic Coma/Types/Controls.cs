@@ -10,39 +10,39 @@ namespace OpticComa_Main
 {
     public class Button
     {        
-        int _rows = 4;
-        int _columns = 1;
-        private int _currentFrame;
-        private int _totalFrames;
-        MouseState _preMouse;
+        private int rows = 4;
+        private int columns = 1;
+        private int currentFrame;
+        private int totalFrames;
+        private MouseState preMouse;
 
         //This method is called when you make a new button - ala Button button = new Button();
         public Button()
         {
-            _currentFrame = 0;
-            _totalFrames = _rows * _columns;
+            currentFrame = 0;
+            totalFrames = rows * columns;
         }
 
         //This isn't a method - it's a simplified class - a data structure.
         public struct TextSize
         {
-            public float X;
-            public float Y;
+            public float X { get; set; }
+            public float Y { get; set; }
         }
 
         //The Template
         public void Draw(Texture2D texture, SpriteBatch spriteBatch, Action action, Vector2 location, SpriteFont font, string text, Color color)
         {
-            TextSize size;
+            TextSize size = new TextSize();
             size.X = font.MeasureString(text).X;
             size.Y = font.MeasureString(text).Y;
 
-            int width = texture.Width / _columns;
-            int height = texture.Height / _rows;
+            int width = texture.Width / columns;
+            int height = texture.Height / rows;
 
             //Magic code
-            int row = (_currentFrame / _columns);
-            int column = _currentFrame % _columns;
+            int row = (currentFrame / columns);
+            int column = currentFrame % columns;
 
             
             Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
@@ -54,23 +54,23 @@ namespace OpticComa_Main
             MouseState curMouse = Mouse.GetState();
 
             if (area.Contains(curMouse.Position) &&
-                curMouse != _preMouse && curMouse.LeftButton == ButtonState.Pressed)
+                curMouse != preMouse && curMouse.LeftButton == ButtonState.Pressed)
             {
                 action();
-                _currentFrame = 2;
+                currentFrame = 2;
             }
             else if (area.Contains(curMouse.Position) &&
-                curMouse == _preMouse && curMouse.LeftButton == ButtonState.Pressed)
+                curMouse == preMouse && curMouse.LeftButton == ButtonState.Pressed)
             {
-                _currentFrame = 2;
+                currentFrame = 2;
             }
             else if (area.Contains(curMouse.Position) && curMouse.LeftButton == ButtonState.Released)
             {
-                _currentFrame = 1;
+                currentFrame = 1;
             }
             else
             {
-                _currentFrame = 0;
+                currentFrame = 0;
             }
 
             spriteBatch.Draw
@@ -87,29 +87,33 @@ namespace OpticComa_Main
             );
 
             spriteBatch.DrawString(font, text, textLocation, color, 0f, Vector2.Zero, 1, SpriteEffects.None, (float)LayerDepth.HUD / 10f);
-            _preMouse = curMouse;
+            preMouse = curMouse;
         }
     }
+    /// <summary>
+    /// Needs to be redone, wow
+    /// </summary>
     class DropDown
     {
         public struct DropDownOptions
         {
-            public Action[] OptionAction;
-            public Rectangle[] OptionLocation;
+            public Action[] OptionAction { get; set; }
+            public Rectangle[] OptionLocation { get; set; }
         }
 
-        string[] _contents;
-        MouseState _mouseState;
-        MouseState _prevState;
-        bool _opened = false;
-        int _rows;
-        List<string> _contentsList;
-        Rectangle _sourceRectangleA;
-        Rectangle _sourceRectangleB;
-        Rectangle _destRectangle;
-        Rectangle _mainRect;
-        Texture2D _texture;
-        DropDownOptions _ddO;
+        private string[] _contents;
+        private MouseState _mouseState;
+        private MouseState _prevState;
+        private bool _opened = false;
+        private int _rows;
+        private List<string> _contentsList;
+        private Rectangle _sourceRectangleA;
+        private Rectangle _sourceRectangleB;
+        private Rectangle _destRectangle;
+        private Rectangle _mainRect;
+        private Texture2D _texture;
+        private DropDownOptions _ddO;
+
         public DropDown(string[] Contents, Texture2D Texture)
         {
             _contentsList = new List<string>();
@@ -126,7 +130,7 @@ namespace OpticComa_Main
             _ddO.OptionAction = new Action[_rows];
             _ddO.OptionLocation = new Rectangle[_rows];
         }
-        static IEnumerable<string> SortByLength(IEnumerable<string> e)
+        private static IEnumerable<string> SortByLength(IEnumerable<string> e)
         {
             var sorted = from s in e
                          orderby s.Length descending

@@ -312,7 +312,7 @@ namespace OpticComa_Main
 
             backgroundTexture = BaseScreenContent.Load<Texture2D>("starsbg");
             Handler = new LevelHandler(LoaderMethod, hasLoaded);
-            Handler.worker.RunWorkerAsync();
+            Handler.BeginLoad();
 
             base.LoadContent();
         }

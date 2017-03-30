@@ -39,27 +39,6 @@ namespace OpticComa_Main
         {
 
         }
-        public static void DumpException(Exception ex)
-        {
-            Console.WriteLine("--------- Outer Exception Data ---------");
-            WriteExceptionInfo(ex);
-            ex = ex.InnerException;
-            if (null != ex)
-            {
-                Console.WriteLine("--------- Inner Exception Data ---------");
-                WriteExceptionInfo(ex.InnerException);
-                ex = ex.InnerException;
-            }
-        }
-        public static void WriteExceptionInfo(Exception ex)
-        {
-            Console.WriteLine("Message: {0}", ex.Message);
-            Console.WriteLine("Exception Type: {0}", ex.GetType().FullName);
-            Console.WriteLine("Source: {0}", ex.Source);
-            Console.WriteLine("StrackTrace: {0}", ex.StackTrace);
-            Console.WriteLine("TargetSite: {0}", ex.TargetSite);
-        }
-
         public static void Save(XmlSerializer xml, float[] i)
         {
             try
@@ -71,7 +50,6 @@ namespace OpticComa_Main
             }
             catch(Exception ex)
             {
-                DumpException(ex);
             }
         }
         public static float[] Load(XmlSerializer xml)
@@ -97,10 +75,14 @@ namespace OpticComa_Main
     /// </summary>
     public class LogWriter
     {
-        public string[] Lines;
+        public string[] Lines { get; set; }
         public static string Path = "";
-        public DateTime DateTime = DateTime.Now;
+        public DateTime Tracker { get; set; }
 
+        public LogWriter()
+        {
+            Tracker = DateTime.Now;
+        }
         public static void Write(string message, string stackTrace, string errorCode)
         {
             if (!File.Exists(Path))
@@ -108,7 +90,7 @@ namespace OpticComa_Main
                 // Create a file to write to.
                 using (var sw = File.CreateText(Path))
                 {
-                    sw.WriteLine("ERROR LOG {dateTime} \r \r");
+                    sw.WriteLine("ERROR LOG {Tracker} \r \r");
 
                     sw.Write(message);
                     sw.Write(stackTrace);

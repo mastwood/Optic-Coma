@@ -22,11 +22,11 @@ namespace OpticComa_Main
         /// <summary>
         /// Direction entity is facing
         /// </summary>
-        public float Angle;
+        public float Angle { get; set; }
         /// <summary>
         /// Polygon for shape of shadow
         /// </summary>
-        public Hull ShadowHull;
+        public Hull ShadowHull { get; set; }
 
         public virtual void Update()
         {
@@ -56,20 +56,22 @@ namespace OpticComa_Main
             //dir, in this method, is equal to the angle in radians the character is moving.
             //angle is the "best" angle - the one that results in fastest movement.
             //amp is in regards to how powerful the slowing effect is.
+
+            //------------------------------------------------------------------------------------------------------------------------------------
             //First we check if the flash is roughly pointing the same way we are going.
-            if (
+            if  (
                 ((7 * Math.PI / 4 < dir || dir <= 1 * Math.PI / 4) && (7 * Math.PI / 4 < angle || angle <= 1 * Math.PI / 4)) ||//Both westward?
                 ((1 * Math.PI / 4 < dir && dir <= 3 * Math.PI / 4) && (1 * Math.PI / 4 < angle && angle <= 3 * Math.PI / 4)) ||//Both northward?
                 ((3 * Math.PI / 4 < dir && dir <= 5 * Math.PI / 4) && (3 * Math.PI / 4 < angle && angle <= 5 * Math.PI / 4)) ||//Both eastward?
                 ((5 * Math.PI / 4 < dir && dir <= 7 * Math.PI / 4) && (5 * Math.PI / 4 < angle && angle <= 7 * Math.PI / 4))   //Both southward?
-              )
+                )
             {
                 if (useExp)
                     return (float)Math.Pow(1, amp);
                 else
                     return 1 * amp;
-
             }
+            //------------------------------------------------------------------------------------------------------------------------------------
             else if //Then we check if the person is directly backpedalling.
               (
                 ((7 * Math.PI / 4 < dir || dir <= 1 * Math.PI / 4) && (3 * Math.PI / 4 < angle && angle <= 5 * Math.PI / 4)) ||//Backpedaling west?
@@ -83,6 +85,7 @@ namespace OpticComa_Main
                 else
                     return 0.5f * amp;
             }
+            //------------------------------------------------------------------------------------------------------------------------------------
             else //Must be sidestepping, then.
             {
                 if (useExp)
@@ -98,21 +101,23 @@ namespace OpticComa_Main
     /// </summary>
     public class Player : Entity
     {
-        public float FlashAngle = 0f;
-        public float PlayerAngle = 0f;
-        public Vector2 FacingDirection;
+        public float FlashAngle { get; set; }
+        public float PlayerAngle { get; set; }
+        public Vector2 FacingDirection { get; set; }
         public Texture2D Texture { get; set; }
         
-        public Spotlight FlashLight;
+        public Spotlight FlashLight { get; set; }
         private Texture2D flashLightTexture;
 
-        public Player(Texture2D texture, Vector2 initPos, Texture2D flashlightTexture)
+        public Player(Texture2D texture, Vector2 initPos, Texture2D arg_flashLightTexture)
         {
+            PlayerAngle = 0f;
+            FlashAngle = 0f;
             if (flashLightTexture != null)
             {
                 CurrentPosition = initPos;
                 Texture = texture;
-                flashLightTexture = flashlightTexture;
+                flashLightTexture = arg_flashLightTexture;
                 FlashLight = new Spotlight()
                 {
                     Position = CenterScreen,
@@ -217,11 +222,11 @@ namespace OpticComa_Main
         public EnemyProperties Properties { get; set; } //The get-set part makes this a property and not a field
 
         /*
-               Properties that end with {get;set;} are called AutoProperties
-                These are used so that you dont get funky things like accidentally modifying the wrong value
-                Also, non-auto properties are good for hiding stuff
-                    For example: an index that starts at 1, maybe you put 0 for convention. A property setter could
-                    have logic that automatically changes this to 1 so that you dont have to do debugging.
+            Properties that end with {get;set;} are called AutoProperties
+            These are used so that you dont get funky things like accidentally modifying the wrong value
+            Also, non-auto properties are good for hiding stuff
+                For example: an index that starts at 1, maybe you put 0 for convention. A property setter could
+                have logic that automatically changes this to 1 so that you dont have to do debugging.
 
             danswain on stackexchange says:
             
@@ -233,6 +238,11 @@ namespace OpticComa_Main
                 allows us to perform validation logic etc if we need it. C# 3 has the possibly
                 confusing notion of autoproperties. This allows us to simply define the Property 
                 and the C#3 compiler will generate the private field for us.
+                http://stackoverflow.com/questions/295104/what-is-the-difference-between-a-field-and-a-property-in-c
+
+            There is another great use for it. A property can cause an event to happen when it is changed
+            With fields, you would have to have a bunch of methods to check whether the property has changed
+            But with properties, you can make events which do it automatically and efficiently
         */
 
         // Properties
@@ -248,10 +258,26 @@ namespace OpticComa_Main
             get { return acceleration; }
             set { acceleration = value; }
         }
-        public bool Spawned = true;
+
+        private bool spawned = true;
+        public bool Spawned {
+            get
+            {
+                return spawned;
+            }
+            set
+            {
+                if (value && !spawned)
+                {
+                    spawned = value;
+                    OnSpawned();
+                }
+                else { spawned = value; }
+            }
+        }
 
         /// <summary>
-        /// Constructs a new enemy
+        /// Constructs a new enemy by default logic
         /// </summary>
         /// <param name="texture"></param>
         /// <param name="initPosition"></param>
@@ -271,6 +297,12 @@ namespace OpticComa_Main
             ShadowHull.Enabled = true;
             Foundation.LightingEngine.Hulls.Add(ShadowHull);
         }
+
+        /// <summary>
+        /// Constructs an enemy from an imported level file
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="initPosition"></param>
         public Enemy(EnemyProperties p, Vector2 initPosition)
         {
             Spawned = false;
@@ -283,6 +315,7 @@ namespace OpticComa_Main
             ShadowHull.Enabled = true;
             Foundation.LightingEngine.Hulls.Add(ShadowHull);
         }
+
         /// <summary>
         /// Deprecated method - not used atm
         /// </summary>
@@ -290,6 +323,15 @@ namespace OpticComa_Main
         {
             //other stuff?
         }
+
+        /// <summary>
+        /// Happens when enemy spawns
+        /// </summary>
+        private void OnSpawned()
+        {
+            //Play scary music?
+        }
+
         public override void Update()
         {
             if (Spawned)

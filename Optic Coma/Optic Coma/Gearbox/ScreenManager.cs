@@ -11,15 +11,15 @@ namespace OpticComa_Main
     
     public class ScreenManager
     { 
-        private KeyboardState _oldState;
-
         public Vector2 Dimensions { private set; get; }
 
         public ContentManager Content { private set; get; }
 
         public BaseScreen CurrentScreen { set; get; }
 
-        public List<Level> LevelsLoaded;
+        public List<Level> LevelsLoaded { get; set; }
+
+        private KeyboardState oldState;
 
         public ScreenManager()
         {
@@ -55,13 +55,13 @@ namespace OpticComa_Main
         {
             KeyboardState newState = Keyboard.GetState();
 
-            if (_oldState.IsKeyUp(Keys.Q) && newState.IsKeyDown(Keys.Q))
+            if (oldState.IsKeyUp(Keys.Q) && newState.IsKeyDown(Keys.Q))
             {
                 // this will only be called when the key is first pressed
                 MenuKey_OnPress();
             }
 
-            _oldState = newState;
+            oldState = newState;
 
             if (CurrentScreen is Level1Screen)
                 CurrentScreen.Update(gameTime);

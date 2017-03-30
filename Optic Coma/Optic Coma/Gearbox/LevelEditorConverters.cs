@@ -15,6 +15,8 @@ using Microsoft.Xna.Framework.Content;
 
 namespace OpticComa_Main
 {
+    //All of these may be unnecessary now due to the contentimporter
+    
     using SysPoint = System.Drawing.Point;
     using SysImage = System.Drawing.Image;
     using SysColor = System.Drawing.Color;

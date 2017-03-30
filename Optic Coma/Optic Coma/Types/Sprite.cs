@@ -8,11 +8,7 @@ namespace OpticComa_Main
 {
     public class SpriteSheet
     {
-        public virtual void Draw(SpriteBatch spriteBatch)
-        {
-
-        }
-        public virtual void Draw(SpriteBatch spriteBatch, Vector2 location)
+        public virtual void Draw(SpriteBatch spriteBatch, float rotation)
         {
 
         }
@@ -24,7 +20,7 @@ namespace OpticComa_Main
         {
 
         }
-        public virtual void Update(GameTime gameTime)
+        public virtual void Update(Vector2 location)
         {
 
         }
@@ -34,25 +30,33 @@ namespace OpticComa_Main
 
     public class EntitySprite : SpriteSheet
     {
-        public EntitySpriteMode Mode;
+        public EntitySpriteMode Mode { get; set; }
         public Vector2 TileSize { get; set; }
         public Vector2 TotalSize { get; set; }
         public Texture2D SpriteSheetTex;
 
         [XmlIgnore]
-        public int CurrentColumn = 0;
+        protected int CurrentColumn = 0;
         [XmlIgnore]
-        public int CurrentRow = 0;
+        protected int CurrentRow = 0;
         [XmlIgnore]
-        public Rectangle SourceRectangle;
+        protected Rectangle SourceRectangle;
         [XmlIgnore]
-        public Rectangle DestinationRectangle;
+        protected Rectangle DestinationRectangle;
+
+        protected Vector2 Origin;
+
+        protected int rowCounter = 0;
 
         public EntitySprite()
         {
             Mode = EntitySpriteMode.Idle;
+            Origin = new Vector2(TileSize.X / 2, TileSize.Y / 2);
         }
-        public override void Draw(SpriteBatch spriteBatch, Vector2 location)
+        public override void Draw(SpriteBatch spriteBatch, float rotation)
+        {
+        }
+        public override void Update(Vector2 location)
         {
             SourceRectangle = new Rectangle(
                 (int)TileSize.X * CurrentColumn,
@@ -65,77 +69,65 @@ namespace OpticComa_Main
                 (int)TileSize.X,
                 (int)TileSize.Y);
 
-            base.Draw(spriteBatch);
-        }
-        public override void Update()
-        {
-            base.Update();
+            if (Mode == EntitySpriteMode.Idle)
+            {
+                CurrentColumn = 0;
+            }
+            else if (Mode == EntitySpriteMode.Walking)
+            {
+                CurrentColumn = 1;
+            }
+            else if (Mode == EntitySpriteMode.Running)
+            {
+                CurrentColumn = 2;
+            }
+            else if (Mode == EntitySpriteMode.Hit)
+            {
+                CurrentColumn = 3;
+            }
+            if (rowCounter == 4)
+            {
+                if (CurrentRow > TotalSize.Y / TileSize.Y)
+                    CurrentRow = 0;
+                else
+                    CurrentRow += 1;
+
+                rowCounter = 0;
+            }
+            rowCounter++;
         }
     }
     public class EnemySprite : EntitySprite
     {
-        public override void Draw(SpriteBatch spriteBatch, Vector2 location)
+        public override void Draw(SpriteBatch spriteBatch, float rotation)
         {
-            base.Draw(spriteBatch, location);
-            spriteBatch.Draw(SpriteSheetTex, DestinationRectangle, SourceRectangle, Color.White, 0, Vector2.Zero, SpriteEffects.None, (float)LayerDepth.Enemy / 10f);
+            spriteBatch.Draw(SpriteSheetTex, DestinationRectangle, SourceRectangle, Color.White, rotation, Vector2.Zero, SpriteEffects.None, (float)LayerDepth.Enemy / 10f);
+        }
+        public override void Update(Vector2 location)
+        {
+            base.Update(location);
         }
     }
     public class PlayerSprite : EntitySprite
     {
-        public override void Draw(SpriteBatch spriteBatch, Vector2 location)
+        public override void Draw(SpriteBatch spriteBatch, float rotation)
         {
-            base.Draw(spriteBatch, location);
-            spriteBatch.Draw(SpriteSheetTex, DestinationRectangle, SourceRectangle, Color.White, 0, Vector2.Zero, SpriteEffects.None, (float)LayerDepth.Player / 10f);
+            spriteBatch.Draw(SpriteSheetTex, DestinationRectangle, SourceRectangle, Color.White, rotation, Vector2.Zero, SpriteEffects.None, (float)LayerDepth.Player / 10f);
+        }
+        public override void Update(Vector2 location)
+        {
+            base.Update(location);
         }
     }
     public class NPCSprite : EntitySprite
     {
-        public override void Draw(SpriteBatch spriteBatch, Vector2 location)
+        public override void Draw(SpriteBatch spriteBatch, float rotation)
         {
-            base.Draw(spriteBatch, location);
-            spriteBatch.Draw(SpriteSheetTex, DestinationRectangle, SourceRectangle, Color.White, 0, Vector2.Zero, SpriteEffects.None, (float)LayerDepth.Enemy / 10f);
+            spriteBatch.Draw(SpriteSheetTex, DestinationRectangle, SourceRectangle, Color.White, rotation, Vector2.Zero, SpriteEffects.None, (float)LayerDepth.Enemy / 10f);
         }
-    }
-
-    /// <summary>
-    /// A sprite which continuously cycles through a spritesheet
-    /// </summary>
-    public class AnimatedSprite : SpriteSheet
-    {
-        public Texture2D Texture { get; set; }
-        public int Rows { get; set; }
-        public int Columns { get; set; }
-        private int _currentFrame;
-        private int _totalFrames;
-
-        public AnimatedSprite(Texture2D texture, int rows, int columns)
+        public override void Update(Vector2 location)
         {
-            Texture = texture;
-            Rows = rows;
-            Columns = columns;
-            _currentFrame = 0;
-            _totalFrames = Rows * Columns;
+            base.Update(location);
         }
-
-        public override void Update()
-        {
-            _currentFrame++;
-            if (_currentFrame == _totalFrames)
-                _currentFrame = 0;
-        }
-
-        public override void Draw(SpriteBatch spriteBatch, Vector2 location)
-        {
-            int width = Texture.Width / Columns;
-            int height = Texture.Height / Rows;
-            int row = (int)((float)_currentFrame / (float)Columns);
-            int column = _currentFrame % Columns;
-
-            Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
-            Rectangle destinationRectangle = new Rectangle((int)location.X, (int)location.Y, width, height);
-
-            spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
-        }
-
     }
 }

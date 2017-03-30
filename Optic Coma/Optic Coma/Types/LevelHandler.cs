@@ -15,12 +15,15 @@ using OpticComa_Types;
 namespace OpticComa_Main
 {
     using WorkerAction = Action<object, DoWorkEventArgs>; //rename this to prevent typing cus lazy
-
     
+    /// <summary>
+    /// Object which reads a list of enemies and spawns them upon calling
+    /// </summary>
     public class EnemySpawner
     {
-        public EnemySpawnerProperties Properties;
-        public Enemy[] Enemies;
+        public EnemySpawnerProperties Properties { get; set; }
+        public Enemy[] Enemies { get; set; }
+
         private int wave = 0;
 
         EnemySpawner(EnemySpawnerProperties inits) //queue is used so that enemies can be loaded in first-to-last and then taken out first-to-last
@@ -42,11 +45,11 @@ namespace OpticComa_Main
 
     public class TexLoc //for easy compilation of this data
     {
-        public Vector2 Location;
-        public Vector2 TextureMapPos;
-        public string TexturePath;
-        public Texture2D Texture;
-        Vector2 TexMapLoc;
+        public Vector2 Location { get; set; }
+        public Vector2 TextureMapPos { get; set; }
+        public string TexturePath { get; set; }
+        public Texture2D Texture { get; set; }
+        private Vector2 TexMapLoc { get; set; }
         public TexLoc(string tex, Vector2 loc, Vector2 maploc)
         {
             TexturePath = tex;
@@ -88,8 +91,17 @@ namespace OpticComa_Main
             }
         }
     }
+    /// <summary>
+    /// This is for the custom content importer - leveleditor stuff
+    /// </summary>
     public class LevelContentReader : ContentTypeReader<LevelSerializable>
     {
+        /// <summary>
+        /// Reads the .lvl file into the object
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="existingInstance"></param>
+        /// <returns></returns>
         protected override LevelSerializable Read(ContentReader input, LevelSerializable existingInstance)
         {
             return input.ReadObject(existingInstance);
@@ -97,21 +109,21 @@ namespace OpticComa_Main
     }
     public class Level
     {
-        string Name;
-        int Index;
+        public string Name { get; set; }
+        int Index { get; set; }
 
-        public Player Player;
-        public WorkerAction ALoader;
-        public TileSystem tileSystem;
-        public Texture2D mapBackground;
-        public Texture2D mapMidground;
-        public Texture2D mapForeground;
-        public Texture2D imgBackground;
-        public List<Vector2> pointLightLocations;
-        public List<IHitBox> HitBoxes;
+        public Player Player { get; set; }
+        public WorkerAction ALoader { get; set; }
+        public TileSystem tileSystem { get; set; }
+        public Texture2D mapBackground { get; set; }
+        public Texture2D mapMidground { get; set; }
+        public Texture2D mapForeground { get; set; }
+        public Texture2D imgBackground { get; set; }
+        public List<Vector2> pointLightLocations { get; set; }
+        public List<IHitBox> HitBoxes { get; set; }
 
-        public bool HasLoaded;
-        LevelHandler Handler;
+        public bool HasLoaded { get; set; }
+        private LevelHandler Handler;
         public Level(LevelSerializable LS)
         {
             HitBoxes.AddRange(LS.TriHitBoxes);
@@ -147,26 +159,20 @@ namespace OpticComa_Main
 
     public class LevelHandler
     {
-        public bool loaded;
-        public BackgroundWorker worker = new BackgroundWorker();
-        int SuccessCode;
-        public string PercentProgress = "";
-        WorkerAction Action;
+        public bool loaded { get; set; }
+        private BackgroundWorker worker = new BackgroundWorker();
+        public string PercentProgress { get; set; }
+        private WorkerAction action;
 
-        public bool LoadingSuccess() //just in case
+        public LevelHandler(WorkerAction actionArg, bool checkLoad)
         {
-            return (SuccessCode > 0);
-        }
-
-        public LevelHandler(WorkerAction action, bool checkLoad)
-        {
-            Action = action;
+            PercentProgress = "";
+            action = actionArg;
             loaded = checkLoad;
             worker.DoWork += new DoWorkEventHandler(action);
             worker.ProgressChanged += new ProgressChangedEventHandler(ReportProgress);
             worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Complete);
         }
-
         public void BeginLoad()
         {
             worker.RunWorkerAsync();
@@ -177,10 +183,9 @@ namespace OpticComa_Main
         }
         public void Complete(object sender, RunWorkerCompletedEventArgs e)
         {
-            worker.DoWork -= new DoWorkEventHandler(Action);
+            worker.DoWork -= new DoWorkEventHandler(action);
             worker.RunWorkerCompleted -= Complete;
             worker = null;
-            SuccessCode = 1;
             loaded = true;
         }
     }

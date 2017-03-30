@@ -9,6 +9,8 @@ namespace OpticComa_Main
 {   
     public class Foundation : Game
     {
+        //Apparently global variables are sketchy, we should find a way around these
+
         /// <summary>
         /// Controls saving the game
         /// </summary>

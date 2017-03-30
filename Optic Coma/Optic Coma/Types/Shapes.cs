@@ -8,13 +8,15 @@ using Microsoft.Xna.Framework;
 namespace OpticComa_Main
 {
     
-
+    /// <summary>
+    /// Possibly not necessary
+    /// </summary>
     public class Triangle
     {
         readonly Vector2[] V;
-        Vector2 topright, topleft, botright, botleft;
-        double area;
-        double s, t;
+        private Vector2 topright, topleft, botright, botleft;
+        private double area;
+        private double s, t;
 
         public Triangle(Vector2[] v) //Triangle points must be input in the order top left -> bottom right -> bottom left (CLOCKWISE)
         {
